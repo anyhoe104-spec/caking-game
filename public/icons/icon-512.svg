@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="CAKING">
+  <defs>
+    <linearGradient id="bg512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fffdf8"/>
+      <stop offset="100%" stop-color="#ffe8f0"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="108" fill="url(#bg512)" stroke="#e8b4c8" stroke-width="10"/>
+  <text x="256" y="310" text-anchor="middle" font-size="200" font-family="system-ui,Segoe UI,sans-serif"><p</text>
+  <text x="256" y="450" text-anchor="middle" font-size="48" font-weight="700" fill="#9f6541" font-family="system-ui,Segoe UI,sans-serif">CAKING</text>
+</svg>

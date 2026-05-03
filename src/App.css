@@ -1,0 +1,863 @@
+:root {
+  --cream: #fff8ec;
+  --ink: #4d3f3c;
+  --muted: #8a7268;
+  --pink: #f5c2d5;
+  --pink-strong: #e894b3;
+  --line: rgba(136, 97, 74, 0.16);
+  --danger: #d9526d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(255, 255, 255, 0.55), transparent 32%),
+    linear-gradient(180deg, #fffdf8, #fff6eb 62%, #fffaf2);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  border: 0;
+  min-height: 100svh;
+  display: block;
+  text-align: left;
+}
+
+.phoneStage {
+  min-height: 100svh;
+  min-height: 100dvh;
+  width: 100%;
+  max-width: 100vw;
+  display: grid;
+  place-items: center;
+  padding: 10px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  position: relative;
+  overflow-x: hidden;
+}
+
+.phoneStage::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: rgba(255, 255, 255, 0.45);
+  transition: opacity 0.2s ease;
+}
+
+.phoneStage.isLevelUp::after {
+  opacity: 1;
+}
+
+.appShell {
+  width: min(100%, 430px);
+  min-height: 100svh;
+  background: rgba(255, 252, 247, 0.94);
+  border: 1px solid rgba(175, 132, 104, 0.2);
+  border-radius: 26px;
+  box-shadow: 0 20px 36px rgba(155, 112, 87, 0.16);
+  overflow: hidden;
+  position: relative;
+}
+
+.appHeader {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 252, 247, 0.95);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.appHeaderBrand {
+  min-width: 0;
+}
+
+.soundToggle {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(223, 149, 180, 0.35);
+  background: linear-gradient(180deg, #fff8fb, #ffe8f0);
+  color: #b35f85;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.soundToggle:active {
+  transform: scale(0.98);
+}
+
+.brandCompact {
+  font-size: 28px;
+  font-weight: 900;
+  color: #9f6541;
+  letter-spacing: 0.04em;
+}
+
+.brandSub {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.tabContent {
+  padding: 14px 12px calc(120px + env(safe-area-inset-bottom, 0px));
+  animation: tabFade 0.22s ease;
+}
+
+.screen {
+  display: grid;
+  gap: 12px;
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 10px 18px rgba(151, 112, 83, 0.09);
+  padding: 12px;
+}
+
+.homeHero {
+  display: grid;
+  gap: 10px;
+}
+
+.brandRibbon {
+  justify-self: start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #b56f8f;
+  background: #ffeaf2;
+  border: 1px solid rgba(224, 140, 173, 0.28);
+}
+
+.brandTitle {
+  margin-top: 2px;
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 900;
+  color: #9f6541;
+}
+
+.brandSubLarge {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.homeStats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.hudItem {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.88);
+  padding: 10px;
+}
+
+.hudMoney {
+  background: #fff8e7;
+}
+
+.hudLevel {
+  background: #fff0f5;
+}
+
+.hudLabel {
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+}
+
+.hudValue {
+  margin-top: 3px;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.hudValue.isPop {
+  animation: moneyPop 0.42s ease;
+}
+
+.hudTiny {
+  font-size: 11px;
+}
+
+.expBar {
+  margin-top: 6px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(138, 114, 104, 0.14);
+  overflow: hidden;
+}
+
+.expFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--pink-strong), #f7c56f);
+  transition: width 0.35s ease;
+}
+
+.expFill.isPop {
+  filter: brightness(1.15);
+}
+
+.expNote {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.recommendCard {
+  display: grid;
+  gap: 10px;
+}
+
+.sectionTitle {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.recommendMain {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.recommendName {
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.recommendMeta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.homeActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.primaryButton,
+.secondaryButton,
+.makeButton,
+.buyButton,
+.navItem {
+  min-height: 44px;
+}
+
+.primaryButton,
+.secondaryButton {
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  font-weight: 800;
+  padding: 10px;
+}
+
+.primaryButton {
+  background: linear-gradient(180deg, #ffc4d8, #ea91b2);
+  color: #fff;
+}
+
+.secondaryButton {
+  background: #fff;
+  color: var(--ink);
+}
+
+.screenHeader h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.screenHeader p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.materialsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.cardVisual {
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #fffefb, #fff5ea);
+  box-shadow: 0 6px 14px rgba(130, 98, 72, 0.14);
+  border: 1px solid rgba(214, 184, 160, 0.35);
+}
+
+.cardVisual--fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.materialCardVisual {
+  aspect-ratio: 1;
+  width: 100%;
+  max-height: 112px;
+}
+
+.recipeCardVisual {
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  max-height: 168px;
+}
+
+.recipeCardVisual--compact {
+  max-height: 120px;
+  aspect-ratio: 16 / 10;
+}
+
+.cardVisualImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.cardVisualEmoji {
+  line-height: 1;
+  user-select: none;
+}
+
+.materialCardVisualEmoji {
+  font-size: clamp(44px, 18vw, 56px);
+}
+
+.recipeCardVisualEmoji {
+  font-size: clamp(52px, 22vw, 72px);
+}
+
+.materialCard {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.materialTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.materialLabelWrap,
+.ingredientMain,
+.recipeNameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.materialLabelWrap--textOnly {
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.materialIcon,
+.recipeIcon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #fff8ec;
+  border: 1px solid var(--line);
+  font-size: 20px;
+}
+
+.recipeNameRow--textOnly .recipeName {
+  font-size: 18px;
+}
+
+.materialName {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.materialKey,
+.materialStockLabel {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.materialCount {
+  margin-top: 2px;
+  font-size: 24px;
+  font-weight: 900;
+  text-align: right;
+}
+
+.materialCard.isFull .materialCount {
+  color: #b78a3b;
+}
+
+.buyButton {
+  width: 100%;
+  margin-top: 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(223, 149, 180, 0.3);
+  background: linear-gradient(180deg, #fff4f9, #ffd8e6);
+  color: #b25d84;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.buyButton:active:not(:disabled),
+.makeButton:active:not(:disabled),
+.navItem:active {
+  transform: scale(0.98);
+}
+
+.buyButton:disabled,
+.makeButton:disabled {
+  opacity: 0.62;
+}
+
+.buyCost {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.materialCard.isPulse .materialCount {
+  animation: popCount 0.28s ease;
+}
+
+.materialCard.isPulse {
+  box-shadow: 0 0 0 3px rgba(255, 210, 227, 0.72);
+}
+
+.plusPop {
+  position: absolute;
+  right: 8px;
+  top: -6px;
+  z-index: 4;
+  background: #ff7ca8;
+  color: #fff;
+  font-weight: 900;
+  font-size: 13px;
+  border-radius: 999px;
+  padding: 3px 8px;
+  animation: floatUp 0.5s ease;
+}
+
+.recipesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.recipeCard {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+  padding: 12px;
+  display: grid;
+  gap: 9px;
+  overflow: hidden;
+}
+
+.recipeCard.isCrafted {
+  animation: cardBounce 0.28s ease;
+}
+
+.recipeCard.isMissing {
+  border-color: rgba(217, 82, 109, 0.35);
+}
+
+.recipeCard.isLocked {
+  opacity: 0.82;
+}
+
+.recipeName {
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.recipeMeta {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  font-size: 11px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fffaf2;
+}
+
+.recipeSectionTitle {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.ingredients {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+.ingredient {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 7px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ingredientMiniWrap {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff8ec;
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 6px rgba(130, 98, 72, 0.1);
+  display: grid;
+  place-items: center;
+}
+
+.ingredientMiniImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.ingredientMiniFallback {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.ingredientIcon {
+  font-size: 16px;
+}
+
+.ingredientName {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ingredientCount {
+  font-size: 12px;
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.ingredient.isHighlight,
+.ingredient.isLack {
+  background: rgba(255, 236, 240, 0.68);
+  border-color: rgba(217, 82, 109, 0.35);
+}
+
+.ingredient.isLack .ingredientName,
+.ingredient.isLack .ingredientCount {
+  color: var(--danger);
+}
+
+.makeButton {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(223, 149, 180, 0.3);
+  background: linear-gradient(180deg, #ffc4d8, #ea91b2);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 900;
+  transition: transform 0.1s ease, filter 0.1s ease;
+}
+
+.makeButton:hover {
+  filter: brightness(1.03);
+}
+
+.lockOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  background: rgba(255, 250, 245, 0.48);
+}
+
+.lockBadge {
+  font-size: 12px;
+  color: #fff;
+  font-weight: 800;
+  background: rgba(114, 85, 70, 0.86);
+  border-radius: 999px;
+  padding: 8px 12px;
+}
+
+.shopCard {
+  display: grid;
+  gap: 10px;
+}
+
+.shopRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--line);
+}
+
+.shopPlaceholder {
+  padding: 12px;
+  border-radius: 12px;
+  background: #fff8ef;
+  border: 1px dashed var(--line);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.pwaHint {
+  margin: 10px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--muted);
+  text-align: center;
+}
+
+.pwaHint--shop {
+  margin: 0 0 8px;
+}
+
+.shopTestCard {
+  border: 1px dashed rgba(139, 115, 100, 0.35);
+  background: rgba(255, 252, 248, 0.95);
+}
+
+.shopTestTitle {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.resetFromStartWrap {
+  margin-top: 8px;
+  padding-bottom: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.resetFromStart {
+  min-height: 40px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.resetFromStart:active {
+  transform: scale(0.98);
+}
+
+.bottomNav {
+  position: fixed;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 24px);
+  max-width: 430px;
+  z-index: 1000;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  border: 1px solid rgba(214, 184, 160, 0.45);
+  border-radius: 20px;
+  padding: 8px 8px;
+  background: rgba(255, 252, 247, 0.98);
+  box-shadow:
+    0 4px 24px rgba(120, 90, 70, 0.14),
+    0 2px 8px rgba(120, 90, 70, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.toast {
+  position: fixed;
+  top: calc(20% + env(safe-area-inset-top, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  max-width: 360px;
+  width: calc(100% - 40px);
+  border-radius: 20px;
+  border: 1px solid rgba(220, 151, 179, 0.45);
+  background: rgba(255, 252, 250, 0.98);
+  padding: 16px 18px;
+  text-align: center;
+  box-shadow:
+    0 12px 40px rgba(120, 80, 90, 0.2),
+    0 4px 12px rgba(120, 80, 90, 0.1);
+  animation: toastIn 0.22s ease;
+  pointer-events: auto;
+}
+
+.toast--levelup {
+  background: linear-gradient(180deg, #fff9f0, #ffe8f2);
+  border-color: rgba(244, 172, 67, 0.45);
+}
+
+.toast--success {
+  background: linear-gradient(180deg, #fffdfb, #fff0f5);
+}
+
+.toast--error {
+  background: linear-gradient(180deg, #fffafa, #ffeef1);
+  border-color: rgba(217, 82, 109, 0.35);
+}
+
+.toast--buy {
+  background: linear-gradient(180deg, #fffefb, #f5fff8);
+}
+
+.toastMain {
+  font-size: clamp(20px, 5.5vw, 24px);
+  font-weight: 900;
+  color: #ba5f88;
+  line-height: 1.35;
+}
+
+.toast--levelup .toastMain {
+  font-size: clamp(24px, 6.5vw, 30px);
+  color: #c45d30;
+}
+
+.toastHint {
+  margin-top: 8px;
+  font-size: clamp(15px, 4vw, 18px);
+  font-weight: 700;
+  color: #6b5a52;
+  line-height: 1.45;
+}
+
+.toastAction {
+  margin-top: 12px;
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid rgba(223, 149, 180, 0.35);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffc4d8, #ea91b2);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.navItem {
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  gap: 2px;
+  padding: 8px 4px;
+  min-height: 48px;
+}
+
+.navItem.active {
+  background: linear-gradient(180deg, #fff3f8, #ffe0ec);
+  color: #b35f85;
+}
+
+@keyframes tabFade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cardBounce {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.015); }
+  100% { transform: scale(1); }
+}
+
+@keyframes popCount {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+@keyframes moneyPop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+@keyframes floatUp {
+  0% { transform: translateX(-50%) translateY(4px) scale(0.95); opacity: 0; }
+  35% { transform: translateX(-50%) translateY(-6px) scale(1.06); opacity: 1; }
+  100% { transform: translateX(-50%) translateY(-12px) scale(1); opacity: 0; }
+}
+
+@media (min-width: 700px) {
+  .appShell {
+    min-height: 900px;
+  }
+}
