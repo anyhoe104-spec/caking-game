@@ -1,16 +1,47 @@
-# React + Vite
+# 🍰 CAKING！
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> 猫耳の女の子ミフィと一緒に、小さなスイーツ店を繁盛店へ育てよう！
 
-Currently, two official plugins are available:
+**スマホ/PC ブラウザで遊べる手づくりスイーツ店舗経営ゲーム**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+🎮 **プレイはこちら** → https://anyhoe104-spec.github.io/caking-game/
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🎯 ゲーム概要
 
-## Expanding the ESLint configuration
+港町の小さなケーキ店を任されたミフィ。レシピを作り、素材を集め、お店を大きくしよう！
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **目標**：職人レベル10 & 所持金100,000P を達成してエンディングへ！
+- **8種類のレシピ**：クッキーからデコレーションケーキまで
+- **PWA対応**：スマホのホーム画面に追加してオフラインでも遊べる
+
+## 🍩 レシピ一覧
+
+| レベル | レシピ | 販売価格 |
+|--------|--------|---------|
+| Lv1 | ショートケーキ | 700P |
+| Lv2 | プリン | 450P |
+| Lv3 | イチゴタルト | 1,000P |
+| Lv4 | チョコケーキ | 1,200P |
+| Lv5 | ミルフィーユ | 1,500P |
+| Lv6 | フルーツパイ | 1,800P |
+| Lv10 | デコレーションケーキ | 3,000P |
+| Lv10 | 王様のケーキ | 3,600P |
+
+## 🛠️ 技術スタック
+
+- React 19 + Vite
+- PWA（manifest.json + Service Worker）
+- GitHub Pages（自動デプロイ）
+
+## 🚀 ローカル実行
+
+```bash
+npm install
+npm run dev
+```
+
+## 📄 ライセンス
+
+MIT
