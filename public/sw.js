@@ -1,6 +1,13 @@
 /* Minimal offline shell for CAKING! — safe fallbacks if cache misses */
-const CACHE = "caking-shell-v1";
-const PRECACHE = ["/", "/index.html", "/manifest.json", "/icons/icon-192.svg", "/icons/icon-512.svg"];
+const CACHE = "caking-shell-v2";
+const BASE = "/caking-game";
+const PRECACHE = [
+  BASE + "/",
+  BASE + "/index.html",
+  BASE + "/manifest.json",
+  BASE + "/icons/icon-192.svg",
+  BASE + "/icons/icon-512.svg",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -24,7 +31,7 @@ self.addEventListener("fetch", (event) => {
   if (req.mode === "navigate") {
     event.respondWith(
       fetch(req).catch(() =>
-        caches.match("/index.html").then((r) => r || caches.match("/"))
+        caches.match(BASE + "/index.html").then((r) => r || caches.match(BASE + "/"))
       )
     );
     return;
