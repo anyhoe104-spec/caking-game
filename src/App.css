@@ -12,6 +12,14 @@
   --shadow: 0 2px 12px rgba(155,112,87,0.10);
 }
 
+.customerAvatar { width: 44px; height: 44px; object-fit: contain; border-radius: 50%; }
+.miruPanel { display: flex; align-items: center; gap: 12px; padding: 12px; }
+.miruPanel p { margin: 4px 0 0; }
+.miruAvatar { width: 64px; height: 64px; object-fit: contain; }
+.upgradeGrid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.upgradeCard { display: grid; gap: 8px; align-content: start; padding: 16px; }
+.upgradeCard > span { font-size: 2rem; }
+
 *, *::before, *::after { box-sizing: border-box; }
 
 body {
@@ -516,3 +524,11 @@ body {
   .statVal  { font-size: 11px; }
   .brandBtn { font-size: 15px; }
 }
+
+.customerAvatar { width: 44px; height: 44px; object-fit: contain; border-radius: 50%; }
+.miruPanel { display: flex; align-items: center; gap: 12px; padding: 12px; }
+.miruPanel p { margin: 4px 0 0; }
+.miruAvatar { width: 64px; height: 64px; object-fit: contain; }
+.upgradeGrid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.upgradeCard { display: grid; gap: 8px; align-content: start; padding: 16px; }
+.upgradeCard > span { font-size: 2rem; }
