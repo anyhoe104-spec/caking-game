@@ -1,16 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
+import { loadSave as loadStoredSave, saveGame, defaultSave as createDefaultSave, STORAGE_KEY as SAVE_KEY } from "./game/storage.js";
+import { startBusiness as openBusiness, tickBusiness, nextDay as advanceDay, formatTimer } from "./game/business.js";
+import { generateCustomerQueue, fulfillOrder } from "./game/customers.js";
+import { generateMissions, applyMissionProgress } from "./game/missions.js";
+import { rollCraftResult, applyExperience, calcPoints } from "./game/logic.js";
+import { DECORATIONS, STAFF, buyDecoration, equipDecoration, hireStaff, getStaffEffects } from "./game/shop.js";
+import { updateRecipeRating, getMiruMessage } from "./game/engagement.js";
 
 // ─────────────────────────────────────────────
 // Constants
 // ─────────────────────────────────────────────
-const STORAGE_KEY = "caking-save-v3";
 const REGEN_MS = 5000;
 const BUY_AMOUNT = 3;
 const BUY_COST = 200;
 const ENDING_LEVEL = 10;
 const ENDING_MONEY = 100_000;
-const BUSINESS_DURATION = 180; // 3分
 
 const B = import.meta.env.BASE_URL; // "/caking-game/" in prod, "/" in dev
 
@@ -39,10 +44,8 @@ const MIFFY_IMG = {
 // ─────────────────────────────────────────────
 // Static data
 // ─────────────────────────────────────────────
-const BASE_MATS = { egg:5, cream:5, strawberry:5, flour:5, sugar:5, milk:5, butter:5 };
 const MAT_LABEL = { egg:"卵", cream:"生クリーム", strawberry:"いちご", flour:"小麦粉", sugar:"砂糖", milk:"牛乳", butter:"バター" };
 const MAT_ICON  = { egg:"🥚", cream:"🍦", strawberry:"🍓", flour:"🌾", sugar:"✨", milk:"🥛", butter:"🧈" };
-const MAT_KIDS  = { egg:"たまご", cream:"くりーむ", strawberry:"いちご", flour:"こむぎこ", sugar:"さとう", milk:"ぎゅうにゅう", butter:"ばたー" };
 const LV_CAP    = {1:10,2:12,3:14,4:16,5:18,6:20,7:22,8:24,9:27,10:30};
 
 const RECIPES = [
@@ -56,17 +59,6 @@ const RECIPES = [
   { name:"王様のケーキ",       lv:10, price:3600, exp:150, icon:"👑", ing:{ egg:6, cream:6, strawberry:5, flour:5, sugar:5, butter:4 } },
 ];
 
-const CUSTOMER_POOL = [
-  { id:"sakura", name:"さくらさん",    emoji:"🌸", pref:["ショートケーキ","イチゴタルト"],    hearts:2, tl:120 },
-  { id:"hiroto", name:"ひろとくん",    emoji:"👦", pref:["チョコケーキ","プリン"],            hearts:1, tl:90  },
-  { id:"madame", name:"マダム・ローズ", emoji:"🌹", pref:["王様のケーキ","ミルフィーユ"],       hearts:3, tl:150 },
-  { id:"gramps", name:"おじいちゃん",  emoji:"👴", pref:["プリン","ショートケーキ"],           hearts:1, tl:180 },
-  { id:"michiru",name:"みちるちゃん",  emoji:"🎀", pref:["デコレーションケーキ","ショートケーキ"],hearts:2,tl:110 },
-  { id:"kai",    name:"かいちゃん",    emoji:"👶", pref:["プリン","ショートケーキ"],            hearts:1, tl:100 },
-  { id:"chef",   name:"シェフ田中",    emoji:"👨‍🍳", pref:["王様のケーキ","デコレーションケーキ"],  hearts:3, tl:120 },
-  { id:"yui",    name:"ゆいさん",      emoji:"💼", pref:["ミルフィーユ","フルーツパイ"],         hearts:2, tl:100 },
-  { id:"travel", name:"謎の旅人",      emoji:"🧙", pref:["王様のケーキ","フルーツパイ"],         hearts:3, tl:90  },
-];
 
 const OPENING_LINES = [
   "ここは、海風のかおる小さな港町。",
@@ -83,69 +75,6 @@ const ENDING_LINES = [
   "「ありがとうございます、ご主人様！ ミフィ、もっともっとおいしいケーキを作ります！」",
   "CAKING！ 繁盛店達成！",
 ];
-
-// ─────────────────────────────────────────────
-// Mission system
-// ─────────────────────────────────────────────
-const MISSION_DEFS = [
-  {
-    id: "satisfy",
-    type: "satisfy_customers",
-    icon: "❤️",
-    desc: (n) => `お客さまを${n}人満足させよう`,
-    target: (lv) => Math.max(3, 3 + Math.floor(lv * 1.5)),
-    reward: () => ({ pts: 100 }),
-  },
-  {
-    id: "sales",
-    type: "reach_sales",
-    icon: "🪙",
-    desc: (n) => `売上を${n.toLocaleString()}P達成しよう`,
-    target: (lv) => 3000 + lv * 2000,
-    reward: (t) => ({ money: Math.floor(t * 0.05) }),
-  },
-  {
-    id: "special",
-    type: "special_orders",
-    icon: "⭐",
-    desc: (n) => `大成功を${n}回達成しよう`,
-    target: (lv) => Math.max(1, Math.floor(lv / 3)),
-    reward: () => ({ pts: 200 }),
-  },
-];
-
-function genMissions(level) {
-  return MISSION_DEFS.map((d) => {
-    const t = d.target(level);
-    return { id: d.id, type: d.type, icon: d.icon, description: d.desc(t), target: t, current: 0, reward: d.reward(t), completed: false };
-  });
-}
-
-function advanceMission(missions, type, amount = 1) {
-  return missions.map((m) => {
-    if (m.type !== type || m.completed) return m;
-    const next = Math.min(m.target, m.current + amount);
-    return { ...m, current: next, completed: next >= m.target };
-  });
-}
-
-// ─────────────────────────────────────────────
-// Customer system
-// ─────────────────────────────────────────────
-let _uid = 0;
-function genCustomers(level) {
-  const count = Math.min(8, 3 + Math.floor(level / 2));
-  const unlocked = RECIPES.filter((r) => r.lv <= level).map((r) => r.name);
-  const pool = CUSTOMER_POOL.filter((c) => c.pref.some((p) => unlocked.includes(p)));
-  const picked = [...pool].sort(() => Math.random() - 0.5).slice(0, count);
-  return picked.map((c) => ({
-    uid: `c${++_uid}`,
-    ...c,
-    order: c.pref.find((p) => unlocked.includes(p)) ?? unlocked[0],
-    timeRemaining: c.tl,
-    status: "waiting",
-  }));
-}
 
 // ─────────────────────────────────────────────
 // Miffy messages (as employee)
@@ -167,86 +96,7 @@ function getMiffyMsg(state, lastResult, lastRecipe) {
   return IDLE_MSGS[Math.floor(Math.random() * IDLE_MSGS.length)];
 }
 
-// ─────────────────────────────────────────────
-// Storage / migration
-// ─────────────────────────────────────────────
 const capByLv = (lv) => LV_CAP[Math.min(10, Math.max(1, lv))] ?? 30;
-
-function defaultSave() {
-  return {
-    _v: 3,
-    gamePhase: "opening",
-    dayPhase: "prep",
-    dayNumber: 1,
-    money: 1000,
-    level: 1,
-    exp: 0,
-    materials: { ...BASE_MATS },
-    craftCount: 0,
-    successCount: 0,
-    greatSuccessCount: 0,
-    failCount: 0,
-    buyCount: 0,
-    levelUpCount: 0,
-    totalPoints: 0,
-    todaySales: 0,
-    todaySalesGoal: 8000,
-    businessTimer: 0,
-    customerQueue: [],
-    missions: [],
-    recipeRatings: {},
-    soundOn: true,
-    bgmOn: true,
-    endingReached: false,
-    openingIndex: 0,
-  };
-}
-
-function loadSave() {
-  try {
-    const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null");
-    if (!raw) return defaultSave();
-    if (raw._v === 3) {
-      // ensure materials keys
-      return {
-        ...defaultSave(),
-        ...raw,
-        materials: Object.fromEntries(
-          Object.keys(BASE_MATS).map((k) => [k, Math.max(0, Math.floor(Number(raw.materials?.[k] ?? BASE_MATS[k])))])
-        ),
-        dayPhase: "prep",
-        businessTimer: 0,
-        customerQueue: raw.customerQueue ?? [],
-        missions: raw.missions ?? [],
-        recipeRatings: raw.recipeRatings ?? {},
-      };
-    }
-    // migrate v2 → v3
-    return {
-      ...defaultSave(),
-      gamePhase: raw.gamePhase ?? "playing",
-      money: raw.money ?? 1000,
-      level: raw.level ?? 1,
-      exp: raw.exp ?? 0,
-      materials: Object.fromEntries(
-        Object.keys(BASE_MATS).map((k) => [k, Math.max(0, Math.floor(Number(raw.materials?.[k] ?? BASE_MATS[k])))])
-      ),
-      craftCount: raw.craftCount ?? 0,
-      successCount: raw.successCount ?? 0,
-      greatSuccessCount: raw.greatSuccessCount ?? 0,
-      failCount: raw.failCount ?? 0,
-      buyCount: raw.buyCount ?? 0,
-      levelUpCount: raw.levelUpCount ?? 0,
-      totalPoints: Math.floor((raw.successCount ?? 0) * 20 + (raw.greatSuccessCount ?? 0) * 30),
-      soundOn: raw.soundOn ?? true,
-      bgmOn: raw.bgmOn ?? true,
-      endingReached: raw.endingReached ?? false,
-      openingIndex: raw.openingIndex ?? 0,
-    };
-  } catch {
-    return defaultSave();
-  }
-}
 
 // ─────────────────────────────────────────────
 // Audio
@@ -310,7 +160,7 @@ function OrderRow({ c }) {
   const statusIcon = { fulfilled:"✅", special:"⭐", expired:"❌", waiting:"" }[c.status];
   return (
     <div className={`orderRow ${c.status}`}>
-      <span className="cEmoji">{c.emoji}</span>
+      <span className="cEmoji">{c.avatarPath ? <img src={`${B}${c.avatarPath}`} alt="" className="customerAvatar" /> : c.emoji}</span>
       <div className="orderInfo">
         <div className="cName">{c.name}</div>
         <div className="cOrder">{recipe?.icon ?? "🍰"} {c.order}</div>
@@ -369,17 +219,13 @@ function DailyReport({ state, onNext }) {
 // Main App
 // ─────────────────────────────────────────────
 export default function App() {
-  const bootRef = useRef(null);
-  if (!bootRef.current) bootRef.current = loadSave();
-
-  const [state, setState] = useState(bootRef.current);
+  const [state, setState] = useState(() => loadStoredSave());
   const [activeTab, setActiveTab] = useState(null); // null = home
   const [toast, setToast] = useState("");
   const [effect, setEffect] = useState("");
   const [miffyMood, setMiffyMood] = useState("normal");
   const [lastResult, setLastResult] = useState(null);
   const [lastRecipe, setLastRecipe] = useState("");
-  const [showReport, setShowReport] = useState(false);
   const bgmRef = useRef(null);
 
   // ── Derived ──
@@ -397,14 +243,12 @@ export default function App() {
       : unlocked[unlocked.length - 1] ?? RECIPES[0];
   })();
   const timerDisp = (() => {
-    const m = Math.floor(state.businessTimer / 60);
-    const s = state.businessTimer % 60;
-    return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+    return formatTimer(state.businessTimer);
   })();
 
   // ── Persistence ──
   useEffect(() => {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+    try { saveGame(state); } catch { /* storage may be unavailable */ }
   }, [state]);
 
   // ── Material regen ──
@@ -428,36 +272,13 @@ export default function App() {
     if (state.bgmOn) bgmRef.current = playAudio(BGMS[key], true, 0.2, true);
   }, [state.gamePhase, state.bgmOn]);
 
-  // ── Ending check ──
-  useEffect(() => {
-    if (state.gamePhase === "playing" && state.level >= ENDING_LEVEL && state.money >= ENDING_MONEY && !state.endingReached) {
-      setState((s) => ({ ...s, gamePhase: "ending", endingReached: true }));
-    }
-  }, [state.level, state.money, state.gamePhase, state.endingReached]);
-
   // ── Business timer ──
   useEffect(() => {
     if (state.dayPhase !== "open") return;
     const id = setInterval(() => {
-      setState((s) => {
-        if (s.dayPhase !== "open") return s;
-        // countdown customers
-        const queue = s.customerQueue.map((c) => {
-          if (c.status !== "waiting") return c;
-          const rem = c.timeRemaining - 1;
-          return rem <= 0 ? { ...c, timeRemaining: 0, status: "expired" } : { ...c, timeRemaining: rem };
-        });
-        const timer = s.businessTimer - 1;
-        if (timer <= 0) return { ...s, dayPhase: "report", businessTimer: 0, customerQueue: queue };
-        return { ...s, businessTimer: timer, customerQueue: queue };
-      });
+      setState((s) => tickBusiness(s));
     }, 1000);
     return () => clearInterval(id);
-  }, [state.dayPhase]);
-
-  // Show report when phase becomes "report"
-  useEffect(() => {
-    if (state.dayPhase === "report") setShowReport(true);
   }, [state.dayPhase]);
 
   // ── Helpers ──
@@ -478,50 +299,26 @@ export default function App() {
   // ── Actions ──
   const startBusiness = useCallback(() => {
     sfx("tap");
-    const queue = genCustomers(state.level);
+    const queue = generateCustomerQueue(state.level, state.dayNumber);
     const missions = state.missions.length > 0
-      ? state.missions.map((m) => ({ ...m, current: 0, completed: false }))
-      : genMissions(state.level);
-    setState((s) => ({
-      ...s,
-      dayPhase: "open",
-      businessTimer: BUSINESS_DURATION,
-      todaySales: 0,
-      customerQueue: queue,
-      missions,
-    }));
+      ? state.missions
+      : generateMissions(state.level, state.dayNumber);
+    setState((s) => openBusiness({ ...s, missions }, queue));
     setMood("excited");
     setActiveTab(null); // home view
-  }, [sfx, state.level, state.missions, setMood]);
+  }, [sfx, state.level, state.dayNumber, state.missions, setMood]);
 
   const goNextDay = useCallback(() => {
-    const done = state.missions.filter((m) => m.completed);
-    const bonusPts = done.reduce((s, m) => s + (m.reward?.pts ?? 0), 0);
-    const bonusMoney = done.reduce((s, m) => s + (m.reward?.money ?? 0), 0);
-    setState((s) => ({
-      ...s,
-      dayPhase: "prep",
-      dayNumber: s.dayNumber + 1,
-      todaySalesGoal: 8000 + s.level * 2000,
-      totalPoints: s.totalPoints + bonusPts,
-      money: s.money + bonusMoney,
-      missions: genMissions(s.level),
-      customerQueue: [],
-      businessTimer: 0,
-    }));
-    setShowReport(false);
+    setState((s) => advanceDay(s, generateMissions(s.level, s.dayNumber + 1)));
     setLastResult(null);
     setMiffyMood("normal");
-  }, [state.missions]);
+  }, []);
 
   const craft = useCallback((recipe) => {
     if (state.level < recipe.lv) { sfx("error"); showToast(`Lv${recipe.lv}で解放されます`); return; }
     if (!canMake(recipe)) { sfx("error"); showToast("素材が足りません！"); setMood("sad"); return; }
 
-    const pFail  = Math.max(0.03, 0.15 - (state.level - 1) * 0.012);
-    const pGreat = Math.min(0.30, 0.10 + (state.level - 1) * 0.022);
-    const roll = Math.random();
-    const result = roll < pFail ? "fail" : roll < pFail + pGreat ? "great" : "success";
+    const result = rollCraftResult(state.level, Math.random());
 
     // consume materials
     const mats = { ...state.materials };
@@ -530,48 +327,25 @@ export default function App() {
     });
 
     // gains
-    let money = 0, exp = 0, pts = 0;
-    if (result === "success") { money = recipe.price;                     exp = recipe.exp;                     pts = recipe.exp; }
-    if (result === "great")   { money = Math.floor(recipe.price * 1.5);   exp = Math.floor(recipe.exp * 1.5);   pts = Math.floor(recipe.exp * 2); }
-    if (result === "fail")    { money = 0;                                 exp = Math.max(1, Math.floor(recipe.exp * 0.2)); pts = 1; }
+    let money = 0, exp = 0;
+    if (result === "success") { money = recipe.price; exp = recipe.exp; }
+    if (result === "great")   { money = Math.floor(recipe.price * 1.5); exp = Math.floor(recipe.exp * 1.5); }
+    if (result === "fail")    { exp = Math.max(1, Math.floor(recipe.exp * 0.2)); }
 
     // level up
-    let nextExp = state.exp + exp, lv = state.level, lvUps = 0;
-    while (nextExp >= lv * 50 && lv < 99) { nextExp -= lv * 50; lv++; lvUps++; }
+    const experience = applyExperience(state.exp, state.level, exp);
+    const { exp: nextExp, level: lv, levelUps: lvUps } = experience;
 
     // customer matching
-    let queue = [...state.customerQueue];
-    let cBonus = { money: 0, pts: 0 };
-    if (state.dayPhase === "open" && result !== "fail") {
-      const idx = queue.findIndex((c) => c.status === "waiting" && c.order === recipe.name);
-      if (idx !== -1) {
-        const c = queue[idx];
-        const ns = result === "great" ? "special" : "fulfilled";
-        queue[idx] = { ...c, status: ns };
-        cBonus = { money: c.hearts * (ns === "special" ? 200 : 100), pts: c.hearts * (ns === "special" ? 20 : 10) };
-      }
-    }
-
-    // missions
-    let missions = [...state.missions];
-    if (state.dayPhase === "open") {
-      if (result !== "fail") missions = advanceMission(missions, "satisfy_customers");
-      if (result === "great") missions = advanceMission(missions, "special_orders");
-    }
+    const orderResult = state.dayPhase === "open"
+      ? fulfillOrder(state.customerQueue, recipe.name, result)
+      : { queue: state.customerQueue, customer: null, moneyBonus: 0 };
+    const queue = orderResult.queue;
+    const cBonus = { money: orderResult.moneyBonus, pts: orderResult.customer ? calcPoints(result, { exp: 0 }, orderResult.customer) : 0 };
 
     // today sales
     const newSales = state.todaySales + money + cBonus.money;
-    if (state.dayPhase === "open") {
-      missions = missions.map((m) =>
-        m.type === "reach_sales" && !m.completed
-          ? { ...m, current: Math.min(m.target, newSales), completed: newSales >= m.target }
-          : m
-      );
-    }
-
-    // recipe rating
-    const ratings = { ...state.recipeRatings };
-    if (result === "great") ratings[recipe.name] = Math.min(3, (ratings[recipe.name] ?? 0) + 1);
+    const ratings = updateRecipeRating(state.recipeRatings, recipe.name, result);
 
     // SE & FX
     if (result === "great") { sfx("great"); triggerEffect("sparkle"); setMood("happy"); }
@@ -588,13 +362,15 @@ export default function App() {
       "😿 失敗…でも経験になったよ！"
     );
 
-    setState((s) => ({
+    setState((s) => {
+      const staffEffects = getStaffEffects(s.staff ?? []);
+      let next = {
       ...s,
       materials: mats,
-      money: s.money + money + cBonus.money,
+      money: s.money + Math.floor((money + cBonus.money) * staffEffects.salesMultiplier),
       exp: nextExp,
       level: lv,
-      totalPoints: s.totalPoints + pts + cBonus.pts,
+      totalPoints: s.totalPoints + Math.floor((calcPoints(result, recipe) + cBonus.pts) * staffEffects.pointsMultiplier),
       craftCount: s.craftCount + 1,
       successCount: s.successCount + (result === "success" ? 1 : 0),
       greatSuccessCount: s.greatSuccessCount + (result === "great" ? 1 : 0),
@@ -602,32 +378,51 @@ export default function App() {
       levelUpCount: s.levelUpCount + lvUps,
       todaySales: newSales,
       customerQueue: queue,
-      missions,
       recipeRatings: ratings,
-    }));
+      lastEvent: { type: result, recipe: recipe.name },
+      };
+      next = applyMissionProgress(next, "craft_recipe");
+      if (state.dayPhase === "open" && orderResult.fulfilled) next = applyMissionProgress(next, "satisfy_customers");
+      if (state.dayPhase === "open" && result === "great") next = applyMissionProgress(next, "special_orders");
+      if (state.dayPhase === "open") next = applyMissionProgress(next, "reach_sales", newSales, true);
+      if (next.level >= ENDING_LEVEL && next.money >= ENDING_MONEY && !next.endingReached) {
+        next = { ...next, gamePhase: "ending", endingReached: true };
+      }
+      return next;
+    });
   }, [state, sfx, showToast, triggerEffect, canMake, setMood]);
 
   const buyMat = useCallback((key) => {
     if (state.money < BUY_COST) { sfx("error"); showToast("コインが足りません！"); return; }
     if ((state.materials[key] ?? 0) >= matMax) { sfx("error"); showToast("もういっぱい！"); return; }
     sfx("buy");
-    setState((s) => ({
+    setState((s) => applyMissionProgress({
       ...s,
       money: s.money - BUY_COST,
       buyCount: s.buyCount + 1,
       materials: { ...s.materials, [key]: Math.min(matMax, s.materials[key] + BUY_AMOUNT) },
-    }));
+    }, "buy_materials"));
     showToast(`${MAT_LABEL[key]} +${BUY_AMOUNT}`);
   }, [state, sfx, showToast, matMax]);
 
+  const purchaseDecoration = useCallback((decoration) => {
+    setState((s) => buyDecoration(s, decoration));
+  }, []);
+
+  const selectDecoration = useCallback((id) => {
+    setState((s) => equipDecoration(s, id));
+  }, []);
+
+  const recruitStaff = useCallback((member) => {
+    setState((s) => hireStaff(s, member));
+  }, []);
+
   const reset = useCallback(() => {
     if (!window.confirm("はじめからにしますか？")) return;
-    localStorage.removeItem(STORAGE_KEY);
-    const d = defaultSave();
-    bootRef.current = d;
+    localStorage.removeItem(SAVE_KEY);
+    const d = createDefaultSave();
     setState(d);
     setActiveTab(null);
-    setShowReport(false);
     setLastResult(null);
     setMiffyMood("normal");
   }, []);
@@ -638,6 +433,7 @@ export default function App() {
   }, [sfx]);
 
   const miffyMsg = getMiffyMsg(state, lastResult, lastRecipe);
+  const miruMsg = getMiruMessage(state);
 
   // ── OPENING SCENE ──
   if (state.gamePhase === "opening") {
@@ -653,7 +449,7 @@ export default function App() {
               if (state.openingIndex < OPENING_LINES.length - 1) {
                 setState((s) => ({ ...s, openingIndex: s.openingIndex + 1 }));
               } else {
-                setState((s) => ({ ...s, gamePhase: "playing", missions: genMissions(s.level) }));
+                setState((s) => ({ ...s, gamePhase: "playing", missions: generateMissions(s.level, s.dayNumber) }));
               }
             }}
           >
@@ -732,6 +528,11 @@ export default function App() {
                   <div className="miffyName">ミフィ</div>
                   <div className="miffyMsg">{miffyMsg}</div>
                 </div>
+              </div>
+
+              <div className="miruPanel card">
+                <img src={`${B}images/characters/miru-${state.lastEvent?.type === "great" ? "happy" : state.lastEvent?.type === "fail" ? "thinking" : "normal"}.png`} alt="案内役のミル" className="miruAvatar" />
+                <div><strong>ミル</strong><p>{miruMsg}</p></div>
               </div>
 
               {/* おすすめレシピ */}
@@ -870,29 +671,26 @@ export default function App() {
             </div>
           )}
 
-          {/* DECO TAB (placeholder) */}
+          {/* DECO TAB */}
           {activeTab === "deco" && (
             <div className="tabView">
               <div className="tabHeader"><h2>デコレーション</h2></div>
-              <div className="placeholder card">
-                <div className="phIcon">🎂</div>
-                <p>お店をデコレーションする機能は</p>
-                <p>もうすぐ追加されます！</p>
-                <p className="phSub">レベル5で解放予定</p>
-              </div>
+              <div className="upgradeGrid">{DECORATIONS.map((item) => {
+                const owned = (state.decorations ?? []).includes(item.id);
+                const equipped = state.equippedDecoration === item.id;
+                return <article className="upgradeCard card" key={item.id}><span>{item.icon}</span><strong>{item.name}</strong><small>{item.price.toLocaleString()}P</small><button className="buyBtn" disabled={equipped || (!owned && state.money < item.price)} onClick={() => owned ? selectDecoration(item.id) : purchaseDecoration(item)}>{equipped ? "装備中" : owned ? "装備する" : "購入"}</button></article>;
+              })}</div>
             </div>
           )}
 
-          {/* STAFF TAB (placeholder) */}
+          {/* STAFF TAB */}
           {activeTab === "staff" && (
             <div className="tabView">
               <div className="tabHeader"><h2>スタッフ</h2></div>
-              <div className="placeholder card">
-                <div className="phIcon">👤</div>
-                <p>スタッフを雇用する機能は</p>
-                <p>もうすぐ追加されます！</p>
-                <p className="phSub">レベル3で解放予定</p>
-              </div>
+              <div className="upgradeGrid">{STAFF.map((member) => {
+                const hired = (state.staff ?? []).includes(member.id);
+                return <article className="upgradeCard card" key={member.id}><span>👤</span><strong>{member.name}</strong><small>{member.effect}</small><small>{member.price.toLocaleString()}P</small><button className="buyBtn" disabled={hired || state.money < member.price} onClick={() => recruitStaff(member)}>{hired ? "雇用済み" : "雇用する"}</button></article>;
+              })}</div>
             </div>
           )}
 
@@ -926,7 +724,7 @@ export default function App() {
       {toast && <div className="toast" role="status">{toast}</div>}
 
       {/* ── Daily Report ── */}
-      {showReport && <DailyReport state={state} onNext={goNextDay} />}
+      {state.dayPhase === "report" && <DailyReport state={state} onNext={goNextDay} />}
     </div>
   );
 }

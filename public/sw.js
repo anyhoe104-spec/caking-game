@@ -1,5 +1,5 @@
 /* Minimal offline shell for CAKING! — safe fallbacks if cache misses */
-const CACHE = "caking-shell-v2";
+const CACHE = "caking-shell-v3";
 const BASE = "/caking-game";
 const PRECACHE = [
   BASE + "/",
@@ -23,7 +23,15 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(
+        keys
+          .filter((key) => key.startsWith("caking-shell-") && key !== CACHE)
+          .map((key) => caches.delete(key))
+      ))
+      .then(() => self.clients.claim())
+  );
 });
 
 self.addEventListener("fetch", (event) => {
@@ -37,6 +45,12 @@ self.addEventListener("fetch", (event) => {
     return;
   }
   event.respondWith(
-    caches.match(req).then((cached) => cached || fetch(req))
+    caches.match(req).then((cached) => cached || fetch(req).then((response) => {
+      if (req.method === "GET" && response.ok && response.type === "basic") {
+        const copy = response.clone();
+        caches.open(CACHE).then((cache) => cache.put(req, copy));
+      }
+      return response;
+    }))
   );
 });
