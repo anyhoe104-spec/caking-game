@@ -429,7 +429,7 @@ export default function App() {
 
   const nav = useCallback((tab) => {
     sfx("tap");
-    setActiveTab((prev) => (prev === tab ? null : tab));
+    setActiveTab(tab === "business" ? null : tab);
   }, [sfx]);
 
   const miffyMsg = getMiffyMsg(state, lastResult, lastRecipe);
@@ -563,6 +563,30 @@ export default function App() {
                 </div>
               )}
 
+              {/* 店舗ステータス */}
+              <div className="panelCard card">
+                <div className="panelTitle">店舗ステータス</div>
+                <div className="businessStatusGrid">
+                  {[
+                    ["レベル",   `Lv${state.level}`],
+                    ["所持金",   `${state.money.toLocaleString()}P`],
+                    ["累計PT",   `${state.totalPoints.toLocaleString()}pt`],
+                    ["営業日数", `${state.dayNumber}日目`],
+                    ["作成数",   `${state.craftCount}個`],
+                    ["大成功",   `${state.greatSuccessCount}回`],
+                    ["失敗",     `${state.failCount}回`],
+                  ].map(([label, value]) => (
+                    <div key={label} className="businessStatusItem">
+                      <span>{label}</span>
+                      <strong>{value}</strong>
+                    </div>
+                  ))}
+                </div>
+                <div className="centerRow businessResetRow">
+                  <button className="dangerBtn" onClick={reset}>はじめから</button>
+                </div>
+              </div>
+
               {/* 今日の目標 */}
               <div className="panelCard card">
                 <div className="panelTitle">今日の目標</div>
@@ -648,29 +672,6 @@ export default function App() {
             </div>
           )}
 
-          {/* SHOP TAB */}
-          {activeTab === "shop" && (
-            <div className="tabView">
-              <div className="tabHeader"><h2>ショップ</h2></div>
-              <div className="card shopCard">
-                {[
-                  ["レベル",   `Lv${state.level}`],
-                  ["所持金",   `${state.money.toLocaleString()}P`],
-                  ["累計PT",   `${state.totalPoints.toLocaleString()}pt`],
-                  ["営業日数", `${state.dayNumber}日目`],
-                  ["作成数",   `${state.craftCount}個`],
-                  ["大成功",   `${state.greatSuccessCount}回`],
-                  ["失敗",     `${state.failCount}回`],
-                ].map(([l, v]) => (
-                  <div key={l} className="shopRow"><span>{l}</span><strong>{v}</strong></div>
-                ))}
-              </div>
-              <div className="centerRow">
-                <button className="dangerBtn" onClick={reset}>はじめから</button>
-              </div>
-            </div>
-          )}
-
           {/* DECO TAB */}
           {activeTab === "deco" && (
             <div className="tabView">
@@ -700,13 +701,13 @@ export default function App() {
       {/* ── Bottom Navigation ── */}
       <nav className="bottomNav">
         {[
-          { id:"shop",     label:"ショップ",       icon:"🏪" },
+          { id:"business", label:"営業",           icon:"🏪" },
           { id:"recipe",   label:"レシピ",         icon:"📖" },
           { id:"deco",     label:"デコレーション",  icon:"🎀" },
           { id:"material", label:"食材",           icon:"🍓" },
           { id:"staff",    label:"スタッフ",        icon:"👤" },
         ].map(({ id, label, icon }) => (
-          <button key={id} className={`navItem ${activeTab === id ? "active" : ""}`} onClick={() => nav(id)}>
+          <button key={id} className={`navItem ${(id === "business" ? activeTab === null : activeTab === id) ? "active" : ""}`} onClick={() => nav(id)}>
             <span className="navIcon">{icon}</span>
             <span className="navLabel">{label}</span>
           </button>
