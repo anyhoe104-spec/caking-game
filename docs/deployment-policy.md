@@ -1,6 +1,7 @@
 # CAKING 公開・配布方針
 
 決定日: 2026-08-08
+最終確認: 2026-08-14
 
 ## 決定事項
 
@@ -34,7 +35,7 @@ GitHub Pagesを使用すると、複数PCのどちらから開発しても、`ma
 
 2026-08-08時点の確認では、リポジトリ内からAPIキー、パスワード、秘密鍵、認証トークンは検出されなかった。外部APIへの通信、Cookie、ログイン、決済、個人情報入力も実装されていない。本番依存パッケージの監査結果は脆弱性0件だった。
 
-GitHub FreeではPrivateリポジトリのGitHub Pagesが利用できないため、Pagesを使用する場合はリポジトリをPublicに変更する。
+GitHub FreeではPrivateリポジトリのGitHub Pagesが利用できないため、2026-08-08にリポジトリをPublicへ変更し、GitHub Pagesを有効化した。
 
 Public化すると、ソースコードだけでなく、コミット履歴、PR、Actionsログ、設計資料、画像素材も閲覧・複製可能になる。この点を了承した上で公開する。
 
@@ -67,10 +68,15 @@ Public化すると、ソースコードだけでなく、コミット履歴、PR
 
 ユーザーアカウント、端末間セーブ同期、ランキング、オンラインイベント、決済などが必要になった場合は、GitHub Pagesとは別にバックエンドとデータベースの導入を検討する。
 
-## 次の作業
+## 公開状況
 
-1. リポジトリをPublicへ変更する。
-2. GitHub Pagesの公開元をGitHub Actionsとして有効化する。
-3. `Deploy to GitHub Pages` workflowを再実行する。
-4. 公開URLをPCとスマートフォンで確認する。
-5. PWAインストール、更新、オフライン動作を確認する。
+- [x] リポジトリをPublicへ変更
+- [x] GitHub Pagesの公開元をGitHub Actionsとして有効化
+- [x] `Deploy to GitHub Pages` workflow成功
+- [x] 公開URLをPCとスマートフォンで確認
+- [x] ゲーム本体と主要リンクを確認
+- [ ] PWAインストール、standalone表示を確認
+- [ ] オフライン再起動を確認
+- [ ] デプロイ後の更新切り替えを確認
+
+今後の優先作業は `current-status.md` を参照する。
