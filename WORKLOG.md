@@ -4,24 +4,25 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-08-14 (Asia/Tokyo)
+- Updated: 2026-08-14 15:32 +09:00 (Asia/Tokyo)
 - Agent: Codex
-- Branch: To be confirmed
-- Last commit: To be confirmed
+- Branch: `agent/refresh-project-docs` (synchronized with `origin/agent/refresh-project-docs`)
+- Last commit: `309e989 Add shared agent handoff workflow`
 - Objective: Establish a repeatable start/end workflow for development across multiple PCs and agents.
 - Completed:
   - Added repository-scoped start, checkpoint, and work-report article skills.
   - Added `AGENTS.md` so agents without skill support follow the same workflow.
   - Established this combined handoff and dated work-report format.
 - In progress:
-  - Commit and distribute the workflow through GitHub.
+  - Confirm the workflow on the mobile PC after cloning and switching to `agent/refresh-project-docs`.
 - Blockers and risks:
   - This repository is stored under OneDrive; use GitHub, rather than simultaneous OneDrive synchronization, as the source of code synchronization between PCs.
+  - The workflow commit is not merged into `main`; cloning the default branch alone will not include it yet.
 - Next actions:
-  1. Review and commit `.agents/skills`, `AGENTS.md`, and this file.
-  2. Push the commit to GitHub.
-  3. Pull the commit on the mobile PC and invoke `$resume-project` in a new task.
-- Validation: All three skills passed the official `quick_validate.py` check; `git diff --check` passed.
+  1. On the mobile PC, clone `caking-game` and switch to `agent/refresh-project-docs`.
+  2. Invoke `$resume-project` in a new task and confirm repository-scoped skill discovery.
+  3. When ready, merge `agent/refresh-project-docs` into `main` so future clones receive the workflow by default.
+- Validation: All three skills passed `quick_validate.py`; `git diff --check` passed; the common-template installer passed a clean-repository smoke test.
 
 ## Dated work reports
 
@@ -55,3 +56,36 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - Next actions:
   1. Inspect the final Git diff.
   2. Commit and push when requested.
+
+### 2026-08-14 15:32 +09:00 — Codex
+
+- Objective: Publish and hand off the shared cross-device and cross-agent workflow.
+- Work completed:
+  - Committed the repository-scoped workflow as `309e989 Add shared agent handoff workflow`.
+  - Pushed `agent/refresh-project-docs` to `origin` and verified the branch is synchronized.
+  - Created the private GitHub repository `anyhoe104-spec/agent-project-workflow` as the reusable template source.
+  - Added a safe PowerShell installer that refuses to overwrite existing workflow files unless `-Force` is explicitly supplied.
+  - Clarified that CAKING development needs only the `caking-game` clone; the template repository is optional for installing the workflow elsewhere.
+- Files and areas changed:
+  - `AGENTS.md`
+  - `WORKLOG.md`
+  - `.agents/skills/resume-project/`
+  - `.agents/skills/checkpoint-project/`
+  - `.agents/skills/write-work-report/`
+  - External template repository: `anyhoe104-spec/agent-project-workflow`
+- Validation:
+  - All three skills passed `quick_validate.py`.
+  - `git diff --check` passed before publication.
+  - The template installer successfully installed the expected files into a temporary empty Git repository.
+  - Local branch and remote branch both pointed to `309e989` before this report update.
+- Decisions:
+  - Keep project execution rules and skills inside each project repository.
+  - Keep reusable source templates in the separate private template repository.
+  - Do not require cloning the template repository merely to develop CAKING.
+- Unresolved issues:
+  - `agent/refresh-project-docs` has not been merged into `main`.
+  - Repository-scoped skill discovery has not yet been confirmed on the mobile PC.
+- Next actions:
+  1. Clone `caking-game` on the mobile PC and switch to `agent/refresh-project-docs`.
+  2. Start a new Codex task and invoke `$resume-project`.
+  3. Merge the workflow branch into `main` after confirming the desired integration path.
