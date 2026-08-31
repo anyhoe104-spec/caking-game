@@ -4,34 +4,37 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-08-31 22:34 +0900 (Asia/Tokyo)
+- Updated: 2026-08-31 23:23 +0900 (Asia/Tokyo)
 - Agent: Claude Code
 - Branch: `claude/caking-weekly-improvements-bg3gnf`
-- Objective: Weekly improvement pass (UI, audio, animation), then a voice quality pass, then decoupling the
-  build from its hosting provider ahead of a possible move to a private repository.
+- Objective: Weekly improvement pass (UI, audio, animation), a voice quality pass, host-independent builds,
+  then settling the monetisation-adjacent decisions and preparing the Cloudflare Pages move.
 - Completed:
-  - Rebuilt the in-game UI, added the full audio layer (5 scene BGM loops, 15 SE, 9 voice cues, per-channel
-    volume and mute), and added the motion layer with a reduced-motion switch.
-  - Reworked the voice synthesiser: formant transitions, Japanese vowel devoicing, corrected glottal slope.
-  - Removed every hard-coded reference to the `/caking-game/` sub-path. The same source now builds for
-    GitHub Pages and for a root-serving host; Cloudflare Pages and Netlify need no build configuration.
-  - Fixed a long-standing PWA defect: an offline relaunch rendered a blank page. Two causes, both fixed —
-    the hashed bundles were never precached, and `caches.match` was honouring `Vary: Origin`.
+  - UI overhaul, full audio layer (5 scene BGM loops, 15 SE, 9 voice cues, per-channel mute and volume),
+    motion layer with a reduced-motion switch.
+  - Voice synthesiser rework: formant transitions, Japanese vowel devoicing, corrected glottal slope.
+  - Host-independent build. The same source builds for GitHub Pages and for a root-serving host;
+    Cloudflare Pages and Netlify need no build configuration.
+  - Fixed a pre-existing PWA defect where an offline relaunch rendered a blank page.
+  - `scripts/import_audio.py` for bringing externally produced audio in without breaking the loop points.
+  - Decisions recorded: free distribution with a tip jar, MIT for code with assets rights-reserved,
+    stay public for now, keep the generated audio until a listening test justifies replacing it.
+  - `LICENSE`, `LICENSE-ASSETS.md`, and the Cloudflare Pages migration runbook.
 - In progress:
   - Nothing outstanding on this branch.
 - Blockers and risks:
-  - Still no check on a physical device. Everything so far is headless Chromium.
+  - Still no physical-device check. Everything so far is headless Chromium.
+  - The copyright holder in `LICENSE` and `LICENSE-ASSETS.md` is the GitHub handle `anyhoe104`.
+    Replace it if a real name or brand is preferred before this reaches a wider audience.
   - `public/sounds/` is 2.93 MB; mobile-network load has not been measured.
-  - Voice fidelity is bounded by the technique. VOICEVOX cannot run in the agent environment.
 - Next actions:
-  1. Decide on monetisation. `docs/deployment-policy.md` now records the trigger for moving to a private
-     repository (adopting paid AI audio, or selling on itch.io) and the items to settle alongside it.
-  2. If the decision is to move: set up Cloudflare Pages. The build side is already done, so this is
-     account-level work — connect the repository, confirm the preview URLs, then flip the repo to private.
-  3. Device check on Android and iOS, which per-branch preview URLs will make much cheaper.
-- Validation: `npm run lint` clean; `npm test` 16/16 passing; both `npm run build` and `npm run build:root`
-  succeed; `git diff --check` clean. Browser runs confirmed the game, the service worker and every audio
-  asset under both `/caking-game/` and `/`, and an offline relaunch now boots the full shell under both.
+  1. Generate one `shop-bgm` candidate in Suno and run the A/B in `docs/audio-generation.md`. That decides
+     whether paid audio is adopted, which is also the trigger for going private.
+  2. Device check on Android and iOS.
+  3. If paid audio is adopted: follow `docs/cloudflare-pages-setup.md`.
+- Validation: `npm run lint` clean; `npm test` 16/16 passing; `npm run build` and `npm run build:root` both
+  succeed; `git diff --check` clean. Browser runs confirmed the game, the service worker and all audio under
+  both `/caking-game/` and `/`, plus an offline relaunch under both.
 
 ## Dated work reports
 
@@ -273,3 +276,52 @@ This file is the shared source of truth for cross-device and cross-agent handoff
   1. Decide on monetisation, then settle LICENSE, repository visibility, asset policy and distribution.
   2. If moving: connect Cloudflare Pages, verify preview URLs, then flip the repository to private.
   3. Device check on Android and iOS.
+\n
+### 2026-08-31 (4) — Claude Code
+
+- Objective: Prepare the audio replacement trial, settle the four decisions that were blocking, and get the
+  Cloudflare Pages move ready to execute.
+- Work completed:
+  - `scripts/import_audio.py`: places an externally produced file into `public/sounds/` and updates
+    `manifest.json`. MP3 duration is measured by walking the MPEG frame headers (VBR-safe); WAV is encoded
+    to MP3 at the project bitrate. `--bpm` / `--bars` compute an exact musical loop length, and the previous
+    file is kept as `.bak`.
+  - `docs/audio-generation.md`: a "try one track first" procedure (replace `shop-bgm` only, compare, roll
+    back from `.bak`), the importer's usage, acceptance criteria, and Suno-ready prompts assuming
+    Custom Mode with Instrumental on, plus an exclude-styles line.
+  - `LICENSE` (MIT, verbatim so GitHub detects it) and `LICENSE-ASSETS.md` (assets, characters, scenario and
+    title rights-reserved, with an explicit permitted/not-permitted list and fork guidance).
+  - `public/_headers` and `public/_redirects` for Cloudflare Pages. GitHub Pages ignores both.
+  - `docs/cloudflare-pages-setup.md`: the migration runbook, ordered so the Cloudflare deployment is
+    verified before the repository is flipped to private.
+  - `docs/deployment-policy.md`: recorded the four decisions and the reasoning behind two of them.
+- Decisions taken by the user this session:
+  - Distribution: free, with itch.io listed as pay-what-you-want at a zero minimum.
+  - Licence: MIT for source, all rights reserved for assets.
+  - Repository: stay public for now; the migration trigger is unchanged.
+  - Audio: keep the generated audio until a listening test shows a replacement is worth it.
+- Findings worth keeping:
+  - `lameenc` writes no Xing/LAME header, so neither a browser nor the importer can recover the authored
+    length from a generated file. This is why the manifest carries `seconds` and the player pins `loopEnd`
+    to it. Measured encoder padding across the 29 files was 26-51 ms.
+  - The importer subtracts encoder delay and padding when a LAME header is present, and warns when it is
+    not — for BGM it asks for `--bpm`/`--bars` instead of trusting the measurement.
+- Files and areas changed:
+  - `scripts/import_audio.py`, `docs/audio-generation.md`
+  - `LICENSE`, `LICENSE-ASSETS.md`, `README.md`
+  - `public/_headers`, `public/_redirects`
+  - `docs/cloudflare-pages-setup.md`, `docs/deployment-policy.md`
+- Validation:
+  - `npm run lint` clean; `npm test` 16/16 passing; `npm run build` succeeds; `git diff --check` clean.
+  - Importer verified against all 29 existing files. `--bpm 112 --bars 16` reproduces `shop-bgm`'s
+    34.286 s exactly. The WAV path, the `.bak` backup, the manifest update and the rollback were all
+    exercised end to end and then reverted.
+  - `_headers` and `_redirects` confirmed present in `dist/` after a build.
+- Unresolved issues:
+  - The copyright holder is the GitHub handle, not a real name or brand.
+  - No physical-device check yet.
+  - Whether paid audio is adopted is still open, pending the user's own listening test.
+- Next actions:
+  1. Generate a `shop-bgm` candidate and run the A/B.
+  2. Device check on Android and iOS.
+  3. If paid audio is adopted, follow the Cloudflare runbook.
