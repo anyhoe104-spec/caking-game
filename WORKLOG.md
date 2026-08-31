@@ -4,42 +4,34 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-08-31 21:44 +0900 (Asia/Tokyo)
+- Updated: 2026-08-31 22:34 +0900 (Asia/Tokyo)
 - Agent: Claude Code
 - Branch: `claude/caking-weekly-improvements-bg3gnf`
-- Objective: Weekly improvement pass — UI overhaul, scene BGM, SE and character voice, animation — followed by
-  a quality pass on the synthesised character voices.
+- Objective: Weekly improvement pass (UI, audio, animation), then a voice quality pass, then decoupling the
+  build from its hosting provider ahead of a possible move to a private repository.
 - Completed:
-  - Rebuilt the in-game UI: the service screen carries `オーダー / 目標 / ステータス` sub-tabs with a heads-up
-    display, orders link straight to their recipe, and a settings modal replaces the two header toggles.
-  - Added the audio layer: 5 scene BGM loops with crossfades, 15 sound effects, 9 character voice cues, and
-    per-channel volume and mute settings persisted in the save.
-  - Added the motion layer covering screen transitions, bake results, order service, level up and recipe
-    unlock, with a reduced-motion switch and `prefers-reduced-motion` support.
-  - Reworked the voice synthesiser: consonant-to-vowel formant transitions, Japanese vowel devoicing,
-    a corrected glottal source slope, wider formant bandwidths with F4/F5, and per-mora micro-variation.
-  - Every audio asset is generated from code, so the project owns all 29 files outright: no licence, no
-    credit line, no cost.
+  - Rebuilt the in-game UI, added the full audio layer (5 scene BGM loops, 15 SE, 9 voice cues, per-channel
+    volume and mute), and added the motion layer with a reduced-motion switch.
+  - Reworked the voice synthesiser: formant transitions, Japanese vowel devoicing, corrected glottal slope.
+  - Removed every hard-coded reference to the `/caking-game/` sub-path. The same source now builds for
+    GitHub Pages and for a root-serving host; Cloudflare Pages and Netlify need no build configuration.
+  - Fixed a long-standing PWA defect: an offline relaunch rendered a blank page. Two causes, both fixed —
+    the hashed bundles were never precached, and `caches.match` was honouring `Vary: Origin`.
 - In progress:
   - Nothing outstanding on this branch.
 - Blockers and risks:
-  - Audio has only been verified in headless Chromium. iOS Safari gesture unlocking and PWA-restart BGM
-    resumption still need a device check.
-  - `public/sounds/` is 2.93 MB. BGM is fetched lazily per scene, but this has not been measured on a real
-    mobile connection.
-  - Voice fidelity is bounded by the technique: these are formant-synthesised pseudo-voices, not speech.
-    VOICEVOX cannot run inside this environment — its models ship as GitHub Release assets, which the
-    network policy blocks — so any real voice acting has to be generated outside the agent session.
+  - Still no check on a physical device. Everything so far is headless Chromium.
+  - `public/sounds/` is 2.93 MB; mobile-network load has not been measured.
+  - Voice fidelity is bounded by the technique. VOICEVOX cannot run in the agent environment.
 - Next actions:
-  1. Play through on iPhone Safari and Android Chrome: confirm audio unlocks on first tap, BGM resumes after
-     a PWA restart, and the settings modal is reachable one-handed.
-  2. Decide whether to commission higher-fidelity BGM and voice; if so, follow `docs/audio-generation.md`.
-     Note that free tiers of AI music services grant no commercial rights retroactively.
-  3. Continue the balance pass listed in `docs/current-status.md`.
-- Validation: `npm run lint` clean; `npm test` 16/16 passing; `npm run build` succeeds; `git diff --check`
-  clean. Browser runs in Chromium (390x844) covered the opening, service, all five tabs, the daily report,
-  the ending, a v3-to-v4 save migration, muting and reduced motion, with no console or page errors.
-  Voice formants measured within 0.2-5.2% of target by LPC analysis; spectral tilt 20.8 dB.
+  1. Decide on monetisation. `docs/deployment-policy.md` now records the trigger for moving to a private
+     repository (adopting paid AI audio, or selling on itch.io) and the items to settle alongside it.
+  2. If the decision is to move: set up Cloudflare Pages. The build side is already done, so this is
+     account-level work — connect the repository, confirm the preview URLs, then flip the repo to private.
+  3. Device check on Android and iOS, which per-branch preview URLs will make much cheaper.
+- Validation: `npm run lint` clean; `npm test` 16/16 passing; both `npm run build` and `npm run build:root`
+  succeed; `git diff --check` clean. Browser runs confirmed the game, the service worker and every audio
+  asset under both `/caking-game/` and `/`, and an offline relaunch now boots the full shell under both.
 
 ## Dated work reports
 
@@ -225,3 +217,59 @@ This file is the shared source of truth for cross-device and cross-agent handoff
   1. Device check on iOS Safari and Android Chrome (audio unlock, PWA restart, one-handed reach).
   2. Decide on commissioning higher-fidelity BGM and voice per `docs/audio-generation.md`.
   3. Resume the gameplay balance pass in `docs/current-status.md`.
+\n
+### 2026-08-31 (3) — Claude Code
+
+- Objective: (A) record the hosting and repository-visibility analysis in the deployment policy, and
+  (B) remove the hard-coded deployment path so a move to Cloudflare Pages costs nothing at build time.
+- Context: the user asked whether developing a game intended for eventual monetisation in a public
+  repository is the right call, given that GitHub Pages on the Free plan requires a public repository.
+- A. Policy documentation (`docs/deployment-policy.md`):
+  - Recorded that going public was a consequence of the GitHub Free limitation, not a goal, and that
+    monetisation has never actually been decided anywhere in the repository.
+  - Added the risk breakdown: the binding constraint is asset licensing, not source disclosure. Most AI
+    audio services forbid redistributing the raw asset, and a public repository hands the audio files over
+    via `git clone`. Since all audio is now self-generated, there is currently no exposure.
+  - Added a hosting comparison and named Cloudflare Pages as the first choice: private repositories on the
+    free tier, no commercial restriction, and per-branch preview URLs.
+  - Defined the trigger for going private: adopting paid AI audio, or selling on itch.io.
+- B. Host-independent build:
+  - `vite.config.js` derives the base from `CF_PAGES` / `NETLIFY` with a `BASE_PATH` override.
+  - `public/manifest.json` uses manifest-relative URLs.
+  - `public/sw.js` derives its base from `self.location`.
+  - Added `npm run build:root` via `scripts/build-root.mjs` (a Node script, so it works from cmd.exe).
+  - Added Node and service-worker global scopes to `eslint.config.js`.
+- Defect found and fixed while verifying B — offline relaunch rendered a blank page:
+  1. The hashed JS/CSS bundles were never precached. They are requested before the worker takes control on
+     a first visit, so they never reach its fetch handler; offline only worked from the second visit.
+     Added a `precacheManifest` Vite plugin that writes the emitted filenames into `dist/sw.js`.
+  2. Even once precached, the assets still missed. Hosts answer static files with `Vary: Origin`, and Vite
+     emits its module script with `crossorigin`, so the page requests the bundle with an Origin header while
+     the precache fetched it without one, and `caches.match` honoured Vary. Fixed with `ignoreVary: true`.
+  This defect predates this branch; `deployment-policy.md` had "オフライン再起動を確認" still unchecked.
+- Files and areas changed:
+  - `vite.config.js`, `eslint.config.js`, `package.json`, `scripts/build-root.mjs`
+  - `public/manifest.json`, `public/sw.js`
+  - `docs/deployment-policy.md`, `README.md`
+- Validation:
+  - `npm run lint` clean; `npm test` 16/16 passing; `git diff --check` clean.
+  - `npm run build`, `npm run build:root` and `CF_PAGES=1 vite build` all emit correct paths, and the
+    precache placeholder is replaced in every case.
+  - Chromium, both `/caking-game/` and `/`: game renders, service worker registers with the right scope,
+    precache contents correct, all audio 200, no console or page errors.
+  - Offline relaunch after a single visit now boots the full shell (brand, 5-item nav, status chips) under
+    both bases. Before the fix it rendered an empty `#root`.
+- Decisions:
+  - Do not go private yet. With all audio self-generated there is no licensing exposure today, so the move
+    is deferred until monetisation is actually decided.
+  - Auto-detect the host rather than require build configuration, so Cloudflare Pages works unconfigured.
+  - Precache only the app shell (HTML, JS, CSS, icons, manifest). Images and audio total roughly 27 MB and
+    stay runtime-cached; precaching them would make installation unacceptable.
+- Unresolved issues:
+  - Offline coverage is shell-only on a first visit. Character images and audio are cached as they are
+    visited, so a first-visit offline launch renders the UI without artwork or sound.
+  - No physical-device check yet.
+- Next actions:
+  1. Decide on monetisation, then settle LICENSE, repository visibility, asset policy and distribution.
+  2. If moving: connect Cloudflare Pages, verify preview URLs, then flip the repository to private.
+  3. Device check on Android and iOS.

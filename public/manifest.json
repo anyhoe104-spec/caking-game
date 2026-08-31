@@ -2,21 +2,21 @@
   "name": "CAKING！",
   "short_name": "CAKING",
   "description": "手づくりスイーツ店舗経営ゲーム",
-  "start_url": "/caking-game/",
-  "scope": "/caking-game/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
   "theme_color": "#f5c2d5",
   "background_color": "#fff8ec",
   "icons": [
     {
-      "src": "/caking-game/icons/icon-192.svg",
+      "src": "./icons/icon-192.svg",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "/caking-game/icons/icon-512.svg",
+      "src": "./icons/icon-512.svg",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"

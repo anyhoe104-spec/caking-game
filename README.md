@@ -82,6 +82,15 @@ git diff --check
 
 `main` に反映された変更は `.github/workflows/deploy.yml` によりGitHub Pagesへ自動デプロイされます。
 
+配信先は固定されていません。GitHub Pagesはサブパス（`/caking-game/`）、Cloudflare PagesやNetlifyはルート配信ですが、どちらもソースの変更なしでビルドできます。
+
+```bash
+npm run build         # GitHub Pages 向け
+npm run build:root    # ルート配信向け
+```
+
+詳細は [`docs/deployment-policy.md`](docs/deployment-policy.md) を参照してください。
+
 ## プロジェクト資料
 
 - [`docs/current-status.md`](docs/current-status.md): 現在地と次の優先作業
