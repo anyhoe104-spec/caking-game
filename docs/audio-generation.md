@@ -185,42 +185,55 @@ BGMは `manifest.json` の `seconds` をループ終端として使うため、�
 
 ### 生成プロンプト
 
-そのまま貼り付けて使える文面です。すべてインストゥルメンタル・ボーカルなしを前提にしています。
+Suno想定。**Custom Mode + Instrumental オン**で、以下を Style / Description 欄へ貼り付けます。
+歌詞欄は空のままにしてください。Instrumentalをオンにしないと、ほぼ確実にボーカルが入ります。
+
+共通で除外したい要素（Exclude Styles欄がある場合に指定）:
+
+```
+vocals, singing, lyrics, voice, choir, spoken word, drum solo, distorted guitar, aggressive
+```
+
+**shop-bgm.mp3** — 最初に試すならこれ（営業中に最も長く聞く曲）
+```
+cheerful bakery management gameplay loop, bouncy marimba melody, warm acoustic guitar,
+light kick and snare, shaker, cozy seaside pastry shop, busy but relaxing, looping game
+background music, instrumental, 112 BPM, C major
+```
 
 **opening-theme.mp3**
 ```
-cute pastry shop opening theme, seaside port town, glockenspiel melody,
-pizzicato strings, warm acoustic guitar, soft pad, storybook, instrumental,
-no vocals, seamless loop, 90 BPM, C major, 45 seconds
+cute pastry shop opening theme, seaside port town, glockenspiel melody, pizzicato strings,
+warm acoustic guitar, soft pad, storybook feeling, gentle and inviting, instrumental,
+90 BPM, C major
 ```
 
-**menu-bgm.mp3**
+**menu-bgm.mp3** — 長時間流れるので、主張しすぎない曲を選ぶ
 ```
-cozy bakery menu screen, calm and unobtrusive, acoustic guitar arpeggio,
-soft marimba, light shaker, relaxed, instrumental, no vocals, seamless loop,
-96 BPM, F major, 30 seconds
-```
-
-**shop-bgm.mp3**
-```
-cheerful bakery management gameplay loop, bouncy marimba melody, acoustic guitar,
-light drums and shaker, busy but relaxing, instrumental, no vocals, seamless loop,
-112 BPM, C major, 40 seconds
+cozy menu screen background, calm and unobtrusive, acoustic guitar arpeggio, soft marimba,
+light shaker, warm and slow, does not demand attention, instrumental, 96 BPM, F major
 ```
 
 **report-bgm.mp3**
 ```
-end of day results screen, satisfied and gentle, marimba and soft bass,
-short calm loop, instrumental, no vocals, seamless loop, 104 BPM, C major, 20 seconds
+end of day results screen, satisfied and gentle, marimba and soft bass, short calm loop,
+warm resolution, instrumental, 104 BPM, C major
 ```
 
 **ending-theme.mp3**
 ```
 heartwarming achievement ending, electric piano and warm strings, seaside sunset,
-uplifting and emotional, instrumental, no vocals, 74 BPM, C major, 55 seconds
+uplifting and emotional, a small shop that became beloved, instrumental, 74 BPM, C major
 ```
 
-**効果音**（1〜2秒、モノラル可、末尾の無音は詰める）
+生成のコツ:
+
+- 1プロンプトにつき複数生成し、**ループの継ぎ目が自然なもの**を選ぶ。イントロが長い曲は
+  ループに向かないため避ける
+- `menu-bgm` は各画面で長時間流れます。印象的な曲より地味な曲のほうが実用的です
+- 尺が長すぎる場合、気に入った16小節だけを切り出して `--bpm` `--bars` で取り込みます
+
+**効果音**（1〜2秒。SE特化のサービスか、Sunoの短尺生成を使う）
 ```
 great.mp3    : bright success fanfare, sparkling bells, cheerful, 1.5 seconds
 unlock.mp3   : recipe unlock, golden chime, magical sparkle, 1.5 seconds
@@ -229,21 +242,76 @@ mission.mp3  : objective complete, short bright chime with sparkle, 1 second
 daystart.mp3 : shop door bell opening for business, bright, 1.3 seconds
 dayend.mp3   : closing time, warm low bell, 1.6 seconds
 levelup.mp3  : level up fanfare, ascending bells, celebratory, 1.8 seconds
+tap.mp3      : soft UI tap, short wooden click, 0.2 seconds
+buy.mp3      : coin purchase, light metallic chime, 0.5 seconds
 ```
 
-**ボイス**（各ファイルのセリフは上記の表を参照）
+**ボイス** — セリフは「ボイス（9種）」の表を参照
 
-ElevenLabsの場合は、ミフィとミルで別々の音声を選び、全ファイルで同じ音声を使ってください。
+ElevenLabsの場合、ミフィとミルで別々の音声を選び、各キャラは全ファイルで同じ音声を使ってください。
 参考設定: Stability 0.4 / Similarity 0.75 / Style 0.35。
+ミフィは10代前半の明るい女の子、ミルは小さくて元気な案内役という想定です。
 
-VOICEVOXの場合は、話者を固定したうえで生成し、**採用したキャラクター名のクレジット表記を
-`README.md` と設定画面（`src/components/SettingsModal.jsx` の「音源について」）に追加**してください。
-現在は「クレジット表記は不要」と記載しているため、この文言の更新が必須になります。
+VOICEVOXの場合は話者を固定し、**採用したキャラクター名のクレジット表記を `README.md` と
+設定画面（`src/components/SettingsModal.jsx` の「音源について」）へ追加**してください。
+現在は「クレジット表記は不要」と表示しているため、この文言の更新が必須です。
+
+### まず1曲だけ試す（推奨手順）
+
+いきなり全曲を作らず、**`shop-bgm` だけ**を差し替えて比較してください。営業中に最も長く聞く曲で、
+差が最も分かりやすく、気に入らなければ捨てるコストも最小です。
+
+1. Sunoで `shop-bgm` のプロンプト（後述）を生成する。**Instrumentalをオンにする**
+2. mp3をダウンロードする
+3. 取り込む。BGMはループ終端の精度が音に出るので、小節数とBPMを指定する
+
+   ```bash
+   python3 scripts/import_audio.py ~/Downloads/track.mp3 --as shop-bgm --bpm 112 --bars 16
+   ```
+
+4. `npm run dev` で営業を開始し、1ループ以上聞いて継ぎ目とテンポを確認する
+5. 気に入らなければ `public/sounds/shop-bgm.mp3.bak` を元の名前に戻し、
+   `git checkout public/sounds/manifest.json` で戻す
+
+### 取り込みスクリプト
+
+`scripts/import_audio.py` が、ファイルの配置と `manifest.json` の更新をまとめて行います。
+手作業で `seconds` を直し忘れるとBGMのループ点がずれるため、必ずこれを使ってください。
+
+```bash
+python3 scripts/import_audio.py <ファイル> --as <キー> [オプション]
+
+  --dry-run                書き込まずに結果だけ表示
+  --bpm 112 --bars 16      楽曲上の正確な長さを算出（BGM推奨）
+  --seconds 34.286         長さを直接指定
+```
+
+- `.mp3` はそのまま配置し、長さをフレームヘッダから実測します
+- `.wav` はプロジェクトのビットレートでMP3へ変換します（16bit限定）
+- 元ファイルは `<キー>.mp3.bak` として自動退避されます
+- サンプルレート違い、長すぎるSE、短すぎるBGMなどは警告が出ます
+
+**BGMでは `--bpm` と `--bars` を使ってください。** MP3のフレーム数から求めた長さには
+エンコーダのパディング（最大50ms程度）が含まれます。ゲームはこの `seconds` をループ終端に
+使うため、実測値のままだと1ループごとにわずかな間が入ります。
+Xing/LAMEヘッダを持つファイルでは自動的に補正しますが、ヘッダがない場合は補正できません
+（`scripts/generate_audio.py` が使う `lameenc` はこのヘッダを書きません）。
+
+### 受け入れ基準
+
+| 項目 | 基準 |
+|---|---|
+| 形式 | MP3、44100 Hz、ステレオ |
+| BGMの長さ | 20〜60秒。小節の切れ目で始まり、同じ切れ目で終わること |
+| SEの長さ | 2秒以内。`tap` `nav` `coin` は0.3秒以内 |
+| ボイスの長さ | 2秒以内 |
+| 音量 | 既存音源と揃っていること。設定画面の音量スライダーで補正しない |
+| ループ | 1周して戻ったときに拍がずれないこと |
 
 ### 差し替え後のチェックリスト
 
 1. ファイル名・拡張子（`.mp3`）が一致しているか
-2. `manifest.json` の `seconds` を実測値に更新したか（BGMのループ点に直結）
+2. `scripts/import_audio.py` で取り込んだか（`manifest.json` の `seconds` が自動更新されます）
 3. BGMが継ぎ目なくループするか（先頭と末尾が同じ小節線でつながっているか）
 4. 音量が揃っているか。ばらつく場合は `src/game/audioSettings.js` の既定音量ではなく、
    音源側で正規化してください
