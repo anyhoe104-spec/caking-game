@@ -1,5 +1,5 @@
 /* Minimal offline shell for CAKING! — safe fallbacks if cache misses */
-const CACHE = "caking-shell-v3";
+const CACHE = "caking-shell-v4";
 const BASE = "/caking-game";
 const PRECACHE = [
   BASE + "/",

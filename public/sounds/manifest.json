@@ -1,0 +1,211 @@
+{
+  "generator": "scripts/generate_audio.py",
+  "method": "procedural synthesis (numpy) + LAME encoding",
+  "license": "Original to the CAKING project. No third-party rights, no credit required.",
+  "sampleRate": 44100,
+  "assets": [
+    {
+      "file": "opening-theme.mp3",
+      "kind": "bgm",
+      "seconds": 42.667,
+      "bytes": 683363,
+      "description": "オープニング / タイトル"
+    },
+    {
+      "file": "menu-bgm.mp3",
+      "kind": "bgm",
+      "seconds": 20.0,
+      "bytes": 320574,
+      "description": "準備中・メニュー各画面"
+    },
+    {
+      "file": "shop-bgm.mp3",
+      "kind": "bgm",
+      "seconds": 34.286,
+      "bytes": 549198,
+      "description": "営業中（プレイ中）"
+    },
+    {
+      "file": "report-bgm.mp3",
+      "kind": "bgm",
+      "seconds": 18.462,
+      "bytes": 295915,
+      "description": "日報オーバーレイ"
+    },
+    {
+      "file": "ending-theme.mp3",
+      "kind": "bgm",
+      "seconds": 51.892,
+      "bytes": 830902,
+      "description": "エンディング"
+    },
+    {
+      "file": "tap.mp3",
+      "kind": "se",
+      "seconds": 0.16,
+      "bytes": 2925,
+      "description": "ボタン・カード全般のタップ"
+    },
+    {
+      "file": "nav.mp3",
+      "kind": "se",
+      "seconds": 0.26,
+      "bytes": 4023,
+      "description": "ボトムナビ・タブ切り替え"
+    },
+    {
+      "file": "buy.mp3",
+      "kind": "se",
+      "seconds": 0.45,
+      "bytes": 6948,
+      "description": "食材購入・支払い"
+    },
+    {
+      "file": "coin.mp3",
+      "kind": "se",
+      "seconds": 0.14,
+      "bytes": 2560,
+      "description": "日報のコインカウントアップ"
+    },
+    {
+      "file": "equip.mp3",
+      "kind": "se",
+      "seconds": 0.6,
+      "bytes": 8777,
+      "description": "デコレーション装備"
+    },
+    {
+      "file": "hire.mp3",
+      "kind": "se",
+      "seconds": 0.8,
+      "bytes": 11703,
+      "description": "スタッフ雇用"
+    },
+    {
+      "file": "success.mp3",
+      "kind": "se",
+      "seconds": 0.8,
+      "bytes": 11703,
+      "description": "ケーキ完成（成功）"
+    },
+    {
+      "file": "great.mp3",
+      "kind": "se",
+      "seconds": 1.5,
+      "bytes": 21577,
+      "description": "ケーキ完成（大成功）"
+    },
+    {
+      "file": "error.mp3",
+      "kind": "se",
+      "seconds": 0.5,
+      "bytes": 7680,
+      "description": "失敗・操作不可"
+    },
+    {
+      "file": "order.mp3",
+      "kind": "se",
+      "seconds": 1.0,
+      "bytes": 14628,
+      "description": "注文成立（お客様に提供）"
+    },
+    {
+      "file": "levelup.mp3",
+      "kind": "se",
+      "seconds": 1.8,
+      "bytes": 25600,
+      "description": "職人レベルアップ"
+    },
+    {
+      "file": "unlock.mp3",
+      "kind": "se",
+      "seconds": 1.6,
+      "bytes": 23040,
+      "description": "レシピ解放"
+    },
+    {
+      "file": "mission.mp3",
+      "kind": "se",
+      "seconds": 1.1,
+      "bytes": 16091,
+      "description": "ミッション達成"
+    },
+    {
+      "file": "daystart.mp3",
+      "kind": "se",
+      "seconds": 1.3,
+      "bytes": 18651,
+      "description": "営業スタート"
+    },
+    {
+      "file": "dayend.mp3",
+      "kind": "se",
+      "seconds": 1.6,
+      "bytes": 23040,
+      "description": "営業終了"
+    },
+    {
+      "file": "voice-miffy-ready.mp3",
+      "kind": "voice",
+      "seconds": 1.571,
+      "bytes": 22674,
+      "description": "ミフィ「がんばります！」"
+    },
+    {
+      "file": "voice-miffy-done.mp3",
+      "kind": "voice",
+      "seconds": 1.494,
+      "bytes": 21577,
+      "description": "ミフィ「できました！」"
+    },
+    {
+      "file": "voice-miffy-great.mp3",
+      "kind": "voice",
+      "seconds": 1.53,
+      "bytes": 21943,
+      "description": "ミフィ「だいせいこう！」"
+    },
+    {
+      "file": "voice-miffy-fail.mp3",
+      "kind": "voice",
+      "seconds": 1.658,
+      "bytes": 23771,
+      "description": "ミフィ「ごめんなさい…」"
+    },
+    {
+      "file": "voice-miffy-order.mp3",
+      "kind": "voice",
+      "seconds": 1.986,
+      "bytes": 28525,
+      "description": "ミフィ「ありがとうございます！」"
+    },
+    {
+      "file": "voice-miffy-levelup.mp3",
+      "kind": "voice",
+      "seconds": 1.454,
+      "bytes": 20845,
+      "description": "ミフィ「レベルアップ！」"
+    },
+    {
+      "file": "voice-miru-hello.mp3",
+      "kind": "voice",
+      "seconds": 1.462,
+      "bytes": 20845,
+      "description": "ミル「こんにちは！」"
+    },
+    {
+      "file": "voice-miru-cheer.mp3",
+      "kind": "voice",
+      "seconds": 1.417,
+      "bytes": 20480,
+      "description": "ミル「そのちょうし！」"
+    },
+    {
+      "file": "voice-miru-report.mp3",
+      "kind": "voice",
+      "seconds": 1.62,
+      "bytes": 23040,
+      "description": "ミル「おつかれさま！」"
+    }
+  ]
+}
