@@ -96,13 +96,27 @@ def main() -> int:
     groups = [("bgm", TRACKS), ("se", EFFECTS), ("voice", VOICES)]
 
     if args.manifest:
+        # `seconds` cannot be recovered from the encoded file, and the BGM loop
+        # points depend on it — carry it over from the existing manifest.
+        known = {}
+        if MANIFEST.exists():
+            known = {a["file"]: a.get("seconds") for a in json.loads(MANIFEST.read_text(encoding="utf-8")).get("assets", [])}
         entries = []
+        missing = []
         for kind, group in groups:
             for key, (_, description) in group.items():
                 path = OUT / f"{key}.mp3"
-                if path.exists():
-                    entries.append({"file": path.name, "kind": kind, "bytes": path.stat().st_size, "description": description})
+                if not path.exists():
+                    continue
+                entry = {"file": path.name, "kind": kind, "bytes": path.stat().st_size, "description": description}
+                if known.get(path.name):
+                    entry["seconds"] = known[path.name]
+                elif kind == "bgm":
+                    missing.append(path.name)
+                entries.append(entry)
         _write_manifest(entries)
+        if missing:
+            print(f"warning: no known duration for {', '.join(missing)} — rerun without --manifest")
         return 0
 
     entries = []

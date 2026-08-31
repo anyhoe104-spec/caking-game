@@ -4,39 +4,42 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-08-31 (UTC)
+- Updated: 2026-08-31 21:44 +0900 (Asia/Tokyo)
 - Agent: Claude Code
 - Branch: `claude/caking-weekly-improvements-bg3gnf`
-- Objective: Weekly improvement pass — UI overhaul, scene-based BGM, SE and character voice, and animation.
+- Objective: Weekly improvement pass — UI overhaul, scene BGM, SE and character voice, animation — followed by
+  a quality pass on the synthesised character voices.
 - Completed:
-  - Rebuilt the in-game UI: the service screen now carries `オーダー / 目標 / ステータス` sub-tabs with a
-    heads-up display, orders link straight to their recipe, and a settings modal replaces the two header toggles.
-  - Added a full audio layer: 5 scene BGM loops with crossfades, 15 sound effects, 9 character voice cues,
-    and per-channel volume and mute settings persisted in the save.
-  - Generated every audio asset from code (`scripts/generate_audio.py`), so the project owns all 29 files
-    outright: no licence, no credit line, no cost.
-  - Added the motion layer (`src/animations.css`) covering screen transitions, bake results, order service,
-    level up and recipe unlock, with a reduced-motion switch and `prefers-reduced-motion` support.
-  - Fixed defects found on the way: dark-mode contrast leaking from the Vite template CSS, the daily report
-    reading `reward.pts` instead of `reward.points`, リコ's advertised material-regen bonus never being applied,
-    and toast text overflowing on narrow phones.
+  - Rebuilt the in-game UI: the service screen carries `オーダー / 目標 / ステータス` sub-tabs with a heads-up
+    display, orders link straight to their recipe, and a settings modal replaces the two header toggles.
+  - Added the audio layer: 5 scene BGM loops with crossfades, 15 sound effects, 9 character voice cues, and
+    per-channel volume and mute settings persisted in the save.
+  - Added the motion layer covering screen transitions, bake results, order service, level up and recipe
+    unlock, with a reduced-motion switch and `prefers-reduced-motion` support.
+  - Reworked the voice synthesiser: consonant-to-vowel formant transitions, Japanese vowel devoicing,
+    a corrected glottal source slope, wider formant bandwidths with F4/F5, and per-mora micro-variation.
+  - Every audio asset is generated from code, so the project owns all 29 files outright: no licence, no
+    credit line, no cost.
 - In progress:
   - Nothing outstanding on this branch.
 - Blockers and risks:
-  - Audio quality is placeholder-grade by design. `docs/audio-generation.md` documents a drop-in replacement
-    path (same filenames, no code changes) for Suno / ElevenLabs / VOICEVOX output.
-  - `public/sounds/` grew from 128 KB to 3.0 MB. BGM is fetched lazily per scene, but this has not been
-    measured on a real mobile connection.
   - Audio has only been verified in headless Chromium. iOS Safari gesture unlocking and PWA-restart BGM
     resumption still need a device check.
+  - `public/sounds/` is 2.93 MB. BGM is fetched lazily per scene, but this has not been measured on a real
+    mobile connection.
+  - Voice fidelity is bounded by the technique: these are formant-synthesised pseudo-voices, not speech.
+    VOICEVOX cannot run inside this environment — its models ship as GitHub Release assets, which the
+    network policy blocks — so any real voice acting has to be generated outside the agent session.
 - Next actions:
-  1. Play through on iPhone Safari and Android Chrome: confirm audio unlocks on first tap, BGM resumes after a
-     PWA restart, and the settings modal is reachable one-handed.
+  1. Play through on iPhone Safari and Android Chrome: confirm audio unlocks on first tap, BGM resumes after
+     a PWA restart, and the settings modal is reachable one-handed.
   2. Decide whether to commission higher-fidelity BGM and voice; if so, follow `docs/audio-generation.md`.
+     Note that free tiers of AI music services grant no commercial rights retroactively.
   3. Continue the balance pass listed in `docs/current-status.md`.
-- Validation: `npm run lint` clean; `npm test` 16/16 passing; `npm run build` succeeds; `git diff --check` clean.
-  End-to-end browser runs in Chromium (390x844) covered the opening, service, all five tabs, the daily report,
-  the ending, a v3-to-v4 save migration, muting, and reduced motion — with no console or page errors.
+- Validation: `npm run lint` clean; `npm test` 16/16 passing; `npm run build` succeeds; `git diff --check`
+  clean. Browser runs in Chromium (390x844) covered the opening, service, all five tabs, the daily report,
+  the ending, a v3-to-v4 save migration, muting and reduced motion, with no console or page errors.
+  Voice formants measured within 0.2-5.2% of target by LPC analysis; spectral tilt 20.8 dB.
 
 ## Dated work reports
 
@@ -165,4 +168,60 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - Next actions:
   1. Device check on iOS Safari and Android Chrome (audio unlock, PWA restart, one-handed reach).
   2. Decide on commissioning higher-fidelity BGM and voice.
+  3. Resume the gameplay balance pass in `docs/current-status.md`.
+\n
+### 2026-08-31 (2) — Claude Code
+
+- Objective: Improve and regenerate the character voice assets, after confirming whether VOICEVOX could be
+  used instead of the in-house formant synthesiser.
+- Feasibility check performed first:
+  - `git ls-remote https://github.com/VOICEVOX/voicevox_core` succeeds — the session's git proxy serves
+    public third-party repositories.
+  - GitHub Release asset downloads return 403, and there is no `voicevox-core` package on PyPI. VOICEVOX
+    ships its ONNX models and runtime binaries as Release assets, so it cannot be run in this environment.
+  - Conclusion: the request was carried out as a quality pass on the existing synthesiser.
+- Work completed:
+  - Consonant-to-vowel formant transitions. Added `F2_LOCUS` per articulation place; the vowel's F1/F2 now
+    glide out of the consonant's locus over ~45 ms instead of each mora being a static vowel.
+  - Japanese vowel devoicing (`devoiced_flags`). /i/ and /u/ after a voiceless consonant are rendered as
+    formant-shaped noise when phrase-final or before another voiceless consonant, so ます, ました, おつかれ
+    and アップ devoice correctly. `/h/` is excluded as a trigger, which keeps こんにちは voiced.
+  - Corrected the glottal source. The original slope left a 78.7 dB spectral tilt (natural speech is
+    20-35 dB), which is why the first pass sounded dark and hollow. Now 20.8 dB.
+  - Widened formant bandwidths and added F4, F5 and a broadband floor. With a child-register F0 above
+    300 Hz the harmonics are far enough apart that narrow resonances dropped most of them into a valley.
+  - Replaced the purely exponential mora envelope with attack/hold/release so long vowels sustain, and
+    added pitch jitter, amplitude shimmer, and per-mora length and level variation.
+  - Removed a dead `previous_vowel = previous_vowel` assignment in the moraic-nasal branch.
+  - Fixed a latent bug in `scripts/generate_audio.py`: `--manifest` rebuilt the manifest without the
+    `seconds` field, which the BGM loop points depend on, so running it would silently degrade looping.
+    It now carries durations over from the existing manifest and warns when one is missing.
+- Files and areas changed:
+  - `scripts/audio/voice.py` (synthesiser rework)
+  - `scripts/generate_audio.py` (`--manifest` fix)
+  - `public/sounds/voice-*.mp3` (9 regenerated), `public/sounds/manifest.json`
+  - `docs/audio-generation.md` (voice technique, devoicing table, verification method, free-tier caveats)
+- Validation:
+  - `npm run lint` clean; `npm test` 16/16 passing; `npm run build` succeeds; `git diff --check` clean.
+  - Formant accuracy measured by LPC on the rendered signal at F0 = 110 Hz (LPC locks onto harmonics above
+    300 Hz, so the game's own register cannot be measured this way): /a/ 1.2%/0.3%/0.3%, /i/ 3.4%/1.0%/3.4%,
+    /u/ 0.6%/0.2%/0.6%, /e/ 2.3%/0.9%/0.7%, /o/ 5.2%/4.0%/0.7% error against target F1/F2/F3.
+  - Devoiced morae confirmed aperiodic: autocorrelation peak 0.509 versus 0.993 for the voiced equivalent.
+  - Regeneration left BGM and SE byte-identical, confirming the generator is deterministic and that this
+    change is scoped to the voices.
+  - Chromium run: all four voice cues reached in a play-through were fetched (200) and decoded, no errors.
+- Decisions:
+  - Keep the formant synthesiser rather than wait on an external TTS. It is the only option that runs in
+    this environment, and the improvements above are audible without adding a licence obligation.
+  - Devoicing is derived from a rule rather than hand-annotated per line, with `/h/` excluded, because the
+    derived rule then gives the correct result for all nine lines and extends to new lines for free.
+  - Verify formants at a lowered F0 rather than trusting a peak-picker at the game's own pitch. The first
+    measurement attempt reported nonsense because it was finding F0 harmonics, not the formant envelope.
+- Unresolved issues:
+  - No device check yet on iOS or Android.
+  - `public/sounds/` is 2.93 MB; mobile-network load has not been measured.
+  - The voices remain non-lexical. Real speech needs an external TTS run outside this environment.
+- Next actions:
+  1. Device check on iOS Safari and Android Chrome (audio unlock, PWA restart, one-handed reach).
+  2. Decide on commissioning higher-fidelity BGM and voice per `docs/audio-generation.md`.
   3. Resume the gameplay balance pass in `docs/current-status.md`.

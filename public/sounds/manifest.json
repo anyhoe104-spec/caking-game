@@ -147,64 +147,64 @@
     {
       "file": "voice-miffy-ready.mp3",
       "kind": "voice",
-      "seconds": 1.571,
-      "bytes": 22674,
+      "seconds": 1.449,
+      "bytes": 20845,
       "description": "ミフィ「がんばります！」"
     },
     {
       "file": "voice-miffy-done.mp3",
       "kind": "voice",
-      "seconds": 1.494,
-      "bytes": 21577,
+      "seconds": 1.516,
+      "bytes": 21943,
       "description": "ミフィ「できました！」"
     },
     {
       "file": "voice-miffy-great.mp3",
       "kind": "voice",
-      "seconds": 1.53,
-      "bytes": 21943,
+      "seconds": 1.546,
+      "bytes": 22308,
       "description": "ミフィ「だいせいこう！」"
     },
     {
       "file": "voice-miffy-fail.mp3",
       "kind": "voice",
-      "seconds": 1.658,
-      "bytes": 23771,
+      "seconds": 1.694,
+      "bytes": 24137,
       "description": "ミフィ「ごめんなさい…」"
     },
     {
       "file": "voice-miffy-order.mp3",
       "kind": "voice",
-      "seconds": 1.986,
-      "bytes": 28525,
+      "seconds": 1.874,
+      "bytes": 26697,
       "description": "ミフィ「ありがとうございます！」"
     },
     {
       "file": "voice-miffy-levelup.mp3",
       "kind": "voice",
-      "seconds": 1.454,
-      "bytes": 20845,
+      "seconds": 1.294,
+      "bytes": 18651,
       "description": "ミフィ「レベルアップ！」"
     },
     {
       "file": "voice-miru-hello.mp3",
       "kind": "voice",
-      "seconds": 1.462,
-      "bytes": 20845,
+      "seconds": 1.469,
+      "bytes": 21211,
       "description": "ミル「こんにちは！」"
     },
     {
       "file": "voice-miru-cheer.mp3",
       "kind": "voice",
-      "seconds": 1.417,
-      "bytes": 20480,
+      "seconds": 1.293,
+      "bytes": 18651,
       "description": "ミル「そのちょうし！」"
     },
     {
       "file": "voice-miru-report.mp3",
       "kind": "voice",
-      "seconds": 1.62,
-      "bytes": 23040,
+      "seconds": 1.623,
+      "bytes": 23405,
       "description": "ミル「おつかれさま！」"
     }
   ]
