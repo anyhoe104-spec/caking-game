@@ -4,39 +4,66 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-08-31 23:23 +0900 (Asia/Tokyo)
+- Updated: 2026-09-05 10:13 +0900 (Asia/Tokyo) — session closed
 - Agent: Claude Code
-- Branch: `claude/caking-weekly-improvements-bg3gnf`
-- Objective: Weekly improvement pass (UI, audio, animation), a voice quality pass, host-independent builds,
-  then settling the monetisation-adjacent decisions and preparing the Cloudflare Pages move.
-- Completed:
-  - UI overhaul, full audio layer (5 scene BGM loops, 15 SE, 9 voice cues, per-channel mute and volume),
-    motion layer with a reduced-motion switch.
-  - Voice synthesiser rework: formant transitions, Japanese vowel devoicing, corrected glottal slope.
-  - Host-independent build. The same source builds for GitHub Pages and for a root-serving host;
-    Cloudflare Pages and Netlify need no build configuration.
-  - Fixed a pre-existing PWA defect where an offline relaunch rendered a blank page.
-  - `scripts/import_audio.py` for bringing externally produced audio in without breaking the loop points.
-  - Decisions recorded: free distribution with a tip jar, MIT for code with assets rights-reserved,
-    stay public for now, keep the generated audio until a listening test justifies replacing it.
-  - `LICENSE`, `LICENSE-ASSETS.md`, and the Cloudflare Pages migration runbook.
-- In progress:
-  - Nothing outstanding on this branch.
-- Blockers and risks:
-  - Still no physical-device check. Everything so far is headless Chromium.
-  - The copyright holder in `LICENSE` and `LICENSE-ASSETS.md` is the GitHub handle `anyhoe104`.
-    Replace it if a real name or brand is preferred before this reaches a wider audience.
-  - `public/sounds/` is 2.93 MB; mobile-network load has not been measured.
-- Next actions:
-  1. Generate one `shop-bgm` candidate in Suno and run the A/B in `docs/audio-generation.md`. That decides
-     whether paid audio is adopted, which is also the trigger for going private.
-  2. Device check on Android and iOS.
-  3. If paid audio is adopted: follow `docs/cloudflare-pages-setup.md`.
-- Validation: `npm run lint` clean; `npm test` 16/16 passing; `npm run build` and `npm run build:root` both
-  succeed; `git diff --check` clean. Browser runs confirmed the game, the service worker and all audio under
-  both `/caking-game/` and `/`, plus an offline relaunch under both.
+- Branch: `claude/caking-weekly-improvements-bg3gnf` (synchronized with origin)
+- Revision: `365c7d1`
+- Working tree: clean
+- Objective: The weekly improvement request — UI, music, SE and voice, animation — which then extended into
+  a voice quality pass, host-independent builds, and the licensing and distribution decisions.
+
+### State
+
+The branch is **5 commits ahead of `main` and not merged**. The published site at
+https://anyhoe104-spec.github.io/caking-game/ therefore still serves the pre-session build: none of the new
+UI, audio or animation is live yet. Deployment runs on push to `main` only.
+
+- UI rebuilt: service screen sub-tabs, service HUD, orders linking into the recipe screen, settings modal.
+- Audio: 5 scene BGM loops with crossfades, 15 SE, 9 voice cues, per-channel volume and mute. All generated
+  from code (`scripts/generate_audio.py`), so the project owns all 29 files with no licence obligation.
+- Animation: screen and list transitions, bake results, level up, recipe unlock, with a reduced-motion switch.
+- Build is host-independent: the same source builds for GitHub Pages and for a root-serving host.
+- Licensing settled: MIT for code (`LICENSE`), rights reserved for assets (`LICENSE-ASSETS.md`).
+- Distribution settled: free, with itch.io pay-what-you-want at a zero minimum.
+
+### Blockers and risks
+
+- **The branch is unmerged.** Nothing from this session is visible to anyone until it reaches `main`
+  (or a Cloudflare Pages preview). This blocks writing about it.
+- No physical-device check. All verification so far is headless Chromium.
+- The copyright holder in `LICENSE` and `LICENSE-ASSETS.md` is the GitHub handle `anyhoe104`.
+  Replace it before this reaches a wider audience if a real name or brand is wanted.
+- `public/sounds/` is 2.93 MB. BGM is fetched lazily per scene, but mobile-network load is unmeasured.
+- Offline coverage on a first visit is shell-only; images and audio are cached as they are visited.
+
+### Next actions
+
+1. **Decide how to publish this branch.** Either merge to `main` (the site updates automatically), or run
+   the deploy workflow manually on the branch via Actions, or move to Cloudflare Pages for per-branch
+   preview URLs. Until one of these happens the work is invisible.
+2. Generate one `shop-bgm` candidate in Suno and run the A/B in `docs/audio-generation.md`. That single
+   listening test decides both whether paid audio is adopted and whether the repository goes private,
+   because those two questions are the same question.
+3. Device check on Android and iOS — `docs/deployment-policy.md` lists the items.
+
+### How to resume
+
+Run `$resume-project`. The four dated reports below cover this session in order: the main improvement pass,
+the voice rework, the host-independent build, and the licensing and Cloudflare preparation.
+
+### Validation at close
+
+`npm run lint` clean; `npm test` 16/16 passing; `npm run build` and `npm run build:root` both succeed;
+`git diff --check` clean. Rerunning `scripts/generate_audio.py` produced a zero-byte diff across all 29
+audio files, confirming generation is still deterministic. No secrets or machine-specific paths in the diff.
 
 ## Dated work reports
+
+> Note on dates: the four reports labelled 2026-08-31 were all written on **2026-09-05**. The container
+> clock ran five days behind for most of that session, and the git commit timestamps for `2d1eaa4`
+> through `365c7d1` carry the same skew. The labels are left as written so they still line up with
+> `git log`; treat 2026-09-05 as the real date for all of them.
+
 
 ### 2026-08-14 — Codex
 
@@ -325,3 +352,31 @@ This file is the shared source of truth for cross-device and cross-agent handoff
   1. Generate a `shop-bgm` candidate and run the A/B.
   2. Device check on Android and iOS.
   3. If paid audio is adopted, follow the Cloudflare runbook.
+\n
+### 2026-09-05 (5) — Claude Code — session close
+
+- Objective: Close the session and verify that the branch is in a state another agent or PC can pick up.
+- Work completed: no code changes. This entry records the closing verification and the open decisions.
+- Verification run at close:
+  - `npm run lint`: clean.
+  - `npm test`: 16/16 passing.
+  - `npm run build` and `npm run build:root`: both succeed.
+  - `git diff --check`: clean.
+  - `python3 scripts/generate_audio.py`: zero diff across all 29 files — generation remains deterministic,
+    so the committed audio matches what the script produces.
+  - Diff scanned for credentials and machine-specific absolute paths: none found.
+  - Working tree clean; local and `origin` both at `365c7d1`.
+- Session shape, for context: five commits, 79 files, +6577/-1118. Four distinct pieces of work, each with
+  its own dated report above — the weekly improvement pass, the voice synthesiser rework, the
+  host-independent build with the offline fix, and the licensing plus Cloudflare preparation.
+- Open decisions carried forward:
+  1. How to publish the branch. It is 5 commits ahead of `main` and unmerged, so the live site still serves
+     the pre-session build. This is the immediate blocker for writing about the work.
+  2. Whether to adopt paid audio, pending the user's own listening test. This also decides repository
+     visibility, since the only real reason to go private is the redistribution clause on paid assets.
+  3. Whether to keep the GitHub handle as the copyright holder in the licence files.
+- Defects fixed across the session, for the record: dark-mode contrast leaking from the Vite template CSS;
+  the daily report reading `reward.pts` instead of `reward.points`; リコ's material-regen bonus never being
+  applied; toast overflow on narrow phones; and a pre-existing PWA defect where an offline relaunch rendered
+  a blank page (two causes — bundles never precached, and `caches.match` honouring `Vary: Origin`).
+- Next actions: as listed in `Current handoff` above.

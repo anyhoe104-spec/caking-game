@@ -1,6 +1,6 @@
 # CAKING 音源の生成と差し替え
 
-更新日: 2026-08-31
+更新日: 2026-09-05
 
 CAKINGのBGM・効果音・ボイスは、すべて `scripts/generate_audio.py` によるコード合成で生成しています。
 このドキュメントは、生成方法・再生成手順・将来の高音質音源への差し替え手順をまとめたものです。
@@ -173,7 +173,7 @@ BGMは `manifest.json` の `seconds` をループ終端として使うため、�
 | SE | 効果音ラボ | 無料 | 商用無料・クレジット不要。アプリ操作音としての組み込みを明示的に許諾 |
 
 いずれも本セッションのネットワークからは到達できないため、生成はご自身のアカウントで実施してください。
-2026-08-31時点の確認では、`suno.com` / `api.elevenlabs.io` / `soundeffect-lab.info` / `dova-s.jp` / `huggingface.co`
+2026-09-05時点の確認では、`suno.com` / `api.elevenlabs.io` / `soundeffect-lab.info` / `dova-s.jp` / `huggingface.co`
 はいずれもプロキシがCONNECTに403を返します。VOICEVOXについては、publicリポジトリのgit読み取り
 （`git ls-remote`）は通るものの、モデルと実行バイナリを配布しているGitHub Releasesのアセット取得が
 403で遮断されるため、エージェント環境内での実行はできません。
