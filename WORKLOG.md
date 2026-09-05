@@ -4,58 +4,60 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-09-05 10:33 +0900 (Asia/Tokyo)
+- Updated: 2026-09-05 10:37 +0900 (Asia/Tokyo)
 - Agent: Claude Code
-- Branch: `claude/caking-weekly-improvements-bg3gnf` (synchronized with origin)
-- Revision: `dd151c6`
+- Branch: `claude/caking-weekly-improvements-bg3gnf`, restarted from `origin/main` after PR #7 merged
+- Revision: `746c3f9` (the merge commit, now the tip of `main`)
 - Working tree: clean
-- Objective: The weekly improvement request — UI, music, SE and voice, animation — which then extended into
-  a voice quality pass, host-independent builds, and the licensing and distribution decisions.
+- Objective: The weekly improvement request — UI, music, SE and voice, animation — which extended into a
+  voice quality pass, host-independent builds, the licensing and distribution decisions, and the review pass.
 
 ### State
 
-**PR #7** is open as a draft against `main`, with all three review findings fixed and the threads resolved.
-The published site at https://anyhoe104-spec.github.io/caking-game/ still serves the pre-session build,
-because deployment runs on push to `main` only. No CI is configured for pull requests.
+**PR #7 is merged and deployed.** The GitHub Pages deployment for `746c3f9` reports `success`, so
+https://anyhoe104-spec.github.io/caking-game/ now serves this session's build. The live URL could not be
+fetched from the agent environment to confirm what is being served, because the network policy blocks
+`anyhoe104-spec.github.io`; the deployment record is the evidence.
+
+Everything from this session is on `main`:
 
 - UI rebuilt: service screen sub-tabs, service HUD, orders linking into the recipe screen, settings modal.
 - Audio: 5 scene BGM loops with crossfades, 15 SE, 9 voice cues, per-channel volume and mute. All generated
-  from code (`scripts/generate_audio.py`), so the project owns all 29 files with no licence obligation.
-- Animation: screen and list transitions, bake results, level up, recipe unlock, with a reduced-motion switch.
-- Build is host-independent: the same source builds for GitHub Pages and for a root-serving host.
-- Licensing settled: MIT for code (`LICENSE`), rights reserved for assets (`LICENSE-ASSETS.md`).
-- Distribution settled: free, with itch.io pay-what-you-want at a zero minimum.
+  from code, so the project owns all 29 files with no licence obligation.
+- Animation: screen and list transitions, bake results, level up, recipe unlock, reduced-motion switch.
+- Host-independent build; Cloudflare Pages and Netlify need no build configuration.
+- `LICENSE` (MIT, code) and `LICENSE-ASSETS.md` (assets, rights reserved).
+- Distribution decided: free, with itch.io pay-what-you-want at a zero minimum.
 
 ### Blockers and risks
 
-- **PR #7 is still a draft and unmerged.** Nothing from this session is visible to anyone until it reaches
-  `main` (or a Cloudflare Pages preview). This blocks writing about it.
-- No physical-device check. All verification so far is headless Chromium.
+- **No physical-device check yet.** All verification is headless Chromium. This is now the largest gap,
+  because the build is live and real players can reach it.
+- Existing players carry a service worker from the previous build. The new cache name means the update
+  lands, but the changeover has not been observed on a real device.
 - The copyright holder in `LICENSE` and `LICENSE-ASSETS.md` is the GitHub handle `anyhoe104`.
-  Replace it before this reaches a wider audience if a real name or brand is wanted.
-- `public/sounds/` is 2.93 MB. BGM is fetched lazily per scene, but mobile-network load is unmeasured.
-- Offline coverage on a first visit is shell-only; images and audio are cached as they are visited.
+- `public/sounds/` is 2.93 MB; mobile-network load unmeasured.
+- Offline coverage on a first visit is shell-only; images and audio cache as they are visited.
 
 ### Next actions
 
-1. **Take PR #7 out of draft and decide how to publish.** Either merge to `main` (the site updates
-   automatically), or run the deploy workflow manually on the branch via Actions, or move to Cloudflare
-   Pages for per-branch preview URLs. Until one of these happens the work is invisible.
+1. Open the live URL on Android and iOS and work through the checklist in `docs/deployment-policy.md`.
+   Confirm in particular that an existing install picks up the new build rather than staying on the old
+   service worker.
 2. Generate one `shop-bgm` candidate in Suno and run the A/B in `docs/audio-generation.md`. That single
-   listening test decides both whether paid audio is adopted and whether the repository goes private,
-   because those two questions are the same question.
-3. Device check on Android and iOS — `docs/deployment-policy.md` lists the items.
+   listening test decides both whether paid audio is adopted and whether the repository goes private.
+3. Replace the copyright holder if a real name or brand is wanted, before promoting the project.
 
 ### How to resume
 
-Run `$resume-project`. The four dated reports below cover this session in order: the main improvement pass,
-the voice rework, the host-independent build, and the licensing and Cloudflare preparation.
+Run `$resume-project`. This branch now tracks `origin/main`; start follow-up work from here. The six dated
+reports below cover the session in order.
 
 ### Validation at close
 
-`npm run lint` clean; `npm test` 16/16 passing; `npm run build` and `npm run build:root` both succeed;
-`git diff --check` clean. Rerunning `scripts/generate_audio.py` produced a zero-byte diff across all 29
-audio files, confirming generation is still deterministic. No secrets or machine-specific paths in the diff.
+`npm run lint` clean; `npm test` 16/16; `npm run build` and `npm run build:root` succeed; `git diff --check`
+clean. The deploy workflow for `746c3f9` completed with `conclusion: success`, and the `github-pages`
+deployment status is `success`.
 
 ## Dated work reports
 
@@ -411,4 +413,28 @@ audio files, confirming generation is still deterministic. No secrets or machine
 - Replied on all three threads with the evidence and marked them resolved.
 - Unresolved issues: unchanged from the previous entry — PR #7 is still a draft, no physical-device check,
   and the copyright holder is still the GitHub handle.
+- Next actions: as listed in `Current handoff`.
+\n
+### 2026-09-05 (7) — Claude Code — PR #7 merged and deployed
+
+- Objective: Merge PR #7 at the user's instruction and confirm the deployment.
+- Work completed:
+  - PR #7 was a draft, which cannot be merged, so it was marked ready for review first.
+  - Merged with a merge commit, matching the convention set by PR #1, so the eight commit messages survive
+    in the history rather than being squashed away. Merge commit `746c3f9`, guarded with
+    `expectedHeadSha=08f012c`.
+  - The deploy workflow (run 9) completed with `conclusion: success`.
+  - The `github-pages` deployment for `746c3f9` reports `state: success` with the environment URL.
+  - Restarted this branch from `origin/main`, having first confirmed with `git merge-base --is-ancestor`
+    that the old tip was fully contained in `main` and nothing would be lost.
+- What could not be verified: the live site itself. `anyhoe104-spec.github.io` is blocked by this
+  environment's network policy, the same way Suno and the stock audio sites are, so the served HTML,
+  bundle hashes and audio files were not fetched. The deployment status is the evidence used instead.
+- Decisions: a merge commit rather than squash, to preserve the per-topic commit messages, and because
+  PR #1 established that convention.
+- Unresolved issues:
+  - No physical-device check, now the largest gap since the build is live.
+  - Whether an existing installation actually picks up the new service worker has not been observed on a
+    real device, only reasoned about from the cache-name change.
+  - Copyright holder is still the GitHub handle.
 - Next actions: as listed in `Current handoff`.
