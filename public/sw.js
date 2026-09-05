@@ -1,5 +1,17 @@
 /* Minimal offline shell for CAKING! — safe fallbacks if cache misses */
-const CACHE = "caking-shell-v5";
+
+// Replaced at build time with a hash of everything in dist/, by the
+// precache-manifest plugin in vite.config.js.
+//
+// The fetch handler below is cache-first, and audio and images are served from
+// stable URLs rather than content-hashed ones. A fixed cache name would there-
+// fore pin existing players to the audio they first downloaded: swapping
+// shop-bgm.mp3 for a better take would never reach them. Deriving the name from
+// the build's contents means any changed file — a bundle, an mp3 imported by
+// scripts/import_audio.py, an image — produces a new cache, and `activate`
+// drops the old one.
+const BUILD_ID = "__BUILD_ID__";
+const CACHE = "caking-shell-" + (BUILD_ID.startsWith("__") ? "dev" : BUILD_ID);
 // Derived from where this file is served, so the same worker runs under the
 // GitHub Pages sub-path (/caking-game/) and at a host root (/) unchanged.
 const BASE = new URL("./", self.location).pathname;

@@ -103,9 +103,26 @@ export default function App() {
   // ── Feedback helpers ───────────────────────────────────────
   const sfx = useCallback((key) => bus.play(key, "se"), []);
 
-  const voice = useCallback((key, delay = 220) => {
-    setTimeout(() => bus.playVoice(key), delay);
+  // Voice lines are queued behind a short delay so the sound effect lands first.
+  // The timer is held so a phase change, a reset or an unmount cannot let a line
+  // meant for the previous screen fire over the new one. Only one is ever
+  // pending: queuing a new line supersedes the last.
+  const voiceTimer = useRef(null);
+
+  const cancelVoice = useCallback(() => {
+    if (voiceTimer.current !== null) {
+      clearTimeout(voiceTimer.current);
+      voiceTimer.current = null;
+    }
   }, []);
+
+  const voice = useCallback((key, delay = 220) => {
+    cancelVoice();
+    voiceTimer.current = setTimeout(() => {
+      voiceTimer.current = null;
+      bus.playVoice(key);
+    }, delay);
+  }, [cancelVoice]);
 
   const showToast = useCallback((text, tone = "info") => {
     setToast({ id: Date.now() + Math.random(), text, tone });
@@ -175,8 +192,9 @@ export default function App() {
       window.removeEventListener("pointerdown", unlock);
       window.removeEventListener("keydown", unlock);
       document.removeEventListener("visibilitychange", onVisibility);
+      cancelVoice();
     };
-  }, []);
+  }, [cancelVoice]);
 
   useEffect(() => { bus.configure(audio); }, [audio]);
 
@@ -217,12 +235,14 @@ export default function App() {
   // ── Day phase cues ─────────────────────────────────────────
   const previousPhase = useRef(state.dayPhase);
   useEffect(() => {
+    if (previousPhase.current === state.dayPhase) return;
+    cancelVoice();
     if (previousPhase.current === "open" && state.dayPhase === "report") {
       sfx("dayend");
       voice("voice-miru-report", 620);
     }
     previousPhase.current = state.dayPhase;
-  }, [state.dayPhase, sfx, voice]);
+  }, [state.dayPhase, sfx, voice, cancelVoice]);
 
   // ── Recipe unlock cue ──────────────────────────────────────
   // Session-scoped on purpose: after a reload the current unlocks are adopted
@@ -411,6 +431,7 @@ export default function App() {
       try { localStorage.removeItem(key); } catch { /* storage may be unavailable */ }
     }
     const fresh = createDefaultSave();
+    cancelVoice();
     knownRecipes.current = null;
     completedMissions.current = null;
     setState({ ...fresh, audio });
@@ -418,7 +439,7 @@ export default function App() {
     setSettingsOpen(false);
     setLastResult(null);
     setMiffyMood("normal");
-  }, [audio]);
+  }, [audio, cancelVoice]);
 
   const nav = useCallback((tab) => {
     sfx("nav");

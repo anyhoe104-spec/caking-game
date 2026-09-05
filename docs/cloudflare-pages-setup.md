@@ -58,7 +58,7 @@ Production branch は `main` のままにします。それ以外のブランチ
 - [ ] オープニング→営業→日報まで進む
 - [ ] BGMが場面ごとに切り替わる（DevToolsのNetworkを `sounds` で絞る）
 - [ ] Application → Service Workers に登録がある。scopeが `/`
-- [ ] Application → Cache Storage に `caking-shell-v5` があり、`/assets/` が含まれる
+- [ ] Application → Cache Storage に `caking-shell-<ビルドID>` があり、`/assets/` が含まれる
 - [ ] 機内モードにして再読み込みしてもゲームが起動する
 - [ ] ホーム画面へ追加してstandalone表示になる
 

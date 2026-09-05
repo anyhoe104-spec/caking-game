@@ -64,6 +64,12 @@ export class AudioBus {
 
   resume() {
     if (this.ctx?.state === "suspended") this.ctx.resume().catch(() => {});
+    // The fallback path pauses its element in suspend(), and playBgm() will not
+    // restart it because `current.scene` still matches the scene on screen — so
+    // without this the music stays dead until the player changes scene.
+    if (this.fallbackBgm?.paused && channelGain(this.settings, "bgm") > 0) {
+      this.fallbackBgm.play().catch(() => {});
+    }
   }
 
   suspend() {
