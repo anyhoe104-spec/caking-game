@@ -4,60 +4,61 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-09-05 10:37 +0900 (Asia/Tokyo)
+- Updated: 2026-09-05 11:05 +0900 (Asia/Tokyo)
 - Agent: Claude Code
-- Branch: `claude/caking-weekly-improvements-bg3gnf`, restarted from `origin/main` after PR #7 merged
-- Revision: `746c3f9` (the merge commit, now the tip of `main`)
+- Branch: `claude/caking-weekly-improvements-bg3gnf` (synchronized with origin)
+- Revision: `78548b1`
 - Working tree: clean
-- Objective: The weekly improvement request — UI, music, SE and voice, animation — which extended into a
-  voice quality pass, host-independent builds, the licensing and distribution decisions, and the review pass.
+- Objective: Weekly improvement pass — UI, music, SE and voice, animation — then a voice quality pass,
+  host-independent builds, the licensing and distribution decisions, the PR #7 review, and a fix for the
+  BGM start-up problem found on a real device.
 
 ### State
 
-**PR #7 is merged and deployed.** The GitHub Pages deployment for `746c3f9` reports `success`, so
-https://anyhoe104-spec.github.io/caking-game/ now serves this session's build. The live URL could not be
-fetched from the agent environment to confirm what is being served, because the network policy blocks
-`anyhoe104-spec.github.io`; the deployment record is the evidence.
+**The BGM start-up fix is committed and pushed but NOT deployed.** `78548b1` is 2 commits ahead of `main`
+with no open pull request. PR #7 is merged and cannot be reused, so reaching the live site needs a **new**
+pull request from this branch. Until then https://anyhoe104-spec.github.io/caking-game/ still has the bug
+that was reported from the device test.
 
-Everything from this session is on `main`:
+Device test result (from the user, on the live build): the new build was picked up correctly, and the only
+problem was that BGM did not resume on relaunch until some interaction happened. That is what `78548b1`
+fixes.
 
-- UI rebuilt: service screen sub-tabs, service HUD, orders linking into the recipe screen, settings modal.
-- Audio: 5 scene BGM loops with crossfades, 15 SE, 9 voice cues, per-channel volume and mute. All generated
-  from code, so the project owns all 29 files with no licence obligation.
-- Animation: screen and list transitions, bake results, level up, recipe unlock, reduced-motion switch.
-- Host-independent build; Cloudflare Pages and Netlify need no build configuration.
-- `LICENSE` (MIT, code) and `LICENSE-ASSETS.md` (assets, rights reserved).
-- Distribution decided: free, with itch.io pay-what-you-want at a zero minimum.
+Everything else from this session is already on `main` via PR #7: the UI rebuild, the audio layer, the
+animation layer, host-independent builds, `LICENSE` / `LICENSE-ASSETS.md`, and the Cloudflare runbook.
 
 ### Blockers and risks
 
-- **No physical-device check yet.** All verification is headless Chromium. This is now the largest gap,
-  because the build is live and real players can reach it.
-- Existing players carry a service worker from the previous build. The new cache name means the update
-  lands, but the changeover has not been observed on a real device.
-- The copyright holder in `LICENSE` and `LICENSE-ASSETS.md` is the GitHub handle `anyhoe104`.
+- **`78548b1` is undeployed.** A new PR is required. This is the top item.
+- Autoplay policy cannot be defeated outright. The fix widens the cases where music starts unprompted
+  (immediate attempt, statechange, two timers) but a gesture remains the only guaranteed trigger. Whether
+  the specific device behaves better needs re-testing after deploy.
+- The copyright holder in `LICENSE` and `LICENSE-ASSETS.md` is still the GitHub handle `anyhoe104`.
 - `public/sounds/` is 2.93 MB; mobile-network load unmeasured.
-- Offline coverage on a first visit is shell-only; images and audio cache as they are visited.
+- Still unchecked on a device: the settings modal's one-handed reach and the volume sliders.
 
 ### Next actions
 
-1. Open the live URL on Android and iOS and work through the checklist in `docs/deployment-policy.md`.
-   Confirm in particular that an existing install picks up the new build rather than staying on the old
-   service worker.
-2. Generate one `shop-bgm` candidate in Suno and run the A/B in `docs/audio-generation.md`. That single
-   listening test decides both whether paid audio is adopted and whether the repository goes private.
-3. Replace the copyright holder if a real name or brand is wanted, before promoting the project.
+1. **Open a new PR from this branch and merge it**, so the BGM fix reaches the live site. Then re-test the
+   relaunch behaviour on the device that showed the problem.
+2. Audio quality work. Two halves, split by who can do them:
+   - The user generates one `shop-bgm` candidate in Suno (the agent environment cannot reach `suno.com`),
+     then imports it with `scripts/import_audio.py --as shop-bgm --bpm 112 --bars 16`.
+   - The agent can run an objective evaluation of the current generated audio — loudness balance across
+     BGM/SE/voice, SE collisions when effects overlap, loop seam continuity, frequency-band clashes — and
+     adjust `scripts/audio/music.py` for the compositions themselves. The user was offered three ways to
+     sequence this and had not chosen when the session ended.
+3. Finish the device checklist: settings modal reach, volume sliders.
 
 ### How to resume
 
-Run `$resume-project`. This branch now tracks `origin/main`; start follow-up work from here. The six dated
-reports below cover the session in order.
+Run `$resume-project`. This branch is ahead of `main`; the first decision is whether to PR it.
 
 ### Validation at close
 
 `npm run lint` clean; `npm test` 16/16; `npm run build` and `npm run build:root` succeed; `git diff --check`
-clean. The deploy workflow for `746c3f9` completed with `conclusion: success`, and the `github-pages`
-deployment status is `success`.
+clean. Rerunning `scripts/generate_audio.py` produced a zero-file diff, so the committed audio still matches
+what the generator produces.
 
 ## Dated work reports
 
@@ -437,4 +438,40 @@ deployment status is `success`.
   - Whether an existing installation actually picks up the new service worker has not been observed on a
     real device, only reasoned about from the cache-name change.
   - Copyright holder is still the GitHub handle.
+- Next actions: as listed in `Current handoff`.
+\n
+### 2026-09-05 (8) — Claude Code — BGM start-up fix from the device test
+
+- Objective: Fix the problem found in the user's device test — after a PWA relaunch, BGM did not start until
+  some interaction (a tab change, a tap) occurred.
+- Root cause: `bus.unlock()` was only ever called from the `pointerdown` / `keydown` listeners, so on a fresh
+  page load — which is what a PWA relaunch is — audio was never even attempted. `playBgm()` stashed the
+  scene in `pendingScene` and returned. A second, latent problem sat behind it: `unlock()` set `unlocked`
+  before doing anything and the listeners were `{ once: true }`, so a failed first attempt permanently
+  disarmed every retry path.
+- Fix:
+  - Attempt `unlock()` immediately on mount. An installed PWA is normally allowed to autoplay, and the
+    gesture-only approach threw that case away.
+  - `playBgm()` no longer waits for a gesture; it starts the source even while the context is suspended.
+    A suspended context does not advance its clock, so the track begins from its first sample when the
+    browser permits playback — measured: five seconds of wall clock while blocked left
+    `ctx.currentTime` at 0.000.
+  - Retries widened: every pointer/touch/key event (no longer `once`), the context's own `statechange`,
+    and timers at 400 ms and 1500 ms. The visibility handler now calls `unlock()` rather than `resume()`
+    so a relaunch that was never unlocked is covered too.
+  - Split graph construction (`#ensureGraph`) from unlocking, so both are idempotent.
+- Honest limitation, stated to the user: a timer alone cannot defeat autoplay policy. The gesture path
+  remains the only guaranteed trigger; the rest widen the cases where music starts on its own.
+- Validation:
+  - Autoplay allowed (installed-PWA equivalent): four seconds with no input at all, `ctx` reaches `running`
+    and `opening-theme` is playing.
+  - Autoplay blocked: the source is started and waiting; a tap brings `ctx` to `running` and it plays.
+  - No regression in scene BGM switching (opening -> menu -> shop), SE, voice, or offline relaunch.
+  - `npm run lint`, `npm test` 16/16, `npm run build`, `git diff --check` all pass.
+- False alarm investigated and dismissed: `opening-theme.mp3` appeared twice in a request tally. Measuring
+  by `fromServiceWorker` showed one page-level request and one service-worker passthrough for the same
+  bytes; on both a cold and a warm load, zero mp3 responses came from the network rather than the worker.
+  There is no duplicate download.
+- Unresolved issues: the fix is undeployed and needs a new PR; the device that showed the problem has not
+  been re-tested; audio quality evaluation had not started when the session ended.
 - Next actions: as listed in `Current handoff`.
