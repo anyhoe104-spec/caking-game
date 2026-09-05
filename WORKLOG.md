@@ -4,19 +4,19 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-09-05 10:13 +0900 (Asia/Tokyo) — session closed
+- Updated: 2026-09-05 10:33 +0900 (Asia/Tokyo)
 - Agent: Claude Code
 - Branch: `claude/caking-weekly-improvements-bg3gnf` (synchronized with origin)
-- Revision: `365c7d1`
+- Revision: `dd151c6`
 - Working tree: clean
 - Objective: The weekly improvement request — UI, music, SE and voice, animation — which then extended into
   a voice quality pass, host-independent builds, and the licensing and distribution decisions.
 
 ### State
 
-The branch is **5 commits ahead of `main` and not merged**. The published site at
-https://anyhoe104-spec.github.io/caking-game/ therefore still serves the pre-session build: none of the new
-UI, audio or animation is live yet. Deployment runs on push to `main` only.
+**PR #7** is open as a draft against `main`, with all three review findings fixed and the threads resolved.
+The published site at https://anyhoe104-spec.github.io/caking-game/ still serves the pre-session build,
+because deployment runs on push to `main` only. No CI is configured for pull requests.
 
 - UI rebuilt: service screen sub-tabs, service HUD, orders linking into the recipe screen, settings modal.
 - Audio: 5 scene BGM loops with crossfades, 15 SE, 9 voice cues, per-channel volume and mute. All generated
@@ -28,8 +28,8 @@ UI, audio or animation is live yet. Deployment runs on push to `main` only.
 
 ### Blockers and risks
 
-- **The branch is unmerged.** Nothing from this session is visible to anyone until it reaches `main`
-  (or a Cloudflare Pages preview). This blocks writing about it.
+- **PR #7 is still a draft and unmerged.** Nothing from this session is visible to anyone until it reaches
+  `main` (or a Cloudflare Pages preview). This blocks writing about it.
 - No physical-device check. All verification so far is headless Chromium.
 - The copyright holder in `LICENSE` and `LICENSE-ASSETS.md` is the GitHub handle `anyhoe104`.
   Replace it before this reaches a wider audience if a real name or brand is wanted.
@@ -38,9 +38,9 @@ UI, audio or animation is live yet. Deployment runs on push to `main` only.
 
 ### Next actions
 
-1. **Decide how to publish this branch.** Either merge to `main` (the site updates automatically), or run
-   the deploy workflow manually on the branch via Actions, or move to Cloudflare Pages for per-branch
-   preview URLs. Until one of these happens the work is invisible.
+1. **Take PR #7 out of draft and decide how to publish.** Either merge to `main` (the site updates
+   automatically), or run the deploy workflow manually on the branch via Actions, or move to Cloudflare
+   Pages for per-branch preview URLs. Until one of these happens the work is invisible.
 2. Generate one `shop-bgm` candidate in Suno and run the A/B in `docs/audio-generation.md`. That single
    listening test decides both whether paid audio is adopted and whether the repository goes private,
    because those two questions are the same question.
@@ -380,3 +380,35 @@ audio files, confirming generation is still deterministic. No secrets or machine
   applied; toast overflow on narrow phones; and a pre-existing PWA defect where an offline relaunch rendered
   a blank page (two causes — bundles never precached, and `caches.match` honouring `Vary: Origin`).
 - Next actions: as listed in `Current handoff` above.
+\n
+### 2026-09-05 (6) — Claude Code — PR #7 review fixes
+
+- Objective: Address the three findings on PR #7 and reply on each thread.
+- Findings, all reproduced in the code before fixing, all genuine:
+  - **P1, `public/sw.js`** — the fetch handler is cache-first and audio and images ship on stable, non-hashed
+    URLs, so a fixed cache name pinned existing players to whatever audio they first downloaded. The planned
+    `shop-bgm.mp3` swap would not have reached anyone. Fixed by hashing every file in `dist/` (except the
+    worker itself) after the build and writing the first 12 hex digits into `sw.js` as `BUILD_ID`, making the
+    cache `caking-shell-<build id>`. Chose per-deploy naming over the reviewer's other two options because it
+    keeps cache generations out of `import_audio.py` and covers image replacement by the same mechanism.
+  - **P2, `src/game/audio.js`** — `suspend()` paused the fallback element but `resume()` only resumed the
+    AudioContext, and `playBgm()` early-returns while `current.scene` still matches, so on the no-Web-Audio
+    path the music stayed dead until the scene changed. `resume()` now restarts the element, guarded on the
+    BGM channel gain so it cannot start during a mute.
+  - **P3, `src/App.jsx`** — the delayed voice timer was never retained, so a line queued for one screen could
+    fire after a phase change or reset. The timer is now held in a ref and cancelled on the next queue, on a
+    phase change, on reset and on unmount; at most one line is ever pending.
+- Validation:
+  - `npm run lint` clean; `npm test` 16/16; `npm run build` and `npm run build:root` succeed;
+    `git diff --check` clean.
+  - P1 measured: an unchanged rebuild reproduces the same id (5d78bf1be07c), altering one mp3 changes it
+    (9256001bfca0), restoring the file restores the id.
+  - P2 measured in Chromium with `AudioContext` deleted to force the fallback path: playing -> paused on
+    hide -> playing again on show.
+  - P3 measured: crafting then immediately resetting plays no voice, while the same flow without a reset
+    does play `voice-miffy-done.mp3` — confirming the test is not vacuous.
+  - Offline relaunch re-verified after the service worker change; the shell still boots fully.
+- Replied on all three threads with the evidence and marked them resolved.
+- Unresolved issues: unchanged from the previous entry — PR #7 is still a draft, no physical-device check,
+  and the copyright holder is still the GitHub handle.
+- Next actions: as listed in `Current handoff`.
