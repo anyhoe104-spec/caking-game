@@ -182,15 +182,37 @@ export default function App() {
   }, [reduceMotion]);
 
   // ── Audio wiring ───────────────────────────────────────────
+  // Audio is attempted immediately rather than waiting for a tap. An installed
+  // PWA is normally allowed to start on its own, and the previous gesture-only
+  // approach meant a relaunch stayed silent until the player happened to touch
+  // something. When policy does refuse, these retries cover it:
+  //
+  //   - every pointer or key event, until the context is actually running
+  //   - the context's own statechange, for when the browser relents unprompted
+  //   - two short timers, for launches where the decision settles after load
+  //
+  // Only the gesture path is guaranteed; the rest widen the cases where music
+  // starts on its own. bus.unlock() is idempotent and cheap to call repeatedly.
   useEffect(() => {
-    const unlock = () => bus.unlock();
-    window.addEventListener("pointerdown", unlock, { once: true });
-    window.addEventListener("keydown", unlock, { once: true });
-    const onVisibility = () => (document.hidden ? bus.suspend() : bus.resume());
+    const kick = () => bus.unlock();
+    kick();
+
+    const pointerOpts = { passive: true };
+    window.addEventListener("pointerdown", kick, pointerOpts);
+    window.addEventListener("touchstart", kick, pointerOpts);
+    window.addEventListener("keydown", kick);
+    bus.onStateChange(kick);
+
+    const timers = [setTimeout(kick, 400), setTimeout(kick, 1500)];
+    const onVisibility = () => (document.hidden ? bus.suspend() : bus.unlock());
     document.addEventListener("visibilitychange", onVisibility);
+
     return () => {
-      window.removeEventListener("pointerdown", unlock);
-      window.removeEventListener("keydown", unlock);
+      window.removeEventListener("pointerdown", kick, pointerOpts);
+      window.removeEventListener("touchstart", kick, pointerOpts);
+      window.removeEventListener("keydown", kick);
+      bus.onStateChange(null);
+      timers.forEach(clearTimeout);
       document.removeEventListener("visibilitychange", onVisibility);
       cancelVoice();
     };
