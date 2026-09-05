@@ -1,6 +1,6 @@
 # CAKING 現在の開発状況
 
-更新日: 2026-08-14
+更新日: 2026-09-05
 
 ## 現在地
 
@@ -12,7 +12,9 @@ CAKINGのMVPはGitHub Pagesで公開済み。Phase 0〜7のゲーム機能と画
 - 公開方式: `main` → GitHub Actions → GitHub Pages
 - 現行営業時間: 180秒
 - ボトムナビ: 営業 / レシピ / デコレーション / 食材 / スタッフ
-- セーブ: `localStorage` V3（V2からの移行対応）
+- 営業画面サブタブ: オーダー / 目標 / ステータス
+- セーブ: `localStorage` V4（V2・V3からの移行対応）
+- サウンド: BGM5曲 / 効果音15種 / ボイス9種（すべて自作の生成音源）
 
 ## 完了済み
 
@@ -28,7 +30,10 @@ CAKINGのMVPはGitHub Pagesで公開済み。Phase 0〜7のゲーム機能と画
 - 営業管理画面への明示タブ
 - 営業画面への店舗ステータス統合
 - GitHub Pages / PWA基盤
-- 自動テスト9件、lint、production build
+- 自動テスト16件、lint、production build
+- UI刷新（営業画面のサブタブ化、設定モーダル、注文からレシピへの導線、ダークモード不具合の解消）
+- 場面別BGM・効果音・ボイスとフェード、チャンネル別音量・ミュート設定
+- UI遷移と主要アクションのアニメーション、`prefers-reduced-motion` 対応
 
 ## 次の優先作業
 
@@ -49,22 +54,20 @@ CAKINGのMVPはGitHub Pagesで公開済み。Phase 0〜7のゲーム機能と画
 - デコレーションとスタッフの価格・効果
 - スマートフォンのスクロール量と押しやすさ
 
-### 3. 音源の選定・収録
+### 3. 音源の高音質化（任意）
 
-- `opening-theme.mp3`
-- `shop-bgm.mp3`
-- `ending-theme.mp3`
-- `great.mp3`
-- `unlock.mp3`
+現在の音源はコード合成によるオリジナルで、権利・費用の問題はない。音質を上げたい場合は
+`docs/audio-generation.md` の手順に従い、Suno / ElevenLabs / VOICEVOX等で生成した音源へ
+同名ファイルで差し替える。ゲーム側のコード変更は不要。
 
-採用前に `docs/audio-sources.md` に従って出典、利用条件、クレジット要否を記録する。
+差し替え時は `public/sounds/manifest.json` の `seconds` を実測値に更新し（BGMのループ点に使用）、
+`docs/audio-licenses.md` に出典と利用条件を追記する。クレジット表記が必要な音源を採用した場合は、
+`README.md` と設定画面の「音源について」の文言も更新する。
 
 ### 4. MVP公開版の整備
 
-- 遊び方と初見導線の改善
 - スクリーンショット、更新履歴、バージョン表記
-- 素材クレジット
-- 実機確認結果の記録
+- 実機確認結果の記録（特にiOS Safariでの音声解禁とPWA再起動後のBGM復帰）
 
 ### 5. 外部配布
 
@@ -80,6 +83,8 @@ CAKINGのMVPはGitHub Pagesで公開済み。Phase 0〜7のゲーム機能と画
 
 - 現在の状態: このファイルとルート `README.md`
 - 公開方針: `docs/deployment-policy.md`
+- 音源の生成と差し替え: `docs/audio-generation.md`
+- 音源ライセンス台帳: `docs/audio-licenses.md`
 - 過去の作業証跡: `docs/phase-reports/`
 - Obsidian側の要求仕様: プロジェクト親ディレクトリの `spec/`
 

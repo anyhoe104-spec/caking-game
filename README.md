@@ -10,7 +10,9 @@
 - PCブラウザとスマートフォンで基本動作・リンクを確認済み
 - `main` へのpushをGitHub Actionsで自動デプロイ
 - Phase 0〜7の機能・画像統合を完了
-- 次の重点はPWA最終確認、通しプレイ、ゲームバランス調整、音源収録
+- BGM5曲・効果音15種・ボイス9種を実装済み（すべて自作の生成音源）
+- UI刷新・アニメーション・サウンド設定を追加
+- 次の重点はPWA最終確認、通しプレイ、ゲームバランス調整
 
 最新状況と次の作業は [`docs/current-status.md`](docs/current-status.md) を参照してください。
 
@@ -23,7 +25,9 @@
 5. デコレーションやスタッフを購入してお店を強化します。
 6. 職人レベル10・所持金100,000Pでエンディングです。
 
-ボトムナビは `営業 / レシピ / デコレーション / 食材 / スタッフ` の5画面です。営業画面では、注文、目標、売上、店舗ステータスを確認できます。
+ボトムナビは `営業 / レシピ / デコレーション / 食材 / スタッフ` の5画面です。営業画面は `オーダー / 目標 / ステータス` の3つに切り替えられ、営業中は自動的にオーダーが開きます。注文をタップするとレシピ画面の該当レシピへ移動します。
+
+音量とミュートはヘッダー右上の ⚙ から設定できます。BGM・効果音・ボイスを個別に調整でき、アニメーションを減らす設定も同じ場所にあります。
 
 ## 主な機能
 
@@ -35,7 +39,12 @@
 - AI助手ミルの状況別メッセージ
 - デコレーション購入・装備
 - スタッフ雇用と売上・ポイント・素材回復効果
-- V2からV3へのセーブ移行
+- 場面別BGM5曲（オープニング / メニュー / 営業中 / 日報 / エンディング）とフェードイン・アウト
+- 効果音15種とキャラクターボイス9種
+- BGM・効果音・ボイスの個別音量とミュート設定
+- UI遷移・ケーキ完成・注文成立・レベルアップのアニメーション
+- `prefers-reduced-motion` 対応とアニメーション軽減設定
+- V2・V3からV4へのセーブ移行
 - PWA manifest、Service Worker、端末内セーブ
 
 ## セーブとPWA
@@ -73,19 +82,49 @@ git diff --check
 
 `main` に反映された変更は `.github/workflows/deploy.yml` によりGitHub Pagesへ自動デプロイされます。
 
+配信先は固定されていません。GitHub Pagesはサブパス（`/caking-game/`）、Cloudflare PagesやNetlifyはルート配信ですが、どちらもソースの変更なしでビルドできます。
+
+```bash
+npm run build         # GitHub Pages 向け
+npm run build:root    # ルート配信向け
+```
+
+詳細は [`docs/deployment-policy.md`](docs/deployment-policy.md) を参照してください。
+
 ## プロジェクト資料
 
 - [`docs/current-status.md`](docs/current-status.md): 現在地と次の優先作業
 - [`docs/deployment-policy.md`](docs/deployment-policy.md): 公開・配布方針
-- [`docs/audio-sources.md`](docs/audio-sources.md): BGM・SE候補とライセンス記録方法
+- [`docs/audio-generation.md`](docs/audio-generation.md): 音源の生成方法と差し替え手順
+- [`docs/audio-licenses.md`](docs/audio-licenses.md): 音源のライセンス台帳
+- [`docs/audio-sources.md`](docs/audio-sources.md): 外部BGM・SE候補の調査記録
 - [`docs/phase-reports/`](docs/phase-reports/): 各開発フェーズの履歴
 
 ## 公開と素材
 
 リポジトリとゲームはPublicです。秘密情報をフロントエンドやリポジトリへ追加しないでください。
 
-画像・音源を追加する場合は、生成元、利用条件、クレジット要否を記録します。BGM 3曲と `great.mp3` / `unlock.mp3` は未収録です。
+画像・音源を追加する場合は、生成元、利用条件、クレジット要否を [`docs/audio-licenses.md`](docs/audio-licenses.md) に記録します。
+
+音源はすべて `scripts/generate_audio.py` によるコード合成で生成したCAKINGのオリジナルです。第三者の権利を含まないため、クレジット表記は不要です。再生成は次のコマンドで行えます。
+
+```bash
+python3 -m pip install numpy lameenc
+python3 scripts/generate_audio.py
+```
 
 ## ライセンス
 
-現時点ではリポジトリ全体に適用するライセンスファイルを設定していません。ソースコードや画像素材の再利用条件は未指定です。
+ソースコードと素材で条件が異なります。
+
+| 対象 | 条件 |
+|---|---|
+| ソースコード | [MIT License](LICENSE) |
+| 画像・音源・キャラクター・シナリオ | [権利留保](LICENSE-ASSETS.md)（All Rights Reserved） |
+
+コードは自由に読んで、参考にして、使っていただけます。一方でミフィとミル、
+イラスト、音源、シナリオは本作固有のものとして権利を留保しています。
+fork してコードを使う場合は、`public/images/` と `public/sounds/`、
+キャラクター・シナリオに関わるテキストをご自身のものへ差し替えてください。
+
+詳細は [`LICENSE-ASSETS.md`](LICENSE-ASSETS.md) を参照してください。

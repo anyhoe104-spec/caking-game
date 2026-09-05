@@ -1,0 +1,282 @@
+/* ─────────────────────────────────────────────
+   CAKING! — motion layer
+   Every animation defined here is switched off by `.reduceMotion` on <html>,
+   which App.jsx sets from the in-game setting or the OS preference.
+   ───────────────────────────────────────────── */
+
+/* ── Keyframes ──────────────────────────────── */
+@keyframes bounceIdle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-4deg); }
+  75% { transform: rotate(4deg); }
+}
+@keyframes moodPop {
+  0% { transform: scale(0.86); }
+  55% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+@keyframes pulseSoft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+@keyframes flashOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.96); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.9) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes craftIn {
+  0% { opacity: 0; transform: scale(0.7); }
+  45% { opacity: 1; transform: scale(1.06); }
+  70% { transform: scale(0.99); }
+  85% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.02) translateY(-12px); }
+}
+@keyframes shakeX {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-7px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(3px); }
+}
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(9px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes viewIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes numBump {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.22); color: var(--gold2); }
+  100% { transform: scale(1); }
+}
+@keyframes ringBurst {
+  0% { opacity: 0.85; transform: translate(-50%, -50%) scale(0.2); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(2.6); }
+}
+@keyframes goldSweep {
+  from { background-position: -180% 0; }
+  to { background-position: 280% 0; }
+}
+@keyframes startPulse {
+  0%, 100% { box-shadow: 0 4px 18px rgba(245, 166, 35, 0.5); }
+  50% { box-shadow: 0 4px 26px rgba(245, 166, 35, 0.85); }
+}
+@keyframes badgePop {
+  0% { transform: scale(0.4); }
+  60% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+@keyframes barShimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(220%); }
+}
+
+/* ── Screen & list transitions ──────────────── */
+.viewSwap {
+  animation: viewIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Cards enter in sequence; --i is set per item, capped so long lists stay snappy. */
+.stagger {
+  animation: fadeSlideUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(min(var(--i, 0), 8) * 38ms);
+}
+
+.fadeSlide {
+  animation: fadeSlideUp 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.popIn {
+  animation: popIn 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ── Press feedback ─────────────────────────── */
+.pressable {
+  transition: transform 0.12s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.12s, background-color 0.15s;
+}
+.pressable:active:not(:disabled) {
+  transform: scale(0.965);
+}
+.startBtn.pressable:active {
+  transform: translateX(-50%) scale(0.97);
+}
+
+.navItem .navIcon {
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.navItem.active .navIcon {
+  transform: scale(1.16) translateY(-1px);
+}
+.navItem:active .navIcon {
+  transform: scale(0.92);
+}
+.navItem.active::before {
+  animation: fadeSlideUp 0.22s ease both;
+}
+
+.homeTab {
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.tabBadge {
+  animation: badgePop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ── Character ──────────────────────────────── */
+.miffyChar {
+  animation: bounceIdle 2.4s ease-in-out infinite;
+  transition: transform 0.2s;
+}
+.miffyChar[data-mood="working"] {
+  animation: wiggle 0.7s ease-in-out infinite;
+}
+.miffyChar[data-mood="happy"],
+.miffyChar[data-mood="excited"] {
+  animation: moodPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), bounceIdle 1.4s ease-in-out infinite 0.45s;
+}
+.miffyChar[data-mood="sad"] {
+  animation: shakeX 0.5s ease;
+}
+.sceneChar {
+  animation: bounceIdle 3s ease-in-out infinite;
+}
+
+/* ── Numbers & bars ─────────────────────────── */
+.liveNum {
+  display: inline-block;
+}
+.liveNum--bump {
+  animation: numBump 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* A full bar sweeps once so completion is felt, not just read. */
+.bar--full {
+  position: relative;
+  overflow: hidden;
+}
+.bar--full::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75), transparent);
+  animation: barShimmer 1.6s ease-in-out infinite;
+}
+
+.timerUrgent {
+  animation: pulseSoft 0.85s ease-in-out infinite;
+}
+
+.startBtn {
+  animation: startPulse 2.2s ease-in-out infinite;
+}
+
+/* ── Toast & result cards ───────────────────── */
+.toast {
+  animation: toastIn 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.craftCard {
+  animation: craftIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.craftResult--fail .craftCard {
+  animation: craftIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards, shakeX 0.42s ease 0.05s;
+}
+.craftResult--great .craftIcon {
+  animation: moodPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+}
+
+.overlay {
+  animation: flashOut 0.25s ease reverse;
+}
+.modalCard {
+  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ── Recipe highlights ──────────────────────── */
+.recipeCard {
+  transition: box-shadow 0.25s, border-color 0.25s, transform 0.2s;
+}
+.recipeCard--flash {
+  animation: moodPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(245, 200, 66, 0.4), var(--shadow);
+}
+.orderFlag {
+  animation: badgePop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.orderRow {
+  transition: background-color 0.25s, opacity 0.35s;
+}
+
+/* ── Full-screen FX ─────────────────────────── */
+.fx-sparkle::after,
+.fx-levelup::after,
+.fx-smoke::after,
+.fx-unlock::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 240;
+  animation: flashOut 0.8s forwards;
+}
+.fx-sparkle::after {
+  background: radial-gradient(circle, rgba(255, 255, 200, 0.6) 18%, transparent 68%);
+}
+.fx-levelup::after {
+  background: radial-gradient(circle, rgba(255, 200, 0, 0.55) 18%, transparent 68%);
+}
+.fx-unlock::after {
+  background: linear-gradient(115deg, transparent 35%, rgba(255, 220, 120, 0.65) 50%, transparent 65%);
+  background-size: 260% 100%;
+  animation: goldSweep 0.85s ease-out forwards;
+}
+.fx-smoke::after {
+  background: radial-gradient(circle, rgba(150, 150, 150, 0.4) 18%, transparent 68%);
+}
+
+/* Expanding ring on level up, on top of the flash. */
+.fx-levelup::before {
+  content: "";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  border: 5px solid rgba(245, 200, 66, 0.9);
+  pointer-events: none;
+  z-index: 241;
+  animation: ringBurst 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Reduced motion ─────────────────────────── */
+.reduceMotion *,
+.reduceMotion *::before,
+.reduceMotion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+/* The result card animates itself out, so it needs a static replacement. */
+.reduceMotion .craftCard {
+  animation: none !important;
+  opacity: 1;
+}
+.reduceMotion .bar--full::after {
+  display: none;
+}

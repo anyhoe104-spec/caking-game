@@ -1,10 +1,14 @@
 import { BASE_MATERIALS } from "./data.js";
+import { DEFAULT_AUDIO, normalizeAudio } from "./audioSettings.js";
 
-export const STORAGE_KEY = "caking-save-v3";
-export const LEGACY_STORAGE_KEY = "caking-save-v2";
+export const STORAGE_KEY = "caking-save-v4";
+export const LEGACY_STORAGE_KEYS = ["caking-save-v3", "caking-save-v2"];
+export const LEGACY_STORAGE_KEY = LEGACY_STORAGE_KEYS[1];
+
+export const SAVE_VERSION = 4;
 
 export const defaultSave = () => ({
-  version: 3,
+  version: SAVE_VERSION,
   gamePhase: "opening",
   money: 1000,
   level: 1,
@@ -16,8 +20,7 @@ export const defaultSave = () => ({
   failCount: 0,
   buyCount: 0,
   levelUpCount: 0,
-  soundOn: true,
-  bgmOn: true,
+  audio: { ...DEFAULT_AUDIO },
   endingReached: false,
   openingIndex: 0,
   dayPhase: "prep",
@@ -44,7 +47,8 @@ export function migrateSave(raw) {
   return {
     ...base,
     ...raw,
-    version: 3,
+    version: SAVE_VERSION,
+    audio: normalizeAudio(raw.audio, raw),
     money: safeCount(raw.money, base.money),
     level: Math.max(1, safeCount(raw.level, base.level)),
     exp: safeCount(raw.exp, base.exp),
@@ -60,14 +64,20 @@ export function migrateSave(raw) {
 
 export function loadSave(storage = globalThis.localStorage) {
   try {
-    const current = storage?.getItem(STORAGE_KEY);
-    const legacy = storage?.getItem(LEGACY_STORAGE_KEY);
-    return migrateSave(JSON.parse(current || legacy || "{}"));
+    for (const key of [STORAGE_KEY, ...LEGACY_STORAGE_KEYS]) {
+      const stored = storage?.getItem(key);
+      if (stored) return migrateSave(JSON.parse(stored));
+    }
+    return defaultSave();
   } catch {
     return defaultSave();
   }
 }
 
 export function saveGame(state, storage = globalThis.localStorage) {
-  storage?.setItem(STORAGE_KEY, JSON.stringify({ ...state, version: 3 }));
+  // `soundOn` / `bgmOn` are gone from the model; drop them rather than persist stale copies.
+  const { soundOn, bgmOn, ...rest } = state;
+  void soundOn;
+  void bgmOn;
+  storage?.setItem(STORAGE_KEY, JSON.stringify({ ...rest, version: SAVE_VERSION }));
 }

@@ -8,7 +8,8 @@
     "test": "node --test",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:root": "node scripts/build-root.mjs"
   },
   "dependencies": {
     "react": "^19.2.5",
