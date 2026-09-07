@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 import "./animations.css";
+import "./atelier.css";
+import ResumeDialog from "./components/ResumeDialog.jsx";
+import CakeAtelier from "./components/CakeAtelier.jsx";
+import { buyCakePart, equipCakePart, resetCakeParts } from "./game/cakeParts.js";
 
 import { loadSave as loadStoredSave, saveGame, defaultSave as createDefaultSave, STORAGE_KEY as SAVE_KEY, LEGACY_STORAGE_KEYS } from "./game/storage.js";
 import { startBusiness as openBusiness, tickBusiness, nextDay as advanceDay } from "./game/business.js";
@@ -30,7 +34,7 @@ const REGEN_MS = 5000;
 const REGEN_SECONDS = REGEN_MS / 1000;
 const BUY_AMOUNT = 3;
 const BUY_COST = 200;
-const CRAFT_RESULT_MS = 1500;
+
 
 const NAV_ITEMS = [
   { id: "business", label: "営業", icon: "🏪" },
@@ -61,11 +65,14 @@ const STARS_FOR = { great: 3, success: 2, fail: 1 };
 
 export default function App() {
   const [state, setState] = useState(loadStoredSave);
+  const [paused, setPaused] = useState(() => state.gamePhase === "playing" && state.dayPhase === "open");
   const [activeTab, setActiveTab] = useState(null);
   const [homeTabPick, setHomeTabPick] = useState(null); // { phase, tab } — cleared when the phase turns over
   const [toast, setToast] = useState(null);
   const [effect, setEffect] = useState("");
   const [craftResult, setCraftResult] = useState(null);
+  const craftLocked = useRef(false);
+  const finishCraft = useCallback(() => { craftLocked.current = false; setCraftResult(null); }, []);
   const [miffyMood, setMiffyMood] = useState("normal");
   const [lastResult, setLastResult] = useState(null);
   const [lastRecipe, setLastRecipe] = useState("");
@@ -144,11 +151,7 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [effect]);
 
-  useEffect(() => {
-    if (!craftResult) return;
-    const timer = setTimeout(() => setCraftResult(null), CRAFT_RESULT_MS);
-    return () => clearTimeout(timer);
-  }, [craftResult]);
+
 
   useEffect(() => {
     if (miffyMood === "normal") return;
@@ -186,7 +189,14 @@ export default function App() {
     const unlock = () => bus.unlock();
     window.addEventListener("pointerdown", unlock, { once: true });
     window.addEventListener("keydown", unlock, { once: true });
-    const onVisibility = () => (document.hidden ? bus.suspend() : bus.resume());
+    const onVisibility = () => {
+      document.documentElement.classList.toggle("pageHidden", document.hidden);
+      if (document.hidden) {
+        setPaused(true);
+        cancelVoice();
+        bus.suspend();
+      }
+    };
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
       window.removeEventListener("pointerdown", unlock);
@@ -208,9 +218,17 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [state.dayPhase]);
 
+  useEffect(() => {
+    document.documentElement.classList.toggle("gamePaused", paused);
+    if (paused) bus.suspend(); else if (!document.hidden) bus.resume();
+    return () => document.documentElement.classList.remove("gamePaused");
+  }, [paused]);
+
   // ── Material regen (respects リコ's hiring bonus) ────────────
   useEffect(() => {
+    if (paused) return;
     const timer = setInterval(() => {
+      if (document.hidden) return;
       setState((current) => {
         const cap = capByLevel(current.level);
         const gain = 1 + getStaffEffects(current.staff ?? []).regenBonus;
@@ -223,14 +241,16 @@ export default function App() {
       });
     }, REGEN_MS);
     return () => clearInterval(timer);
-  }, []);
+  }, [paused]);
 
   // ── Business timer ─────────────────────────────────────────
   useEffect(() => {
-    if (state.dayPhase !== "open") return;
-    const timer = setInterval(() => setState((current) => tickBusiness(current)), 1000);
+    if (state.dayPhase !== "open" || paused) return;
+    const timer = setInterval(() => {
+      if (!document.hidden) setState((current) => tickBusiness(current));
+    }, 1000);
     return () => clearInterval(timer);
-  }, [state.dayPhase]);
+  }, [state.dayPhase, paused]);
 
   // ── Day phase cues ─────────────────────────────────────────
   const previousPhase = useRef(state.dayPhase);
@@ -294,6 +314,7 @@ export default function App() {
   }, [sfx]);
 
   const craft = useCallback((recipe) => {
+    if (craftLocked.current || state.dayPhase === "report") return;
     if (state.level < recipe.level) {
       sfx("error");
       showToast(`Lv${recipe.level}で解放されます`, "warn");
@@ -307,6 +328,7 @@ export default function App() {
       return;
     }
 
+    craftLocked.current = true;
     const result = rollCraftResult(state.level, Math.random());
 
     const materials = { ...state.materials };
@@ -334,24 +356,14 @@ export default function App() {
     const ratings = updateRecipeRating(state.recipeRatings, recipe.name, result);
     const earned = money + customerBonus.money;
 
-    // ── Feedback ──
-    if (result === "great") { sfx("great"); triggerEffect("sparkle"); setMood("happy"); }
-    else if (result === "success") { sfx("success"); setMood("working"); }
-    else { sfx("error"); triggerEffect("smoke"); setMood("sad"); }
-    if (orderResult.fulfilled) sfx("order");
-    if (levelUps > 0) { sfx("levelup"); triggerEffect("levelup"); }
-
-    if (levelUps > 0) voice("voice-miffy-levelup", 700);
-    else if (orderResult.fulfilled) voice("voice-miffy-order", 380);
-    else if (result === "great") voice("voice-miffy-great", 300);
-    else if (result === "success") voice("voice-miffy-done", 300);
-    else voice("voice-miffy-fail", 300);
-
     setLastResult(result);
     setLastRecipe(recipe.name);
     setCraftResult({
       id: Date.now(),
       type: result,
+      levelUps,
+      level,
+      fulfilled: orderResult.fulfilled,
       recipe: recipe.name,
       icon: recipe.icon,
       money: earned,
@@ -359,7 +371,6 @@ export default function App() {
       stars: STARS_FOR[result],
       customer: orderResult.customer?.name ?? null,
     });
-    if (levelUps > 0) showToast(`🎉 Lv${level} になりました！`, "gold");
 
     setState((current) => {
       const staffEffects = getStaffEffects(current.staff ?? []);
@@ -390,7 +401,22 @@ export default function App() {
       }
       return next;
     });
-  }, [state, sfx, voice, showToast, triggerEffect, canMake, setMood]);
+  }, [state, sfx, showToast, canMake, setMood]);
+
+  const revealCraft = useCallback(() => {
+    if (!craftResult) return;
+    const { type: result, levelUps, level, fulfilled } = craftResult;
+    if (result === "great") { sfx("great"); triggerEffect("sparkle"); setMood("happy"); }
+    else if (result === "success") { sfx("success"); setMood("working"); }
+    else { sfx("error"); triggerEffect("smoke"); setMood("sad"); }
+    if (fulfilled) sfx("order");
+    if (levelUps > 0) { sfx("levelup"); triggerEffect("levelup"); showToast(`🎉 Lv${level} になりました！`, "gold"); }
+    if (levelUps > 0) voice("voice-miffy-levelup", 700);
+    else if (fulfilled) voice("voice-miffy-order", 380);
+    else if (result === "great") voice("voice-miffy-great", 300);
+    else if (result === "success") voice("voice-miffy-done", 300);
+    else voice("voice-miffy-fail", 300);
+  }, [craftResult, sfx, triggerEffect, setMood, showToast, voice]);
 
   const buyMat = useCallback((key) => {
     if (state.money < BUY_COST) { sfx("error"); showToast("コインが足りません！", "warn"); return; }
@@ -431,6 +457,8 @@ export default function App() {
       try { localStorage.removeItem(key); } catch { /* storage may be unavailable */ }
     }
     const fresh = createDefaultSave();
+    finishCraft();
+    setPaused(false);
     cancelVoice();
     knownRecipes.current = null;
     completedMissions.current = null;
@@ -439,7 +467,7 @@ export default function App() {
     setSettingsOpen(false);
     setLastResult(null);
     setMiffyMood("normal");
-  }, [audio, cancelVoice]);
+  }, [audio, cancelVoice, finishCraft]);
 
   const nav = useCallback((tab) => {
     sfx("nav");
@@ -486,6 +514,7 @@ export default function App() {
 
   if (state.gamePhase === "opening") {
     const finish = () => {
+      setPaused(false);
       sfx("tap");
       voice("voice-miru-hello", 260);
       setState((current) => ({
@@ -511,19 +540,20 @@ export default function App() {
     );
   }
 
-  if (state.gamePhase === "ending") {
+  if (state.gamePhase === "ending" && !craftResult) {
     return (
       <EndingScene
         state={state}
         onRestart={reset}
-        onContinue={() => { sfx("tap"); setState((current) => ({ ...current, gamePhase: "playing" })); }}
+        onContinue={() => { setPaused(false); sfx("tap"); setState((current) => ({ ...current, gamePhase: "playing" })); }}
       />
     );
   }
 
   return (
-    <div className={`phoneStage ${effect ? `fx-${effect}` : ""}`}>
-      <div className="appShell">
+    <>
+    <div className={`phoneStage ${effect ? `fx-${effect}` : ""}`} inert={paused}>
+      <div className="appShell" inert={!!craftResult}>
         <Header
           state={state}
           expToNext={expToNext}
@@ -532,6 +562,7 @@ export default function App() {
           onSettings={() => { sfx("tap"); setSettingsOpen(true); }}
         />
 
+        <div className="sessionControls"><span>営業中も、ひと休みできます</span><button onClick={() => { cancelVoice(); setPaused(true); }}>一時停止</button></div>
         <HintStrip icon={miruImg(miruMood)} name="ミル" message={miruMsg} />
 
         <main className="mainContent viewSwap" key={activeTab ?? "home"}>
@@ -572,12 +603,15 @@ export default function App() {
           )}
 
           {activeTab === "deco" && (
+            <>
+            <CakeAtelier state={state} onReset={slot => { sfx("equip"); setState(current => resetCakeParts(current,slot)); }} onBuy={id => { sfx("buy"); setState(current => buyCakePart(current,id)); }} onEquip={id => { sfx("equip"); setState(current => equipCakePart(current,id)); }}/>
             <UpgradeView
               kind="deco"
               state={state}
               onBuyDecoration={purchaseDecoration}
               onEquipDecoration={selectDecoration}
             />
+            </>
           )}
 
           {activeTab === "staff" && (
@@ -586,7 +620,7 @@ export default function App() {
         </main>
       </div>
 
-      <nav className="bottomNav" aria-label="メインメニュー">
+      <nav className="bottomNav" aria-label="メインメニュー" inert={!!craftResult}>
         {NAV_ITEMS.map(({ id, label, icon }) => {
           const active = id === "business" ? activeTab === null : activeTab === id;
           return (
@@ -603,16 +637,16 @@ export default function App() {
         })}
       </nav>
 
-      {state.dayPhase === "prep" && (
+      {state.dayPhase === "prep" && !craftResult && (
         <button className="startBtn pressable" onClick={startBusiness}>
           🍰 営業スタート！
         </button>
       )}
 
       <Toast toast={toast} />
-      <CraftResult result={craftResult} />
+      <CraftResult paused={paused} result={craftResult} onReveal={revealCraft} reduced={reduceMotion} onFinish={finishCraft} cakeStyle={state.cakeStyle} />
 
-      {state.dayPhase === "report" && (
+      {state.dayPhase === "report" && !craftResult && (
         <DailyReport
           state={state}
           animate={!reduceMotion}
@@ -633,5 +667,7 @@ export default function App() {
         />
       )}
     </div>
+    {paused && <ResumeDialog state={state} onResume={() => { bus.unlock(); setPaused(false); }} />}
+    </>
   );
 }

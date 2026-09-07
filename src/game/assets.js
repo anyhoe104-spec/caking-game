@@ -15,3 +15,6 @@ export const MIFFY_FALLBACK = { normal: "🐱", happy: "😸", sad: "🙀", exci
 export const miruImg = (mood = "normal") => `${BASE}images/characters/miru-${mood}.png`;
 
 export const customerImg = (avatarPath) => `${BASE}${avatarPath}`;
+
+const RECIPE_FILES = { "ショートケーキ": "shortcake", "プリン": "pudding", "イチゴタルト": "tart", "チョコケーキ": "choco-cake", "ミルフィーユ": "millefeuille", "フルーツパイ": "fruit-pie", "デコレーションケーキ": "decoration-cake", "王様のケーキ": "royal-cake" };
+export const recipeImg = name => `${BASE}images/recipes/${RECIPE_FILES[name] ?? "shortcake"}.png`;

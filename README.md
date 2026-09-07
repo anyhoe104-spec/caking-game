@@ -16,6 +16,14 @@
 
 最新状況と次の作業は [`docs/current-status.md`](docs/current-status.md) を参照してください。
 
+## 工房演出の追加改修（2026-09-07・未公開）
+
+店内を動くミニキャラ、注文からの工房移動、全8レシピそれぞれの3工程の製造演出、ケーキパーツの試着・ゲーム内Pでの購入と装備、4章の工房日記を追加。実課金とAndroid/iOSストア版は未実装です。
+
+- [改修要件・完走条件](docs/store-quality-roadmap.md)
+- [検証記録](docs/atelier-validation.md)
+- [再開用引き継ぎ](WORKLOG.md)
+
 ## 遊び方
 
 1. 「営業スタート！」を押して1日の営業を始めます。
@@ -128,3 +136,7 @@ fork してコードを使う場合は、`public/images/` と `public/sounds/`�
 キャラクター・シナリオに関わるテキストをご自身のものへ差し替えてください。
 
 詳細は [`LICENSE-ASSETS.md`](LICENSE-ASSETS.md) を参照してください。
+
+## ネイティブ開発
+
+Node.js 22.12以上で `npm ci` → `npm run native:sync`。Android/iOSプロジェクトへWeb資産を同期します。SDK・署名・実機の手順と未検証範囲は [native-build.md](docs/native-build.md) を参照してください。

@@ -26,8 +26,10 @@ const PRECACHE = [
   BASE,
   BASE + "index.html",
   BASE + "manifest.json",
-  BASE + "icons/icon-192.svg",
-  BASE + "icons/icon-512.svg",
+  BASE + "favicon.svg",
+  BASE + "icons/icon-192.png",
+  BASE + "icons/apple-touch-icon.png",
+  BASE + "icons/icon-512.png",
   ...(Array.isArray(BUILD_ASSETS) ? BUILD_ASSETS.map((file) => BASE + file) : []),
 ];
 
@@ -41,14 +43,10 @@ const MATCH = { ignoreVary: true };
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE).then((cache) =>
-      Promise.all(
-        PRECACHE.map((url) =>
-          cache.add(url).catch(() => {})
-        )
-      )
+      cache.addAll(PRECACHE)
     )
   );
-  self.skipWaiting();
+  // Activate after existing game windows close; never replace a running session.
 });
 
 self.addEventListener("activate", (event) => {
@@ -68,15 +66,13 @@ self.addEventListener("fetch", (event) => {
   if (req.mode === "navigate") {
     event.respondWith(
       fetch(req).catch(() =>
-        caches
-          .match(BASE + "index.html", MATCH)
-          .then((r) => r || caches.match(BASE, MATCH))
+        caches.open(CACHE).then((cache) => cache.match(BASE + "index.html", MATCH))
       )
     );
     return;
   }
   event.respondWith(
-    caches.match(req, MATCH).then((cached) => cached || fetch(req).then((response) => {
+    caches.open(CACHE).then((cache) => cache.match(req, MATCH)).then((cached) => cached || fetch(req).then((response) => {
       if (req.method === "GET" && response.ok && response.type === "basic") {
         const copy = response.clone();
         caches.open(CACHE).then((cache) => cache.put(req, copy));

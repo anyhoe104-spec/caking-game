@@ -9,13 +9,21 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "build:root": "node scripts/build-root.mjs"
+    "build:root": "node scripts/build-root.mjs",
+    "native:sync": "npm run build:root && cap sync",
+    "native:android": "cap open android",
+    "native:ios": "cap open ios",
+    "assets:icons": "node scripts/generate-app-icons.cjs"
   },
   "dependencies": {
+    "@capacitor/android": "8.5.1",
+    "@capacitor/core": "8.5.1",
+    "@capacitor/ios": "8.5.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
   },
   "devDependencies": {
+    "@capacitor/cli": "8.5.1",
     "@eslint/js": "^10.0.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
@@ -24,6 +32,10 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
+    "sharp": "0.35.4",
     "vite": "^8.0.10"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

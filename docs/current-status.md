@@ -1,6 +1,12 @@
 # CAKING 現在の開発状況
 
-更新日: 2026-09-05
+更新日: 2026-09-07
+
+## 進行中の改修（未公開）
+
+2026-09-07にmain 746c3f9を基に工房演出を改修。PR #7は統合済み。前回分はブランチへ保存し、[PR #8](https://github.com/anyhoe104-spec/caking-game/pull/8)を作成済み。公開サイトには未反映。
+
+ショップのミニキャラ、全8レシピの固有3工程、形状別ケーキ装備、4章の物語を実装。20件の自動テストとChromiumでの操作検証を実施。一時停止・復帰、オフライン画像、Capacitor Android/iOSのプロジェクトとアイコンを追加済み。実機・実課金・署名したネイティブ配布は未完。詳細と次工程は [store-quality-roadmap.md](store-quality-roadmap.md)、証拠は [atelier-validation.md](atelier-validation.md) を参照。
 
 ## 現在地
 
