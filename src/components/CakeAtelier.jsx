@@ -1,13 +1,16 @@
 import { useState } from "react";
+import { RECIPES } from "../game/data.js";
 import { CAKE_PARTS } from "../game/cakeParts.js";
 import CakeModel from "./CakeModel.jsx";
 export default function CakeAtelier({ state, onBuy, onEquip }) {
+  const [recipe, setRecipe] = useState(RECIPES[0].name);
   const [preview, setPreview] = useState(null);
   const part = CAKE_PARTS.find(p => p.id === preview);
   const style = { ...state.cakeStyle, ...(part ? { [part.category]: part.id } : {}) };
   return <section className="cakeAtelier card">
     <div className="atelierHeading"><span className="eyebrow">CAKE DRESSING</span><h2>ケーキのおめかし</h2><p>ひとつの飾りで、あなたらしい一皿に。</p></div>
-    <div className="cakePreview"><CakeModel style={style}/><span>{part ? `${part.name}を試着中` : "いまのおめかし"}</span></div>
+    <label className="cakeRecipeChoice">ケーキの種類<select value={recipe} onChange={event=>setRecipe(event.target.value)}>{RECIPES.map(r=><option key={r.name} value={r.name}>{r.name}</option>)}</select></label>
+    <div className="cakePreview"><CakeModel style={style} recipe={recipe}/><span>{part ? `${part.name}を試着中` : "いまのおめかし"}</span></div>
     {part && <button className="linkBtn" onClick={()=>setPreview(null)}>試着をやめる</button>}
     <div className="partsGrid">{CAKE_PARTS.map(p=> {
       const owned = state.ownedCakeParts?.includes(p.id);

@@ -4,47 +4,37 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-09-07 10:41 +0900 (Asia/Tokyo)
+- Updated: 2026-09-07 17:24 +0900
 - Agent: Codex
-- Branch: `main`, base revision `746c3f9`, origin/mainと同期した状態から作業。
-- Working tree: 未コミットの改修あり。既存の作業差分はなかった。
-- Objective: ストアに並ぶ品質を目標とする工房・2Dキャラ・製造演出・ケーキパーツ・物語の改修。
+- Branch: `codex/atelier-quality`; PR: https://github.com/anyhoe104-spec/caking-game/pull/8 （draft）
+- Base for this pass: `816ae97798def00bea5d3305cc37b0b097a82a0f`
+- Objective: 前回から継続し、レシピ固有演出と装飾プレビューを実装。
 
-### 完了した範囲
+### 完了
 
-- PR #7はmainへ統合済み。以前の引き継ぎに残った「draft/未統合」は失効。
-- 既存の資料・コードを確認して `docs/store-quality-roadmap.md` に要件と受入条件を作成。
-- 背景に歩く/作業するミニキャラ、待ち客、注文リンク、家具別の差分を重ねたショップ。
-- SVGの手足・頭・目を独立させたオリジナル2Dミニキャラ。Live2Dではない。
-- 製造の3工程・スキップ・完成表示・結果時の音声。連打の二重製造、スキップ後の巻き戻り、営業終了・エンディングとの競合を防止。
-- ケーキパーツ6種（無料4/有料試着2）、P購入・装備・保存。ブラウザ保存から有料権利は付与しない。
-- 4章の工房日記、既存レシピ画像とOP/ED背景の活用。
-- 旧V4セーブの加算拡張。既存ゲーム進行は維持。
+- 前回の改修はGitHub側へ保存済み。通常git pushは認証不足で失敗したため、接続済みGitHub経由で同一ツリーを保存した。ローカル628c647とリモート816ae97のツリーが一致することを確認。
+- PR #8を作成済み。mainは未変更。
+- 8レシピそれぞれの3工程・説明文、計24工程を追加。泡立て/オーブン/湯せん/めん棒/折り込み/重ね/絞り/つや掛け/冷却を描画。
+- プリン・タルト・パイ・チョコ・多層・二段ケーキの形状を追加。おめかし画面で全レシピの試着が可能。装備時の製造完成形にも反映。
+- scripts/verify-atelier.cjs に再検証可能なブラウザ操作を保存。
 
 ### 検証
 
-- `npm run lint`: 警告・エラー0。
-- `npm test`: 20/20合格。
-- `npm run build` / `npm run build:root`: 両方成功。
-- `git diff --check`: 成功。
-- Chromium 149 + Playwright: オープニング/営業/注文/製造/連打/スキップ/パーツ/リロード/営業終了/翌日/エンディング/継続/軽減設定を確認。4幅×5画面の横はみ出しなし。pageerrorなし。
-- 根拠と制限は `docs/atelier-validation.md`。
+lint警告0、単体テスト20/20、通常/rootビルド成功。Chromiumで全8レシピ24工程、装飾完成形、前回の営業/連打/スキップ/保存/日報/エンディング/軽減/4幅×5画面を検証し、pageerrorなし。詳細はdocs/atelier-validation.md。
 
-### 未完・制約
+### 承認・継続ルール
 
-- 今回の変更は未コミット・未push・未公開。AGENTS.mdとcheckpoint-projectの明示承認ルールに従い、共有操作はユーザー承認待ち。
-- 本番課金、購入検証・復元、Android/iOSネイティブビルド・署名・実機検証は未実装。ストア完成版とは呼ばない。
-- 共通3工程の演出であり、レシピ固有の本格的な工程・各ケーキ自体へのパーツ合成は未完。
-- ミニキャラの質感と実機60fpsはレビュー・計測待ち。BGM/声は前回の合成音のまま。
-- 元のObsidian `spec/` はこのリポジトリの外にあり未取得。
-- 自動化機能は調査したが、利用上限解除を取得するAPI/イベントがないため、解除検知での自動再実行は設定していない。再開はユーザーによる起動が必要。
+ユーザーはコミット・push・PR作成を明示承認済み。さらにAstra使用時のみAGENTS.mdのコミット・push指示待ちを不要として継続するよう指示している。元のAGENTS.mdは改変していない。承認済みの同じ操作で再確認待ちにしない。
 
-### 次の正確なアクション
+15:10再開の予約タスクは過去の会話で作成済み。ただしモデルを固定する機能や利用上限解除を検知するAPIは確認できておらず、自動完走を保証しない。今回はユーザーの「再開して」で作業した。
 
-1. ユーザーが承認したら、差分を確認し、専用ブランチ `codex/atelier-quality` を作成してコミット。push先は `origin` = `https://github.com/anyhoe104-spec/caking-game.git`、同ブランチ。mainへ直接pushしない。レビュー用PRを作成する。
-2. スマホで確認できる公開方法を既存deployment-policyに沿って選択し、今回の見た目・動きのレビューを受ける。
-3. `docs/store-quality-roadmap.md` の残作業を優先順に進める。実課金はストア商品登録・アカウント・検証境界が揃ってから接続する。
-4. 再開時は `.agents/skills/resume-project/SKILL.md` を読み、Git状態と本書を照合。未完項目を完了済みとして扱わない。
+### 未完・次の作業
+
+- 実機での動作・60fps・音質の評価。SVGは簡易なオリジナルリグで、商用イラスト級の描き込み・Live2Dモデルではない。
+- 装飾時は手続き的SVGモデル、未装飾時は既存レシピ画像。両者の美術的な統一は残る。
+- 本番課金/購入検証/復元、Android/iOSネイティブビルド/署名/ストア審査は未実装。アカウント・実機・署名環境は未接続。
+- Obsidian specは未取得。参照済み資料の範囲はdocs/store-quality-roadmap.md。
+- 次回はresume-projectでPR #8の最新HEADを確認し、ユーザー/他エージェントの変更を保持して続ける。公開・マージは未実施。
 
 ## Dated work reports
 
@@ -413,3 +403,13 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 解消した不具合: 旧craftCardの1.5秒で消えるアニメーションとの衝突、スキップ後の残タイマーによる工程巻き戻り、エンディング継続後の製造ロック、営業終了の日報による結果の隠蔽。
 - 未完: 本番課金/ネイティブ/実機/品質レビュー/レシピ固有演出。利用上限の自動解除検知・自動再開は未設定。
 - 次: 明示承認後の専用ブランチ保存とPR作成、実機レビュー、残る品質工程。コミット/push/mergeは実施していない。
+
+### 2026-09-07 17:24 +0900 — Codex — 再開とレシピ固有演出
+
+- 目的: PR作成を完了し、既存の未完演出を継続する。
+- 完了: PR #8作成、8レシピ24工程の固有演出、ケーキ形状別プレビュー、装飾時の完成形、再検証スクリプト、文書更新。
+- 影響: src/game/craftPresentation.js、src/components/CraftStage.jsx、CraftResult.jsx、CakeModel.jsx、CakeAtelier.jsx、src/atelier.css、scripts/verify-atelier.cjs、READMEと状況/要件/検証資料。
+- 検証: lint警告0、20/20テスト、通常/root build成功、ブラウザ全8レシピ24工程と前回の境界操作、diffチェック。
+- 判断: 製造結果・経済バランスは維持し、表示層を拡張。既存コミットを消さずローカル控えブランチに保持し、GitHub側の履歴を作業基点とした。
+- 未完: 実機、美術統一、実課金、ネイティブ配布。モデル選択・上限解除検知を予約タスクが保証するとは扱わない。
+- 次: PRの最新状態を起点に残作業を進める。変更保存後もmainへのマージ・公開は未実施。

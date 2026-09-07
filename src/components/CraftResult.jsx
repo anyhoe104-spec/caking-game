@@ -1,14 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { Stars } from "./common.jsx";
 import MiniCharacter from "./MiniCharacter.jsx";
+import CraftStage from "./CraftStage.jsx";
+import { getCraftPresentation } from "../game/craftPresentation.js";
 import CakeModel from "./CakeModel.jsx";
 import { recipeImg } from "../game/assets.js";
 const COPY = {
   great: {title:"とびきりの、できあがり。", note:"大成功！ 工房じゅうに甘い香り。"},
-  success: {title:"焼きたて、できました！", note:"今日のひと皿を、心をこめて。"},
+  success: {title:"できあがり！", note:"今日のひと皿を、心をこめて。"},
   fail: {title:"もう一度、挑戦しよう。", note:"失敗も、おいしさへの一歩。"},
 };
 function Production({ result, reduced, onFinish, onReveal, cakeStyle }) {
+  const presentation = getCraftPresentation(result.recipe);
   const [step,setStep] = useState(reduced ? 3 : 0);
   useEffect(()=> {
     if(reduced) return;
@@ -27,11 +30,16 @@ function Production({ result, reduced, onFinish, onReveal, cakeStyle }) {
     <div className={`craftCard productionCard productionStep--${done ? 3 : step}`}>
       <span className="eyebrow">{done ? "BAKED WITH LOVE" : "IN THE ATELIER"}</span>
       <div className="productionScene" aria-hidden="true">
-        {done ? <><img className="finishedRecipe" src={recipeImg(result.recipe)} alt=""/>{cakeStyle?.top !== "berry" || cakeStyle?.band ? <div className="finishStyle"><CakeModel style={cakeStyle}/></div> : null}</> : <><MiniCharacter action="work"/><div className="mixingBowl">{step === 0 ? <><i/><i/><i/></> : step === 1 ? <div className="ovenGlow"/> : <CakeModel style={cakeStyle}/>}</div><span className="productionSteam">∿ ∿ ∿</span></>}
+        {done ? (cakeStyle?.top !== "berry" || cakeStyle?.band
+          ? <CakeModel className="finishedRecipe" recipe={result.recipe} style={cakeStyle}/>
+          : <img className="finishedRecipe" src={recipeImg(result.recipe)} alt=""/>)
+          : <><MiniCharacter action="work"/><CraftStage kind={presentation.steps[step].kind} recipe={result.recipe} cakeStyle={cakeStyle}/></>}
+
       </div>
-      <div className="craftTitle" role="status">{done ? copy.title : ["ふんわり、混ぜる。","じっくり、火を入れる。","仕上げに、ひと工夫。"][step]}</div>
+      <div className="craftTitle" role="status">{done ? copy.title : presentation.steps[step].title}</div>
+      {!done && <p className="craftTip">{presentation.steps[step].tip}</p>}
       <div className="craftName">{result.recipe}</div>
-      {!done ? <><div className="productionSteps">{["仕込み","加熱","仕上げ"].map((s,i)=><span key={s} className={i<=step ? "active" : ""}>{s}</span>)}</div><button ref={focus} className="linkBtn" onClick={()=>setStep(3)}>演出をスキップ</button></> : <><Stars rating={result.stars} size="lg"/><div className="craftGains">{result.money>0 && <span className="craftGain craftGain--money">+{result.money.toLocaleString()}P</span>}<span className="craftGain craftGain--exp">+{result.exp}EXP</span></div>{result.customer && <p className="craftServed">{result.customer}に提供しました</p>}<p className="craftNote">{copy.note}</p><button ref={focus} className="primaryBtn" onClick={onFinish}>工房にもどる</button></>}
+      {!done ? <><div className="productionSteps">{presentation.steps.map(({label:s},i)=><span key={s} className={i<=step ? "active" : ""}>{s}</span>)}</div><button ref={focus} className="linkBtn" onClick={()=>setStep(3)}>演出をスキップ</button></> : <><Stars rating={result.stars} size="lg"/><div className="craftGains">{result.money>0 && <span className="craftGain craftGain--money">+{result.money.toLocaleString()}P</span>}<span className="craftGain craftGain--exp">+{result.exp}EXP</span></div>{result.customer && <p className="craftServed">{result.customer}に提供しました</p>}<p className="craftNote">{copy.note}</p><button ref={focus} className="primaryBtn" onClick={onFinish}>工房にもどる</button></>}
     </div>
   </div>;
 }
