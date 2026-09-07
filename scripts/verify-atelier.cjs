@@ -63,6 +63,24 @@ await p.getByText('演出をスキップ',{exact:true}).evaluateAll(buttons=>but
  console.log('PASS: all 8 recipes, 24 stage props, decorated recipe shapes');
  await p.emulateMedia({reducedMotion:'reduce'});await p.getByRole('button',{name:'つくる',exact:true}).first().click();assert.equal(await p.getByText('演出をスキップ',{exact:true}).count(),0);await p.getByText('工房にもどる',{exact:true}).click();
  for(const width of [320,390,430,768]) {await p.setViewportSize({width,height:844});for(const label of ['営業','レシピ','デコレーション','食材','スタッフ']){await p.getByRole('button',{name:label,exact:true}).click();assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`overflow ${width} ${label}`);}}
+ await patch({dayPhase:'prep',money:5000,ownedCakeParts:['berry','mint','ribbon'],cakeStyle:{top:'mint',band:'ribbon'}});
+ await p.getByRole('button',{name:'デコレーション',exact:true}).click();
+ assert.equal(await p.locator('.partThumbnail .cakeModel').count(),6);
+ await p.getByLabel('ケーキの種類').selectOption('プリン');
+ assert.equal(await p.locator('.partThumbnail [data-shape="pudding"]').count(),6);
+ await p.getByRole('button',{name:'帯を外す',exact:true}).click();
+ assert.deepEqual((await save()).cakeStyle,{top:'mint',band:null});
+ await p.locator('.partCard').filter({hasText:'いちご色のリボン'}).getByText('飾る',{exact:true}).click();
+ await p.getByRole('button',{name:'港町の小さな王冠を試着',exact:true}).click();
+ await p.getByRole('button',{name:'定番のおめかしにもどす',exact:true}).click();
+ assert.deepEqual((await save()).cakeStyle,{top:'berry',band:null});
+ assert.equal((await save()).money,5000);assert.deepEqual((await save()).ownedCakeParts,['berry','mint','ribbon']);
+ await p.reload();assert.deepEqual((await save()).cakeStyle,{top:'berry',band:null});
+ await p.getByRole('button',{name:'デコレーション',exact:true}).click();
+ await p.locator('.partCard').filter({hasText:'いちご色のリボン'}).getByText('飾る',{exact:true}).click();
+ assert.equal((await save()).money,5000);assert.equal((await save()).cakeStyle.band,'ribbon');
+ await p.screenshot({path:path.join(QA,'dressing.png'),fullPage:true});
+ console.log('PASS: six recipe thumbnails, remove band, reset preview, preserve/re-equip paid-with-P inventory after reload');
  await p.setViewportSize({width:390,height:844});await p.getByRole('button',{name:'営業',exact:true}).click();await p.screenshot({path:path.join(QA,'home.png'),fullPage:true});assert.deepEqual(errors,[]);console.log('PASS: opening, guest-order link, double craft, skip, purchase/equip/reload, paid preview guard, report during production, next day, ending/continue, reduced motion, 20 viewport/tab overflow checks; no page errors');
  }finally {await b.close();await server.close()}
 })().catch(e=>{console.error(e);process.exitCode=1});

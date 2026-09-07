@@ -3,6 +3,10 @@ import { getCraftPresentation } from "../game/craftPresentation.js";
 export default function CakeModel({ style = {}, className = "", recipe = "ショートケーキ" }) {
   const id = useId();
   const shape = getCraftPresentation(recipe).shape;
+  const bandPath = shape === "pudding" ? "M64 132q56 28 112 0v9q-56 28-112 0z"
+    : shape === "layers" ? "M46 143l74 17 74-17v8l-74 17-74-17z"
+    : shape === "tart" || shape === "pie" ? "M45 136q75 30 150 0l-2 9q-73 30-146 0z"
+    : "M43 141q77 32 154 0v9q-77 32-154 0z";
   const top = style.top ?? "berry";
   return <svg viewBox="0 0 240 200" className={`cakeModel ${className}`} role="img" aria-label={`${recipe}のおめかしプレビュー`} data-shape={shape}>
     <defs>
@@ -31,7 +35,8 @@ export default function CakeModel({ style = {}, className = "", recipe = "ショ
       {shape === 'royal' && <g transform="translate(48 3) scale(.6)"><path d="M42 82v65c0 31 156 31 156 0V82" fill="#f6e9cf" stroke="#ba946b" strokeWidth="2"/><ellipse cx="120" cy="82" rx="78" ry="25" fill={`url(#${id}-cream)`} stroke="#d9b995" strokeWidth="2"/></g>}
     </g>}
     {!["pudding", "layers", "pie"].includes(shape) && <g fill="#fff6e4" stroke="#e0c6a1" strokeWidth=".8">{[57,78,100,124,148,172,188].map((x,i)=><path key={x} d={`M${x-5} ${90+Math.sin(i/6*Math.PI)*13}q-4-4 2-10q1 5 6 5q4 6-8 5`}/>)}</g>}
-    {style.band && <path d="M43 141q77 32 154 0v9q-77 32-154 0" fill={style.band === "chocolate" ? "#694633" : "#d88296"}/>}
+    {style.band && <path d={bandPath} fill={style.band === "chocolate" ? "#694633" : "#d88296"}/>}
+    {style.band === "ribbon" && <g transform="translate(120 156)" fill="#d88296" stroke="#ad6277" strokeWidth="1.2"><path d="M0 0q-26-20-24-3q2 14 24 3q26-20 24-3q-2 14-24 3z"/><path d="M-3 2l-10 16 9-3 4 5 4-17"/><circle r="4" fill="#efb6c1"/></g>}
     <g transform={shape === "royal" ? "translate(36 -9) scale(.7)" : shape === "tart" || shape === "pie" ? "translate(0 22)" : shape === "pudding" ? "translate(36 15) scale(.7)" : undefined}>
     {top === "berry" && [75,120,162].map((x,i) => <g key={x} transform={`translate(${x} ${66 + (i%2)*10})`}><path d="M-10 0q-6-22 10-19 17-1 10 19L0 10z" fill="#c94c5d"/><path d="M-12-17L0-12l12-6-10-3-2-5-3 6z" fill="#628357"/><path d="M-4-9v3m8-2v3M0 1v2" stroke="#fce3a7" strokeWidth="2"/></g>)}
     {top === "mint" && <g fill="#649b75"><ellipse cx="108" cy="66" rx="22" ry="10" transform="rotate(28 108 66)"/><ellipse cx="136" cy="60" rx="22" ry="10" transform="rotate(-34 136 60)"/><path d="M90 60l29 13 34-24M103 60l2 7m33-10 2 5" fill="none" stroke="#c2d8a0" strokeWidth="1.5"/><path d="M119 80V57" stroke="#456849" strokeWidth="3"/></g>}

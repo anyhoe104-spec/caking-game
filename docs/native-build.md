@@ -58,3 +58,7 @@ npm run native:sync
 Linuxで両プロジェクトの生成、Webビルド、`cap sync`まで実行。XcodeとAndroid SDKはこの環境にない。Javaは17のため、ネイティブコンパイル成功・APK/AAB/IPA生成・実機60fpsは主張しない。
 
 一次資料: [Capacitor導入](https://capacitorjs.com/docs/getting-started)、[開発環境](https://capacitorjs.com/docs/getting-started/environment-setup)。生成コードと固定したバージョンを優先して確認する。
+
+## 残作業の実行手順
+
+担当範囲・端末接続・実機17項目・課金/審査の順序は [release-runbook.md](release-runbook.md)、記録は [device-test-record.md](device-test-record.md) を使用してください。

@@ -94,3 +94,13 @@
 /* Keep focused and scrolled controls clear of the sticky header and navigation. */
 html {scroll-padding-top:110px;scroll-padding-bottom:100px}
 .recipeCard,.partCard {scroll-margin-top:110px;scroll-margin-bottom:100px}
+
+.atelierTools {display:flex;flex-wrap:wrap;justify-content:center;gap:4px 12px;margin-top:8px}
+.atelierTools .linkBtn {min-height:44px;font-size:11px;padding:8px 4px}
+.atelierTools .linkBtn:disabled {opacity:.45;cursor:default}
+.atelierInventoryNote {text-align:center;font-size:10px;color:var(--muted);margin:3px 0}
+.partThumbnail {width:100%;min-width:0;background:radial-gradient(ellipse,#fffef7,#f2e4cf);border-radius:9px}
+.partThumbnail .cakeModel {width:100%;height:95px;filter:drop-shadow(0 5px 4px #9e764820)}
+.partPreview {padding:0;gap:8px;width:100%;border-radius:9px}
+.partPreview strong {font-size:11px;line-height:1.5;min-height:2.5em;display:flex;align-items:center}
+.partPreview:focus-visible {outline:2px solid #ad6578;outline-offset:4px}

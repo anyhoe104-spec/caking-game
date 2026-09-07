@@ -61,3 +61,7 @@
 - Google: [Billing統合](https://developer.android.com/google/play/billing/integrate)、[バックエンド検証](https://developer.android.com/google/play/billing/backend)、[課金テスト](https://developer.android.com/google/play/billing/test)
 
 上記は次工程の根拠であり、今回StoreKit/Play Billingを導入・検証済みという意味ではない。
+
+## 残作業の実行手順
+
+担当範囲・端末接続・実機17項目・課金/審査の順序は [release-runbook.md](release-runbook.md)、記録は [device-test-record.md](device-test-record.md) を使用してください。

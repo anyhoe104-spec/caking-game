@@ -4,7 +4,7 @@ import "./animations.css";
 import "./atelier.css";
 import ResumeDialog from "./components/ResumeDialog.jsx";
 import CakeAtelier from "./components/CakeAtelier.jsx";
-import { buyCakePart, equipCakePart } from "./game/cakeParts.js";
+import { buyCakePart, equipCakePart, resetCakeParts } from "./game/cakeParts.js";
 
 import { loadSave as loadStoredSave, saveGame, defaultSave as createDefaultSave, STORAGE_KEY as SAVE_KEY, LEGACY_STORAGE_KEYS } from "./game/storage.js";
 import { startBusiness as openBusiness, tickBusiness, nextDay as advanceDay } from "./game/business.js";
@@ -604,7 +604,7 @@ export default function App() {
 
           {activeTab === "deco" && (
             <>
-            <CakeAtelier state={state} onBuy={id => { sfx("buy"); setState(current => buyCakePart(current,id)); }} onEquip={id => { sfx("equip"); setState(current => equipCakePart(current,id)); }}/>
+            <CakeAtelier state={state} onReset={slot => { sfx("equip"); setState(current => resetCakeParts(current,slot)); }} onBuy={id => { sfx("buy"); setState(current => buyCakePart(current,id)); }} onEquip={id => { sfx("equip"); setState(current => equipCakePart(current,id)); }}/>
             <UpgradeView
               kind="deco"
               state={state}

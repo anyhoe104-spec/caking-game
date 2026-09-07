@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buyCakePart, equipCakePart, normalizeCakeParts } from '../src/game/cakeParts.js';
+import { buyCakePart, equipCakePart, normalizeCakeParts, resetCakeParts } from '../src/game/cakeParts.js';
 import { defaultSave, migrateSave, saveGame, loadSave } from '../src/game/storage.js';
 test('old saves keep progress and receive the free starter part',()=> {
   const state=migrateSave({money:3456,level:5,craftCount:29});
@@ -28,4 +28,19 @@ test('part ownership and both equipment slots survive a save reload',()=> {
   saveGame(state,storage);const loaded=loadSave(storage);
   assert.equal(loaded.money,3200);assert.deepEqual(loaded.cakeStyle,{top:'mint',band:'ribbon'});
   assert.deepEqual(loaded.ownedCakeParts,['berry','mint','ribbon']);
+});
+
+test('removing and resetting decorations preserve purchases and survive migration', () => {
+  let state = { ...defaultSave(), money: 5000 };
+  for (const id of ['mint', 'ribbon']) state = equipCakePart(buyCakePart(state, id), id);
+  const bare = resetCakeParts(state, 'band');
+  assert.deepEqual(bare.cakeStyle, { top: 'mint', band: null });
+  assert.equal(bare.money, state.money);
+  assert.deepEqual(bare.ownedCakeParts, state.ownedCakeParts);
+  const restored = migrateSave(resetCakeParts(state));
+  assert.deepEqual(restored.cakeStyle, { top: 'berry', band: null });
+  assert.equal(restored.money, 3200);
+  assert.deepEqual(restored.ownedCakeParts, ['berry', 'mint', 'ribbon']);
+  assert.equal(equipCakePart(restored, 'ribbon').cakeStyle.band, 'ribbon');
+  assert.equal(resetCakeParts(state, '__proto__'), state);
 });

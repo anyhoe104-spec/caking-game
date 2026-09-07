@@ -30,3 +30,12 @@ export function equipCakePart(state, id) {
   if (!part || !current.ownedCakeParts.includes(id)) return state;
   return { ...state, ...current, cakeStyle: { ...current.cakeStyle, [part.category]: id } };
 }
+
+/** Reset appearance only. Paid/earned inventory and currency are never refunded. */
+export function resetCakeParts(state, slot = "all") {
+  if (!["all", "top", "band"].includes(slot)) return state;
+  const current = normalizeCakeParts(state);
+  const defaults = defaultCakeStyle();
+  const cakeStyle = slot === "all" ? defaults : { ...current.cakeStyle, [slot]: defaults[slot] };
+  return { ...state, ...current, cakeStyle };
+}
