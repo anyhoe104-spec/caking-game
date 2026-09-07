@@ -79,3 +79,18 @@
 @keyframes pipeCream {from{transform:translateX(-25px) rotate(-20deg)}to{transform:translateX(10px) rotate(-20deg)}}
 @keyframes steamRise {0%{transform:translateY(0);opacity:0}35%{opacity:.8}100%{transform:translateY(-35px);opacity:0}}
 @keyframes glazeCake {0%,100%{transform:scaleY(.1);opacity:0}40%,80%{transform:scaleY(1);opacity:1}}
+
+/* A suspended shop never consumes the player's business time. */
+.sessionControls {display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 12px;font-size:10px;color:var(--muted)}
+.sessionControls button {min-height:44px;padding:8px 14px;border:1px solid #d2bca0;border-radius:12px;background:#fff8e9;color:var(--brown);font:inherit;font-size:12px;cursor:pointer}
+.resumeOverlay {position:fixed;inset:0;z-index:600;display:grid;place-items:center;padding:20px;background:#37271fcc;backdrop-filter:blur(8px);overflow:auto}
+.resumeCard {width:min(100%,350px);box-sizing:border-box;text-align:center;padding:28px 22px;border:1px solid #d2b58b;border-radius:24px;background:radial-gradient(ellipse at top,#fffdf7,#f5e7d0);box-shadow:0 24px 70px #21150f50;color:var(--brown);max-height:calc(100dvh - 40px);overflow:auto}
+.resumeCard>.miniRig {display:block;width:110px;height:145px;margin:18px auto 0}
+.resumeCard h2 {font:24px serif;margin:12px 0}.resumeCard p {font-size:12px;line-height:1.9}
+.resumeCard dl {display:flex;justify-content:center;gap:40px;padding:14px;border-block:1px solid #dac6a7;margin:22px 0}
+.resumeCard dt {font-size:10px;color:var(--muted)}.resumeCard dd {margin:7px 0 0;font-size:18px;font-variant-numeric:tabular-nums}
+.resumeCard .primaryBtn {width:100%;min-height:48px}
+.gamePaused .phoneStage *, .pageHidden * {animation-play-state:paused!important}
+/* Keep focused and scrolled controls clear of the sticky header and navigation. */
+html {scroll-padding-top:110px;scroll-padding-bottom:100px}
+.recipeCard,.partCard {scroll-margin-top:110px;scroll-margin-bottom:100px}

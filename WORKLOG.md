@@ -4,37 +4,44 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-09-07 17:24 +0900
+- Updated: 2026-09-07 18:45 +0900
 - Agent: Codex
 - Branch: `codex/atelier-quality`; PR: https://github.com/anyhoe104-spec/caking-game/pull/8 （draft）
-- Base for this pass: `816ae97798def00bea5d3305cc37b0b097a82a0f`
-- Objective: 前回から継続し、レシピ固有演出と装飾プレビューを実装。
+- Revision: local commit `0b2d0a1`; remote PR HEAD remains `f155e72` because the connected GitHub save action reached its usage limit during this checkpoint.
+- Objective: CAKINGをストア配布に近い状態へ進め、次回はこの状態から実機・課金・審査準備を継続する。
 
 ### 完了
 
-- 前回の改修はGitHub側へ保存済み。通常git pushは認証不足で失敗したため、接続済みGitHub経由で同一ツリーを保存した。ローカル628c647とリモート816ae97のツリーが一致することを確認。
-- PR #8を作成済み。mainは未変更。
-- 8レシピそれぞれの3工程・説明文、計24工程を追加。泡立て/オーブン/湯せん/めん棒/折り込み/重ね/絞り/つや掛け/冷却を描画。
-- プリン・タルト・パイ・チョコ・多層・二段ケーキの形状を追加。おめかし画面で全レシピの試着が可能。装備時の製造完成形にも反映。
-- scripts/verify-atelier.cjs に再検証可能なブラウザ操作を保存。
+- 営業中の一時停止と再開ダイアログを追加。ページ非表示、アプリ切替、再読み込みでは営業タイマー・素材回復・製造演出を保持し、明示的に再開するまで進めない。
+- ミニキャラとケーキSVGへ陰影、衣装・皿・焼き色・クリームの質感を追加。既存背景とレシピ画像は保持。
+- Service Workerのprecachingを修正し、ビルド内JS/CSSと画像資産を列挙。初回訪問後のオフライン再起動を安定化。ネイティブではService Workerを登録しない。
+- Capacitor 8.5.1のAndroid/iOSプロジェクト、`capacitor.config.json`、縦画面設定、仮アプリID `io.github.anyhoe104spec.caking`、同期・起動手順を追加。
+- 壊れていた開発用SVGアイコンをケーキ図形へ置換し、PWA/Apple/Android/iOS用PNGを再生成するスクリプトを追加。
+- 既存の8レシピ24工程、パーツ購入・装備・保存、物語、製造結果整合性を維持。
 
 ### 検証
 
-lint警告0、単体テスト20/20、通常/rootビルド成功。Chromiumで全8レシピ24工程、装飾完成形、前回の営業/連打/スキップ/保存/日報/エンディング/軽減/4幅×5画面を検証し、pageerrorなし。詳細はdocs/atelier-validation.md。
+- `npm run lint`: 成功（警告0）。
+- `npm test`: 20/20成功。
+- `npm run build` / `npm run build:root`: 成功。
+- `npm run native:sync`: Capacitor Android/iOSへの資産同期成功。
+- Chromium通し検証: 全8レシピ24工程、装飾完成形、営業一時停止・非表示・再読み込み・再開、境界操作、4幅×5画面、pageerrorなし。
+- オフライン検証: 通常/root配布で保存を保持して再起動、4タブ、42画像のデコード成功。
 
-### 承認・継続ルール
+### 未完・リスク
 
-ユーザーはコミット・push・PR作成を明示承認済み。さらにAstra使用時のみAGENTS.mdのコミット・push指示待ちを不要として継続するよう指示している。元のAGENTS.mdは改変していない。承認済みの同じ操作で再確認待ちにしない。
+- Xcode/Android SDK・実機がないため、APK/AAB/IPA生成、実機表示、音声、60fps、ノッチ、戻る操作は未合否。
+- StoreKit/Google Play Billing、購入検証・復元・取消・返金、サーバー権利管理は未接続。有料パーツは引き続き試着のみ。
+- 実ストアのアプリID、署名証明書、開発者アカウント、ストア素材・審査申告は未設定。仮IDをそのまま公開しない。
+- ミニキャラとケーキはコードネイティブSVGで、Live2Dや商用イラストの最終品質レビューは未実施。
+- `docs/native-build.md` に外部環境での再開手順と未検証境界を記載。mainへのマージ・公開は未実施。
 
-15:10再開の予約タスクは過去の会話で作成済み。ただしモデルを固定する機能や利用上限解除を検知するAPIは確認できておらず、自動完走を保証しない。今回はユーザーの「再開して」で作業した。
+### 次回アクション
 
-### 未完・次の作業
-
-- 実機での動作・60fps・音質の評価。SVGは簡易なオリジナルリグで、商用イラスト級の描き込み・Live2Dモデルではない。
-- 装飾時は手続き的SVGモデル、未装飾時は既存レシピ画像。両者の美術的な統一は残る。
-- 本番課金/購入検証/復元、Android/iOSネイティブビルド/署名/ストア審査は未実装。アカウント・実機・署名環境は未接続。
-- Obsidian specは未取得。参照済み資料の範囲はdocs/store-quality-roadmap.md。
-- 次回はresume-projectでPR #8の最新HEADを確認し、ユーザー/他エージェントの変更を保持して続ける。公開・マージは未実施。
+1. `resume-project`でPR #8のHEADとこのhandoffを照合。
+2. macOS/Xcode、Android Studio、実機を接続し、`npm run native:sync`→各OSのDebug→Release候補を実行。
+3. ストアID・署名・決済商品を確定してから、購入検証をネイティブ境界へ実装。
+4. 実機結果を`docs/native-build.md`と`docs/store-quality-roadmap.md`へ追記し、審査素材を作成。
 
 ## Dated work reports
 
@@ -413,3 +420,22 @@ lint警告0、単体テスト20/20、通常/rootビルド成功。Chromiumで全
 - 判断: 製造結果・経済バランスは維持し、表示層を拡張。既存コミットを消さずローカル控えブランチに保持し、GitHub側の履歴を作業基点とした。
 - 未完: 実機、美術統一、実課金、ネイティブ配布。モデル選択・上限解除検知を予約タスクが保証するとは扱わない。
 - 次: PRの最新状態を起点に残作業を進める。変更保存後もmainへのマージ・公開は未実施。
+
+### 2026-09-07 18:45 +0900 — Codex — 中断復帰・ネイティブ土台・配布資産
+
+- 目的: 残作業を進め、アプリ中断復帰とAndroid/iOS配布準備までを実装して終了可能な状態にする。
+- 完了: 一時停止/再開ダイアログ、ページ非表示時の営業・素材・製造演出停止、再読み込み後の明示再開、SVG美術の陰影追加、Service Workerの画像/バンドルprecaching修正、Capacitor 8.5.1によるAndroid/iOSプロジェクト、縦画面・仮ID・アイコン・起動画面、native-build手順書。
+- 影響範囲: `src/App.jsx`、`src/components/ResumeDialog.jsx`、`src/components/CraftResult.jsx`、`src/components/MiniCharacter.jsx`、`src/components/CakeModel.jsx`、`src/atelier.css`、`public/sw.js`、`vite.config.js`、`src/main.jsx`、`capacitor.config.json`、`android/`、`ios/`、アイコン、検証スクリプト、`docs/native-build.md`、`package.json`/lock、`WORKLOG.md`。
+- 検証: lint 0、単体テスト20/20、通常/root build、`npm run native:sync`、Chromium全8レシピ24工程＋中断/再読み込み/再開＋境界/幅検証、オフライン再起動と42画像のデコードに成功。Xcode/Android SDK/実機は未接続のためネイティブコンパイルと60fpsは未検証。
+- 判断: 営業・製造の経済処理は従来どおりタップ時に一度だけ確定し、表示中断で再抽選しない。仮のアプリIDと試着のみの有料パーツを明記し、実課金を未接続のまま成功扱いしない。WebのService Workerはネイティブでは登録しない。
+- 未解決: 実機評価、署名・ストアID、StoreKit/Play Billingとサーバー検証、審査素材、最終美術レビュー。
+- 次回: `docs/native-build.md`に沿って各OS Debug→実機→Release候補を確認し、結果を文書へ追記する。
+
+### 2026-09-07 18:55 +0900 — Codex — 終了チェックポイント
+
+- 目的: ここまでの作業を終了スキルの形式で引き継ぐ。
+- 完了: 現在の実装、検証結果、未完項目、次回手順をCurrent handoffへ反映。ローカルで `0b2d0a1 feat: add pause resume and native app scaffolding` を作成。
+- 検証: 終了直前に `npm run lint` 成功、`npm test` 20/20成功。直前の `npm run build`、`npm run build:root`、`npm run native:sync`、Chromium通し検証、オフライン検証も成功済み。
+- 保存状態: 通常のgit pushは認証不可。接続済みGitHub保存は今回、利用上限で拒否された。迂回操作は行わず、リモートPR #8は `f155e72` のまま。ローカルHEADは `0b2d0a1`。
+- 未解決: リモートへの追加コミット保存、実機/SDK検証、署名、実課金、ストア登録・審査、最終美術レビュー。
+- 次回: `git status`と`git log`を確認し、GitHub保存が可能になったらローカル `0b2d0a1` のツリーをPR #8へ保存してから、`docs/native-build.md`に沿って実機確認を行う。

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 import "./animations.css";
 import "./atelier.css";
+import ResumeDialog from "./components/ResumeDialog.jsx";
 import CakeAtelier from "./components/CakeAtelier.jsx";
 import { buyCakePart, equipCakePart } from "./game/cakeParts.js";
 
@@ -64,6 +65,7 @@ const STARS_FOR = { great: 3, success: 2, fail: 1 };
 
 export default function App() {
   const [state, setState] = useState(loadStoredSave);
+  const [paused, setPaused] = useState(() => state.gamePhase === "playing" && state.dayPhase === "open");
   const [activeTab, setActiveTab] = useState(null);
   const [homeTabPick, setHomeTabPick] = useState(null); // { phase, tab } — cleared when the phase turns over
   const [toast, setToast] = useState(null);
@@ -189,7 +191,11 @@ export default function App() {
     window.addEventListener("keydown", unlock, { once: true });
     const onVisibility = () => {
       document.documentElement.classList.toggle("pageHidden", document.hidden);
-      if (document.hidden) bus.suspend(); else bus.resume();
+      if (document.hidden) {
+        setPaused(true);
+        cancelVoice();
+        bus.suspend();
+      }
     };
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
@@ -212,9 +218,17 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [state.dayPhase]);
 
+  useEffect(() => {
+    document.documentElement.classList.toggle("gamePaused", paused);
+    if (paused) bus.suspend(); else if (!document.hidden) bus.resume();
+    return () => document.documentElement.classList.remove("gamePaused");
+  }, [paused]);
+
   // ── Material regen (respects リコ's hiring bonus) ────────────
   useEffect(() => {
+    if (paused) return;
     const timer = setInterval(() => {
+      if (document.hidden) return;
       setState((current) => {
         const cap = capByLevel(current.level);
         const gain = 1 + getStaffEffects(current.staff ?? []).regenBonus;
@@ -227,14 +241,16 @@ export default function App() {
       });
     }, REGEN_MS);
     return () => clearInterval(timer);
-  }, []);
+  }, [paused]);
 
   // ── Business timer ─────────────────────────────────────────
   useEffect(() => {
-    if (state.dayPhase !== "open") return;
-    const timer = setInterval(() => setState((current) => tickBusiness(current)), 1000);
+    if (state.dayPhase !== "open" || paused) return;
+    const timer = setInterval(() => {
+      if (!document.hidden) setState((current) => tickBusiness(current));
+    }, 1000);
     return () => clearInterval(timer);
-  }, [state.dayPhase]);
+  }, [state.dayPhase, paused]);
 
   // ── Day phase cues ─────────────────────────────────────────
   const previousPhase = useRef(state.dayPhase);
@@ -442,6 +458,7 @@ export default function App() {
     }
     const fresh = createDefaultSave();
     finishCraft();
+    setPaused(false);
     cancelVoice();
     knownRecipes.current = null;
     completedMissions.current = null;
@@ -497,6 +514,7 @@ export default function App() {
 
   if (state.gamePhase === "opening") {
     const finish = () => {
+      setPaused(false);
       sfx("tap");
       voice("voice-miru-hello", 260);
       setState((current) => ({
@@ -527,13 +545,14 @@ export default function App() {
       <EndingScene
         state={state}
         onRestart={reset}
-        onContinue={() => { sfx("tap"); setState((current) => ({ ...current, gamePhase: "playing" })); }}
+        onContinue={() => { setPaused(false); sfx("tap"); setState((current) => ({ ...current, gamePhase: "playing" })); }}
       />
     );
   }
 
   return (
-    <div className={`phoneStage ${effect ? `fx-${effect}` : ""}`}>
+    <>
+    <div className={`phoneStage ${effect ? `fx-${effect}` : ""}`} inert={paused}>
       <div className="appShell" inert={!!craftResult}>
         <Header
           state={state}
@@ -543,6 +562,7 @@ export default function App() {
           onSettings={() => { sfx("tap"); setSettingsOpen(true); }}
         />
 
+        <div className="sessionControls"><span>営業中も、ひと休みできます</span><button onClick={() => { cancelVoice(); setPaused(true); }}>一時停止</button></div>
         <HintStrip icon={miruImg(miruMood)} name="ミル" message={miruMsg} />
 
         <main className="mainContent viewSwap" key={activeTab ?? "home"}>
@@ -624,7 +644,7 @@ export default function App() {
       )}
 
       <Toast toast={toast} />
-      <CraftResult result={craftResult} onReveal={revealCraft} reduced={reduceMotion} onFinish={finishCraft} cakeStyle={state.cakeStyle} />
+      <CraftResult paused={paused} result={craftResult} onReveal={revealCraft} reduced={reduceMotion} onFinish={finishCraft} cakeStyle={state.cakeStyle} />
 
       {state.dayPhase === "report" && !craftResult && (
         <DailyReport
@@ -647,5 +667,7 @@ export default function App() {
         />
       )}
     </div>
+    {paused && <ResumeDialog state={state} onResume={() => { bus.unlock(); setPaused(false); }} />}
+    </>
   );
 }

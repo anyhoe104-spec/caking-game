@@ -10,21 +10,21 @@ const COPY = {
   success: {title:"できあがり！", note:"今日のひと皿を、心をこめて。"},
   fail: {title:"もう一度、挑戦しよう。", note:"失敗も、おいしさへの一歩。"},
 };
-function Production({ result, reduced, onFinish, onReveal, cakeStyle }) {
+function Production({ result, reduced, paused, onFinish, onReveal, cakeStyle }) {
   const presentation = getCraftPresentation(result.recipe);
   const [step,setStep] = useState(reduced ? 3 : 0);
   useEffect(()=> {
-    if(reduced) return;
+    if(reduced || paused) return;
     const timers=[setTimeout(()=>setStep(current=>Math.max(current,1)),750),setTimeout(()=>setStep(current=>Math.max(current,2)),1500),setTimeout(()=>setStep(3),2400)];
     return ()=>timers.forEach(clearTimeout);
-  },[reduced]);
+  },[reduced, paused]);
   const done = reduced || step === 3;
   const revealed = useRef(false);
   const focus = useRef(null);
-  useEffect(() => { focus.current?.focus(); }, [done]);
+  useEffect(() => { if (!paused) focus.current?.focus(); }, [done, paused]);
   useEffect(() => {
-    if (done && !revealed.current) { revealed.current = true; onReveal(); }
-  }, [done, onReveal]);
+    if (done && !paused && !revealed.current) { revealed.current = true; onReveal(); }
+  }, [done, paused, onReveal]);
   const copy=COPY[result.type] ?? COPY.success;
   return <div className={`craftResult productionOverlay craftResult--${result.type}`} role="dialog" aria-modal="true" aria-label={`${result.recipe}の製造`}>
     <div className={`craftCard productionCard productionStep--${done ? 3 : step}`}>
@@ -43,6 +43,6 @@ function Production({ result, reduced, onFinish, onReveal, cakeStyle }) {
     </div>
   </div>;
 }
-export default function CraftResult({ result, reduced, onFinish, onReveal, cakeStyle }) {
-  return result ? <Production key={result.id} result={result} reduced={reduced} onFinish={onFinish} onReveal={onReveal} cakeStyle={cakeStyle}/> : null;
+export default function CraftResult({ result, reduced, paused, onFinish, onReveal, cakeStyle }) {
+  return result ? <Production key={result.id} result={result} reduced={reduced} paused={paused} onFinish={onFinish} onReveal={onReveal} cakeStyle={cakeStyle}/> : null;
 }

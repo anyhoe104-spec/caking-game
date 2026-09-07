@@ -7,13 +7,32 @@ fs.mkdirSync(QA,{recursive:true});
  const b=await chromium.launch({executablePath:process.env.PLAYWRIGHT_EXECUTABLE,args:process.env.PLAYWRIGHT_EXECUTABLE ? ['--no-sandbox','--no-zygote','--single-process','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader'] : [],headless:true});
  const p=await b.newPage({viewport:{width:390,height:844}});const errors=[];p.on('pageerror',e=>errors.push(e.message));
  const save=()=>p.evaluate(()=>JSON.parse(localStorage.getItem('caking-save-v4')));
- const patch=async data=>{await p.evaluate(data=>{let s=JSON.parse(localStorage.getItem('caking-save-v4'));localStorage.setItem('caking-save-v4',JSON.stringify({...s,...data}))},data);await p.reload();};
+ const patch=async data=>{await p.evaluate(data=>{let s=JSON.parse(localStorage.getItem('caking-save-v4'));localStorage.setItem('caking-save-v4',JSON.stringify({...s,...data}))},data);await p.reload();if(await p.getByText("工房を再開する",{exact:true}).count()) await p.getByText("工房を再開する",{exact:true}).click();};
  try {
  await p.goto('http://127.0.0.1:5173/caking-game/');await p.getByText('スキップ',{exact:true}).click();
  await p.getByRole('button',{name:'営業スタート！'}).click();assert.equal((await save()).dayPhase,'open');assert.equal(await p.locator('.shopGuest').count(),2);
+ // Manual pause and reload must preserve business time, inventory and earnings.
+ await p.getByRole('button',{name:'一時停止',exact:true}).click();
+ const pausedSave=await save();await p.waitForTimeout(5200);assert.deepEqual(await save(),pausedSave);
+ await p.reload();await p.getByRole('button',{name:'工房を再開する'}).waitFor();
+ await p.waitForTimeout(1200);assert.equal((await save()).businessTimer,pausedSave.businessTimer);
+ await p.getByRole('button',{name:'工房を再開する'}).click();await p.waitForTimeout(1100);assert.ok((await save()).businessTimer<pausedSave.businessTimer);
+ // Simulated OS visibility event exercises the actual lifecycle handler.
+ await p.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:true});document.dispatchEvent(new Event('visibilitychange'));});
+ const hiddenSave=await save();await p.waitForTimeout(1200);assert.deepEqual(await save(),hiddenSave);
+ await p.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:false});document.dispatchEvent(new Event('visibilitychange'));});
+ await p.getByRole('button',{name:'工房を再開する'}).click();
+ console.log('PASS: manual pause, hidden page, reload and explicit resume');
  await p.locator('.shopGuest').first().click();await p.waitForTimeout(300);
  const before=await save();await p.getByRole('button',{name:'つくる',exact:true}).first().evaluate(el=>{el.click();el.click()});
- assert.equal((await save()).craftCount,before.craftCount+1);await p.getByText('演出をスキップ',{exact:true}).click();await p.waitForTimeout(1600);assert.equal(await p.getByText('演出をスキップ',{exact:true}).count(),0);await p.getByText('工房にもどる',{exact:true}).click();
+ assert.equal((await save()).craftCount,before.craftCount+1);
+ await p.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:true});document.dispatchEvent(new Event('visibilitychange'));});
+ await p.getByRole('button',{name:'工房を再開する'}).waitFor();
+ const duringCraft=await save();await p.waitForTimeout(2800);assert.deepEqual(await save(),duringCraft);
+ assert.equal(await p.locator('.productionStep--0').count(),1);
+ await p.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:false});document.dispatchEvent(new Event('visibilitychange'));});
+ await p.getByRole('button',{name:'工房を再開する'}).click();
+await p.getByText('演出をスキップ',{exact:true}).click();await p.waitForTimeout(1600);assert.equal(await p.getByText('演出をスキップ',{exact:true}).count(),0);await p.getByText('工房にもどる',{exact:true}).click();
  await p.getByRole('button',{name:'デコレーション',exact:true}).click();await p.locator('.partCard').filter({hasText:'小さなハーブ園'}).getByText('Pで購入',{exact:true}).click();await p.locator('.partCard').filter({hasText:'小さなハーブ園'}).getByText('飾る',{exact:true}).click();assert.equal((await save()).cakeStyle.top,'mint');
  await p.locator('.partCard').filter({hasText:'港町の小さな王冠'}).getByRole('button',{name:'港町の小さな王冠を試着'}).click();assert.equal((await save()).cakeStyle.top,'mint');assert.equal(await p.locator('.partCard').filter({hasText:'港町の小さな王冠'}).getByText('試着のみ',{exact:true}).isDisabled(),true);
  await p.screenshot({path:path.join(QA,'atelier.png'),fullPage:true});await p.reload();assert.equal((await save()).cakeStyle.top,'mint');
