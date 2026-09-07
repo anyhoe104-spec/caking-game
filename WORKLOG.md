@@ -4,15 +4,19 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-09-07 18:45 +0900
+- Updated: 2026-09-07 22:56 +0900
 - Agent: Codex
 - Branch: `codex/atelier-quality`; PR: https://github.com/anyhoe104-spec/caking-game/pull/8 （draft）
-- Revision: local commit `0b2d0a1`; remote PR HEAD remains `f155e72` because the connected GitHub save action reached its usage limit during this checkpoint.
+- 保全済み基点: PR #8の `e0f65d29becff5ffff447f72b236f8c705ca89d6`。前回ローカル `3a6252d` の全ファイルとツリーが一致。今回の追加修正は同PRに保存する。
 - Objective: CAKINGをストア配布に近い状態へ進め、次回はこの状態から実機・課金・審査準備を継続する。
 
 ### 完了
 
-- 営業中の一時停止と再開ダイアログを追加。ページ非表示、アプリ切替、再読み込みでは営業タイマー・素材回復・製造演出を保持し、明示的に再開するまで進めない。
+- 前回のGitHub保存拒否は解消。バイナリを含む99ファイルを保存し、実行権限を含めてツリーSHA一致を確認。
+- Android生成テストの誤ったアプリIDを修正。Node.js最低バージョンを22.12、配布workflowを22へ統一。Windowsのbat改行属性を追加。
+- ブラウザ検証の残り1秒・24工程を仮想時計で制御し、自然終了後にスキップを待ち続ける不安定さを解消。
+
+- 営業中の一時停止と再開ダイアログを追加。ページ非表示・アプリ切替では営業・素材回復・製造演出を一時停止。営業途中の再読み込みでは営業残時間と確定済み報酬を保持し、再開を待つ。製造演出自体は再読み込み後には復元しない。
 - ミニキャラとケーキSVGへ陰影、衣装・皿・焼き色・クリームの質感を追加。既存背景とレシピ画像は保持。
 - Service Workerのprecachingを修正し、ビルド内JS/CSSと画像資産を列挙。初回訪問後のオフライン再起動を安定化。ネイティブではService Workerを登録しない。
 - Capacitor 8.5.1のAndroid/iOSプロジェクト、`capacitor.config.json`、縦画面設定、仮アプリID `io.github.anyhoe104spec.caking`、同期・起動手順を追加。
@@ -439,3 +443,13 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 保存状態: 通常のgit pushは認証不可。接続済みGitHub保存は今回、利用上限で拒否された。迂回操作は行わず、リモートPR #8は `f155e72` のまま。ローカルHEADは `0b2d0a1`。
 - 未解決: リモートへの追加コミット保存、実機/SDK検証、署名、実課金、ストア登録・審査、最終美術レビュー。
 - 次回: `git status`と`git log`を確認し、GitHub保存が可能になったらローカル `0b2d0a1` のツリーをPR #8へ保存してから、`docs/native-build.md`に沿って実機確認を行う。
+
+### 2026-09-07 22:56 +0900 — Codex — 開始スキルから再開・GitHub保全と配布設定整合
+
+- 目的: 前回リモート未保存の2コミットを保全し、ネイティブ配布の不整合を修正する。
+- 開始確認: resume-project、AGENTS、WORKLOG全履歴、Git状態とPR #8を照合。作業ツリーはクリーン、ローカル3a6252dがリモートf155e72より2コミット先。
+- 完了: 前回分を接続済みGitHubへ保存。リモートe0f65d2とローカル3a6252dのツリーは01bd48449e008c4bfa7dbfa9abe217fdff68d479で一致。元のローカルコミットは保持。AndroidテストID、Node enginesと配布workflow、Windows改行属性、状況/配布/要件資料を修正。
+- 検証: lint、20単体テスト、通常ビルド、native:sync成功。Chromiumの営業/製造中断・復帰、全8レシピ24工程、日報・エンディング、4幅×5画面を再確認。通常配布のオフライン再起動・42画像も合格。初期の実時間ベース検証ではスキップ待ち/1秒境界/工程確認が失敗したため、境界と工程は仮想時計へ変更し、修正後の全検証が合格。
+- 判断: 未実施の実機/SDKコンパイルを合格扱いしない。再読み込みで製造演出そのものが復元されるという以前の曖昧な記述を訂正。
+- 未完: Android SDK/Xcode/実機、署名・ストアID、実課金と購入権利検証、最終美術/音声評価。
+- 次回: PR #8の最新HEADからdocs/native-build.mdのSDK・実機手順を実行。mainへのマージ/公開は行っていない。

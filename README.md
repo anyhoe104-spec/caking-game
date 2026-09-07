@@ -136,3 +136,7 @@ fork してコードを使う場合は、`public/images/` と `public/sounds/`�
 キャラクター・シナリオに関わるテキストをご自身のものへ差し替えてください。
 
 詳細は [`LICENSE-ASSETS.md`](LICENSE-ASSETS.md) を参照してください。
+
+## ネイティブ開発
+
+Node.js 22.12以上で `npm ci` → `npm run native:sync`。Android/iOSプロジェクトへWeb資産を同期します。SDK・署名・実機の手順と未検証範囲は [native-build.md](docs/native-build.md) を参照してください。

@@ -4,7 +4,7 @@ Capacitor 8.5.1で既存Reactゲームを同梱する構成。`android/` と `io
 
 ## 共通手順
 
-Node.js 22以上を使用する。依存関係はlockfileに固定。
+Node.js 22.12以上を使用する。依存関係はlockfileに固定。
 
 ```sh
 npm ci
@@ -23,7 +23,7 @@ npm run native:sync
 npm run native:android
 ```
 
-Android Studioで `android/` を開く。現行生成プロジェクトはcompile/target SDK 36、min SDK 24。必要なSDKと対応するJDKをAndroid Studio側で準備し、エミュレータまたは端末でRunする。リリースはAndroid Studioの署名付きBundle生成から行う。keystoreやパスワードはコミットしない。
+Android Studioで `android/` を開く。現行生成プロジェクトはcompile/target SDK 36、min SDK 24。必要なSDKとJDK 21をAndroid Studio側で準備し、エミュレータまたは端末でRunする。リリースはAndroid Studioの署名付きBundle生成から行う。keystoreやパスワードはコミットしない。
 
 ## iOS
 
