@@ -194,3 +194,5 @@ docs/release-runbook.mdとWORKLOG.mdを確認してください。
 添付: <実機記録、画面録画、ビルドログ>
 既存のゲーム進行を維持し、実装・検証・PR保存・終了引き継ぎまで進めてください。
 ```
+
+掲載文・撮影6画面・審査担当者向け説明・データ棚卸しの下書きは [store-submission-draft.md](store-submission-draft.md) に作成済みです。
