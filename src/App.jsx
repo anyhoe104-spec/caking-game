@@ -8,17 +8,18 @@ import { buyCakePart, equipCakePart, resetCakeParts } from "./game/cakeParts.js"
 
 import { loadSave as loadStoredSave, saveGame, defaultSave as createDefaultSave, STORAGE_KEY as SAVE_KEY, LEGACY_STORAGE_KEYS } from "./game/storage.js";
 import { startBusiness as openBusiness, tickBusiness, nextDay as advanceDay } from "./game/business.js";
-import { generateCustomerQueue, fulfillOrder } from "./game/customers.js";
+import { generateCustomerQueue } from "./game/customers.js";
 import { generateMissions, applyMissionProgress } from "./game/missions.js";
-import { rollCraftResult, applyExperience, calcPoints, capByLevel, ENDING_LEVEL, ENDING_MONEY } from "./game/logic.js";
+import { rollCraftResult, capByLevel } from "./game/logic.js";
 import { DECORATIONS, buyDecoration, equipDecoration, hireStaff, getStaffEffects } from "./game/shop.js";
-import { updateRecipeRating, getMiruMessage } from "./game/engagement.js";
+import { getMiruMessage } from "./game/engagement.js";
 import { MATERIAL_LABELS, OPENING_LINES, RECIPES } from "./game/data.js";
 import { miruImg } from "./game/assets.js";
 import { audioBus as bus } from "./game/audio.js";
 import { BGM_KEYS, resolveScene } from "./game/audioAssets.js";
 import { isFullyMuted, normalizeAudio, setVolume, toggleMute } from "./game/audioSettings.js";
 
+import { completeCraft } from "./game/crafting.js";
 import { HintStrip, Toast } from "./components/common.jsx";
 import Header from "./components/Header.jsx";
 import HomeView from "./components/HomeView.jsx";
@@ -61,7 +62,6 @@ function getMiffyMsg(state, lastResult, lastRecipe) {
   return IDLE_MSGS[Math.floor(Math.random() * IDLE_MSGS.length)];
 }
 
-const STARS_FOR = { great: 3, success: 2, fail: 1 };
 
 export default function App() {
   const [state, setState] = useState(loadStoredSave);
@@ -328,79 +328,14 @@ export default function App() {
       return;
     }
 
-    craftLocked.current = true;
     const result = rollCraftResult(state.level, Math.random());
-
-    const materials = { ...state.materials };
-    Object.entries(recipe.ingredients).forEach(([key, need]) => {
-      materials[key] = Math.max(0, materials[key] - (result === "fail" ? Math.max(1, Math.floor(need * 0.5)) : need));
-    });
-
-    let money = 0;
-    let exp = 0;
-    if (result === "success") { money = recipe.price; exp = recipe.exp; }
-    if (result === "great") { money = Math.floor(recipe.price * 1.5); exp = Math.floor(recipe.exp * 1.5); }
-    if (result === "fail") { exp = Math.max(1, Math.floor(recipe.exp * 0.2)); }
-
-    const { exp: nextExp, level, levelUps } = applyExperience(state.exp, state.level, exp);
-
-    const orderResult = state.dayPhase === "open"
-      ? fulfillOrder(state.customerQueue, recipe.name, result)
-      : { queue: state.customerQueue, customer: null, moneyBonus: 0, fulfilled: false };
-    const customerBonus = {
-      money: orderResult.moneyBonus,
-      points: orderResult.customer ? calcPoints(result, { exp: 0 }, orderResult.customer) : 0,
-    };
-
-    const newSales = state.todaySales + money + customerBonus.money;
-    const ratings = updateRecipeRating(state.recipeRatings, recipe.name, result);
-    const earned = money + customerBonus.money;
-
+    const transaction = completeCraft(state, recipe, result);
+    if (!transaction) return;
+    craftLocked.current = true;
     setLastResult(result);
     setLastRecipe(recipe.name);
-    setCraftResult({
-      id: Date.now(),
-      type: result,
-      levelUps,
-      level,
-      fulfilled: orderResult.fulfilled,
-      recipe: recipe.name,
-      icon: recipe.icon,
-      money: earned,
-      exp,
-      stars: STARS_FOR[result],
-      customer: orderResult.customer?.name ?? null,
-    });
-
-    setState((current) => {
-      const staffEffects = getStaffEffects(current.staff ?? []);
-      let next = {
-        ...current,
-        materials,
-        money: current.money + Math.floor(earned * staffEffects.salesMultiplier),
-        exp: nextExp,
-        level,
-        totalPoints: current.totalPoints
-          + Math.floor((calcPoints(result, recipe) + customerBonus.points) * staffEffects.pointsMultiplier),
-        craftCount: current.craftCount + 1,
-        successCount: current.successCount + (result === "success" ? 1 : 0),
-        greatSuccessCount: current.greatSuccessCount + (result === "great" ? 1 : 0),
-        failCount: current.failCount + (result === "fail" ? 1 : 0),
-        levelUpCount: current.levelUpCount + levelUps,
-        todaySales: newSales,
-        customerQueue: orderResult.queue,
-        recipeRatings: ratings,
-        lastEvent: { type: result, recipe: recipe.name },
-      };
-      next = applyMissionProgress(next, "craft_recipe");
-      if (state.dayPhase === "open" && orderResult.fulfilled) next = applyMissionProgress(next, "satisfy_customers");
-      if (state.dayPhase === "open" && result === "great") next = applyMissionProgress(next, "special_orders");
-      if (state.dayPhase === "open") next = applyMissionProgress(next, "reach_sales", newSales, true);
-      if (next.level >= ENDING_LEVEL && next.money >= ENDING_MONEY && !next.endingReached) {
-        next = { ...next, gamePhase: "ending", endingReached: true };
-      }
-      return next;
-    });
+    setCraftResult({ ...transaction.receipt, id: Date.now() });
+    setState(transaction.state);
   }, [state, sfx, showToast, canMake, setMood]);
 
   const revealCraft = useCallback(() => {
@@ -422,12 +357,16 @@ export default function App() {
     if (state.money < BUY_COST) { sfx("error"); showToast("コインが足りません！", "warn"); return; }
     if ((state.materials[key] ?? 0) >= matMax) { sfx("error"); showToast("もういっぱいです！", "warn"); return; }
     sfx("buy");
-    setState((current) => applyMissionProgress({
-      ...current,
-      money: current.money - BUY_COST,
-      buyCount: current.buyCount + 1,
-      materials: { ...current.materials, [key]: Math.min(matMax, current.materials[key] + BUY_AMOUNT) },
-    }, "buy_materials"));
+    setState((current) => {
+      if (current.money < BUY_COST || current.materials[key] >= capByLevel(current.level)) return current;
+      const next = {
+        ...current,
+        money: current.money - BUY_COST,
+        buyCount: current.buyCount + 1,
+        materials: { ...current.materials, [key]: Math.min(capByLevel(current.level), current.materials[key] + BUY_AMOUNT) },
+      };
+      return current.dayPhase === "open" ? applyMissionProgress(next, "buy_materials") : next;
+    });
     showToast(`${MATERIAL_LABELS[key]} +${BUY_AMOUNT}`, "ok");
   }, [state.money, state.materials, sfx, showToast, matMax]);
 
