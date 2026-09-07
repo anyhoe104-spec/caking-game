@@ -4,58 +4,47 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-09-05 10:33 +0900 (Asia/Tokyo)
-- Agent: Claude Code
-- Branch: `claude/caking-weekly-improvements-bg3gnf` (synchronized with origin)
-- Revision: `dd151c6`
-- Working tree: clean
-- Objective: The weekly improvement request — UI, music, SE and voice, animation — which then extended into
-  a voice quality pass, host-independent builds, and the licensing and distribution decisions.
+- Updated: 2026-09-07 10:41 +0900 (Asia/Tokyo)
+- Agent: Codex
+- Branch: `main`, base revision `746c3f9`, origin/mainと同期した状態から作業。
+- Working tree: 未コミットの改修あり。既存の作業差分はなかった。
+- Objective: ストアに並ぶ品質を目標とする工房・2Dキャラ・製造演出・ケーキパーツ・物語の改修。
 
-### State
+### 完了した範囲
 
-**PR #7** is open as a draft against `main`, with all three review findings fixed and the threads resolved.
-The published site at https://anyhoe104-spec.github.io/caking-game/ still serves the pre-session build,
-because deployment runs on push to `main` only. No CI is configured for pull requests.
+- PR #7はmainへ統合済み。以前の引き継ぎに残った「draft/未統合」は失効。
+- 既存の資料・コードを確認して `docs/store-quality-roadmap.md` に要件と受入条件を作成。
+- 背景に歩く/作業するミニキャラ、待ち客、注文リンク、家具別の差分を重ねたショップ。
+- SVGの手足・頭・目を独立させたオリジナル2Dミニキャラ。Live2Dではない。
+- 製造の3工程・スキップ・完成表示・結果時の音声。連打の二重製造、スキップ後の巻き戻り、営業終了・エンディングとの競合を防止。
+- ケーキパーツ6種（無料4/有料試着2）、P購入・装備・保存。ブラウザ保存から有料権利は付与しない。
+- 4章の工房日記、既存レシピ画像とOP/ED背景の活用。
+- 旧V4セーブの加算拡張。既存ゲーム進行は維持。
 
-- UI rebuilt: service screen sub-tabs, service HUD, orders linking into the recipe screen, settings modal.
-- Audio: 5 scene BGM loops with crossfades, 15 SE, 9 voice cues, per-channel volume and mute. All generated
-  from code (`scripts/generate_audio.py`), so the project owns all 29 files with no licence obligation.
-- Animation: screen and list transitions, bake results, level up, recipe unlock, with a reduced-motion switch.
-- Build is host-independent: the same source builds for GitHub Pages and for a root-serving host.
-- Licensing settled: MIT for code (`LICENSE`), rights reserved for assets (`LICENSE-ASSETS.md`).
-- Distribution settled: free, with itch.io pay-what-you-want at a zero minimum.
+### 検証
 
-### Blockers and risks
+- `npm run lint`: 警告・エラー0。
+- `npm test`: 20/20合格。
+- `npm run build` / `npm run build:root`: 両方成功。
+- `git diff --check`: 成功。
+- Chromium 149 + Playwright: オープニング/営業/注文/製造/連打/スキップ/パーツ/リロード/営業終了/翌日/エンディング/継続/軽減設定を確認。4幅×5画面の横はみ出しなし。pageerrorなし。
+- 根拠と制限は `docs/atelier-validation.md`。
 
-- **PR #7 is still a draft and unmerged.** Nothing from this session is visible to anyone until it reaches
-  `main` (or a Cloudflare Pages preview). This blocks writing about it.
-- No physical-device check. All verification so far is headless Chromium.
-- The copyright holder in `LICENSE` and `LICENSE-ASSETS.md` is the GitHub handle `anyhoe104`.
-  Replace it before this reaches a wider audience if a real name or brand is wanted.
-- `public/sounds/` is 2.93 MB. BGM is fetched lazily per scene, but mobile-network load is unmeasured.
-- Offline coverage on a first visit is shell-only; images and audio are cached as they are visited.
+### 未完・制約
 
-### Next actions
+- 今回の変更は未コミット・未push・未公開。AGENTS.mdとcheckpoint-projectの明示承認ルールに従い、共有操作はユーザー承認待ち。
+- 本番課金、購入検証・復元、Android/iOSネイティブビルド・署名・実機検証は未実装。ストア完成版とは呼ばない。
+- 共通3工程の演出であり、レシピ固有の本格的な工程・各ケーキ自体へのパーツ合成は未完。
+- ミニキャラの質感と実機60fpsはレビュー・計測待ち。BGM/声は前回の合成音のまま。
+- 元のObsidian `spec/` はこのリポジトリの外にあり未取得。
+- 自動化機能は調査したが、利用上限解除を取得するAPI/イベントがないため、解除検知での自動再実行は設定していない。再開はユーザーによる起動が必要。
 
-1. **Take PR #7 out of draft and decide how to publish.** Either merge to `main` (the site updates
-   automatically), or run the deploy workflow manually on the branch via Actions, or move to Cloudflare
-   Pages for per-branch preview URLs. Until one of these happens the work is invisible.
-2. Generate one `shop-bgm` candidate in Suno and run the A/B in `docs/audio-generation.md`. That single
-   listening test decides both whether paid audio is adopted and whether the repository goes private,
-   because those two questions are the same question.
-3. Device check on Android and iOS — `docs/deployment-policy.md` lists the items.
+### 次の正確なアクション
 
-### How to resume
-
-Run `$resume-project`. The four dated reports below cover this session in order: the main improvement pass,
-the voice rework, the host-independent build, and the licensing and Cloudflare preparation.
-
-### Validation at close
-
-`npm run lint` clean; `npm test` 16/16 passing; `npm run build` and `npm run build:root` both succeed;
-`git diff --check` clean. Rerunning `scripts/generate_audio.py` produced a zero-byte diff across all 29
-audio files, confirming generation is still deterministic. No secrets or machine-specific paths in the diff.
+1. ユーザーが承認したら、差分を確認し、専用ブランチ `codex/atelier-quality` を作成してコミット。push先は `origin` = `https://github.com/anyhoe104-spec/caking-game.git`、同ブランチ。mainへ直接pushしない。レビュー用PRを作成する。
+2. スマホで確認できる公開方法を既存deployment-policyに沿って選択し、今回の見た目・動きのレビューを受ける。
+3. `docs/store-quality-roadmap.md` の残作業を優先順に進める。実課金はストア商品登録・アカウント・検証境界が揃ってから接続する。
+4. 再開時は `.agents/skills/resume-project/SKILL.md` を読み、Git状態と本書を照合。未完項目を完了済みとして扱わない。
 
 ## Dated work reports
 
@@ -412,3 +401,15 @@ audio files, confirming generation is still deterministic. No secrets or machine
 - Unresolved issues: unchanged from the previous entry — PR #7 is still a draft, no physical-device check,
   and the copyright holder is still the GitHub handle.
 - Next actions: as listed in `Current handoff`.
+
+### 2026-09-07 10:41 +0900 — Codex — 工房・2D演出とパーツ改修
+
+- 目的: CAKINGをストア品質へ近づけ、ミニキャラ・製造演出・ケーキパーツ・物語を実装。中断後も再開できる状態を残す。
+- 実施: 最新mainを取得し、AGENTSとresume-project、WORKLOG全履歴、README、現状/配布資料、関連ソースを確認。PR #7統合済みというGit証拠に合わせて引き継ぎを訂正。
+- 完了: 上記Current handoffの実装項目。今回の新規素材はコードで描画するSVG。外部画像・音楽の追加取得は行っていない。
+- 影響範囲: src/App.jsx、atelier.css、componentsのショップ/製造/ケーキ/日記/既存画面、gameのassets/storage/cakeParts/story、test/cake-parts.test.js、README、docs/current-status.md、docs/store-quality-roadmap.md、docs/atelier-validation.md、WORKLOG.md。
+- 検証: lint警告0、テスト20/20、通常/rootビルド成功、diff --check成功。ブラウザの境界操作・幅320/390/430/768での検証成功。日本語/絵文字の実機表示は未検証。
+- 設計判断: 結果は製造タップ時に一度で保存。演出は確定結果の提示なのでスキップや中断で再抽選しない。終了時に日報/エンディングと競合しない。Pと現金決済を分離し、未接続決済を成功扱いしない。
+- 解消した不具合: 旧craftCardの1.5秒で消えるアニメーションとの衝突、スキップ後の残タイマーによる工程巻き戻り、エンディング継続後の製造ロック、営業終了の日報による結果の隠蔽。
+- 未完: 本番課金/ネイティブ/実機/品質レビュー/レシピ固有演出。利用上限の自動解除検知・自動再開は未設定。
+- 次: 明示承認後の専用ブランチ保存とPR作成、実機レビュー、残る品質工程。コミット/push/mergeは実施していない。

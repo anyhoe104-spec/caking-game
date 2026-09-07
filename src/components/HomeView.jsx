@@ -1,3 +1,5 @@
+import ShopDiorama from "./ShopDiorama.jsx";
+import StoryJournal from "./StoryJournal.jsx";
 import { Bar, CharImg, Stars } from "./common.jsx";
 import { customerImg } from "../game/assets.js";
 import { RECIPES } from "../game/data.js";
@@ -79,6 +81,7 @@ export default function HomeView({
 
   return (
     <div className="homeView">
+      <ShopDiorama state={state} onRecipe={onOpenRecipe} onOrder={onPickOrder}/>
       {/* Character panel — always visible, never scrolled past. */}
       <div className="miffyPanel">
         <CharImg mood={miffyMood} className="miffyChar" />
@@ -180,6 +183,7 @@ export default function HomeView({
           </div>
         )}
       </div>
+      <StoryJournal level={state.level}/>
     </div>
   );
 }

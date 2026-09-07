@@ -1,0 +1,53 @@
+/* Warm, illustrated atelier. All moving artwork uses compositor transforms. */
+:root { --pink3:#ad6578; --pink2:#dca0a8; --gold:#e9c87e; --gold2:#c48c4c; --brown:#514337; --muted:#826e5d; }
+.eyebrow {font-size:9px;letter-spacing:2.4px;font-weight:800;color:#9b7a54;}
+.shopDiorama {position:relative;isolation:isolate;height:306px;overflow:hidden;border-radius:19px;border:1px solid #cdb18b;box-shadow:0 8px 20px #75533220;background:#dec6a6;}
+.shopBackdrop {position:absolute;width:100%;height:100%;object-fit:cover;object-position:53% 50%;z-index:-2;}
+.shopSun {position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,transparent 46%,#ffe7a13d 50%,transparent 72%);}
+.shopPlaque {position:absolute;left:16px;top:17px;color:#fff4d9;text-shadow:0 2px 8px #362414;display:grid;gap:4px;}
+.shopPlaque span {font:10px Georgia,serif;letter-spacing:2px;}
+.shopPlaque strong {font-family:serif;font-size:20px;letter-spacing:1px;}
+.shopOpen {position:absolute;right:10px;top:12px;border:1px solid #dfcba8;background:#f9f2ddd9;border-radius:5px;padding:5px 8px;font-size:9px;letter-spacing:1px;color:#675642;}
+.shopOpen.isOpen {background:#536b5f;color:#fff9de;}
+.shopChef,.shopGuest,.shopCake {position:absolute;background:none;border:0;cursor:pointer;padding:0;min-width:44px;}
+.shopChef {width:104px;left:30%;bottom:35px;animation:chefRoute 16s ease-in-out infinite;}
+.shopChef .miniRig {width:100%;height:139px;}
+.miniSpeech {display:block;width:max-content;max-width:130px;position:relative;left:50%;transform:translateX(-50%);border:1px solid #ccb79b;border-radius:10px 10px 10px 2px;background:#fff8e9ed;padding:5px 8px;color:#684f39;font-size:9px;white-space:nowrap;box-shadow:0 2px 5px #533f2720;}
+.shopCake {left:4px;bottom:19px;width:100px;}
+.shopCake span {position:absolute;bottom:0;left:14px;background:#644d3eeb;border-radius:12px;color:#fff3d8;font-size:10px;padding:6px 12px;}
+.cakeModel {width:100%;height:auto;display:block;}
+.shopGuest {width:78px;bottom:20px;right:8px;animation:guestArrive 1.7s ease-out both;}
+.shopGuest--1 {right:78px;bottom:14px;animation-delay:.15s;}
+.shopGuest .miniRig {width:100%;height:106px;}
+.shopGuest .miniSpeech {font-size:8px;max-width:105px;white-space:normal;}
+.shopCaption {position:absolute;bottom:0;left:0;right:0;padding:5px;text-align:center;font-size:9px;background:#fff5daeb;color:#7a5d43;}
+.shopDust i {position:absolute;width:4px;height:4px;border-radius:50%;background:#ffefb6;top:40%;left:25%;animation:dustFloat 8s linear infinite;}
+.shopDust i:nth-child(2){left:70%;animation-delay:-3s;}.shopDust i:nth-child(3){left:49%;animation-delay:-6s;}
+.shopLantern {position:absolute;right:45px;top:72px;color:#ffe8a0;font-size:55px;text-shadow:0 0 22px #fff2aa;animation:lampGlow 3s ease-in-out infinite;}
+.shopFlowers {position:absolute;bottom:62px;left:10px;color:#cd708a;font-size:25px;}
+.shopRoyal {position:absolute;left:20px;top:99px;border:2px solid #d7ae5e;background:#65513ad9;color:#fce9aa;padding:7px;font:9px Georgia,serif;letter-spacing:1px;}
+.miniRig {overflow:visible;}.miniHead {transform-origin:60px 80px;animation:miniNod 4s ease-in-out infinite;}.miniBody {transform-origin:60px 128px;animation:miniBreathe 3s ease-in-out infinite;}.miniEyes {transform-origin:60px 60px;animation:miniBlink 5.2s infinite;}.miniArm {transform-origin:40px 91px;}.miniArm--right {transform-origin:80px 91px;}.miniLeg--left {transform-origin:44px 125px;}.miniLeg--right {transform-origin:76px 125px;}
+.miniRig--walk .miniLeg--left {animation:miniStep .65s ease-in-out infinite alternate;}.miniRig--walk .miniLeg--right {animation:miniStep .65s ease-in-out -.65s infinite alternate;}.miniRig--walk .miniArm--left {animation:miniStep .65s ease-in-out -.65s infinite alternate;}.miniRig--walk .miniArm--right {animation:miniStep .65s ease-in-out infinite alternate;}.miniRig--work .miniArm--right {animation:miniStir .65s ease-in-out infinite alternate;}.miniRig--work .miniHead {animation:miniNod 1.6s ease-in-out infinite;}
+@keyframes miniBlink {0%,42%,46%,100%{transform:scaleY(1)}44%{transform:scaleY(.08)}}
+@keyframes miniNod {0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg)}}
+@keyframes miniBreathe {0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.018)}}
+@keyframes miniStep {from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
+@keyframes miniStir {from{transform:rotate(-28deg)}to{transform:rotate(9deg)}}
+@keyframes chefRoute {0%,15%,100%{transform:translateX(0)}42%,65%{transform:translateX(34px)}}
+@keyframes guestArrive {from{transform:translateX(105px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes dustFloat {0%{transform:translate(0,40px);opacity:0}25%,65%{opacity:.8}100%{transform:translate(24px,-80px);opacity:0}}
+@keyframes lampGlow {50%{opacity:.6}}
+.recipeArtwork {width:62px;height:70px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 5px 4px #936a3420);}
+.storyJournal {padding:13px 15px;}.storyJournal h3 {font-family:serif;font-size:15px;margin:4px 0 9px;}.chapterList {display:grid;gap:1px;}.chapterList button {display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 0;border:0;border-top:1px solid #dbc8aa66;background:none;color:#654f3c;text-align:left;cursor:pointer;}.chapterList button:disabled {opacity:.45;cursor:default;}.chapterList span {font:17px Georgia,serif;color:#b3966f;}.chapterList strong {font-size:11px;flex:1;}.chapterList small {font-size:9px;}.journalLine {font-size:14px;line-height:2;}
+.cakeAtelier {padding:18px 14px;margin-bottom:18px;}.atelierHeading {text-align:center;}.atelierHeading h2 {font:22px serif;margin:7px 0;}.atelierHeading p,.atelierNote {font-size:11px;color:#826e5d;line-height:1.7;}.cakePreview {background:radial-gradient(ellipse,#fffdf6 20%,#f4e7d5 75%);border-radius:15px;text-align:center;padding:5px 12px 14px;margin-top:16px;}.cakePreview .cakeModel {max-width:240px;margin:auto;}.cakePreview>span {font-size:11px;}.partsGrid {display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:15px;}.partCard {border:1px solid #decdb7;border-radius:12px;padding:10px;display:flex;flex-direction:column;}.partCard.selected {border-color:#b2768b;background:#fff4f7;}.partPreview {display:grid;justify-items:center;gap:9px;border:0;background:none;color:#654f3c;cursor:pointer;min-height:60px;font-size:11px;font-weight:700;}.partPreview>span {width:28px;height:28px;border-radius:50% 50% 30% 30%;box-shadow:inset -4px -5px 0 #0001,0 3px 5px #0001;}.partCard p {font-size:10px;line-height:1.65;flex:1;}.partCard small {font-size:9px;color:#816747;}.atelierNote {margin-bottom:0;}
+.productionOverlay {background:#37271fc7;backdrop-filter:blur(5px);pointer-events:auto;z-index:350;}.productionCard {width:min(100%,350px);min-width:0;max-height:90dvh;overflow:auto;background:#fff8e9;border:1px solid #d2b58b;padding:23px 18px;gap:10px;}.productionScene {height:170px;width:100%;position:relative;background:radial-gradient(ellipse at center,#f3e2c0,transparent 70%);}.productionScene>.miniRig {position:absolute;width:115px;height:153px;left:20px;bottom:0;}.mixingBowl {position:absolute;width:105px;height:48px;border-radius:7px 7px 55px 55px;background:#c59081;border:3px solid #805f4a;right:30px;bottom:5px;}.mixingBowl i {position:absolute;bottom:50px;left:15px;width:7px;height:7px;border-radius:50%;background:#fff1c2;animation:dustFloat 1s infinite;}.mixingBowl i:nth-child(2){left:45px;animation-delay:-.3s}.mixingBowl i:nth-child(3){left:70px;animation-delay:-.6s}.productionStep--1 .mixingBowl {height:80px;border-radius:12px;background:#716055;}.ovenGlow {position:absolute;inset:10px;background:radial-gradient(ellipse,#ffe39a,#b86937);border:5px solid #4b423b;border-radius:8px;animation:lampGlow 1.5s infinite;}.productionStep--2 .mixingBowl {background:none;border:0;height:105px;width:125px;}.productionSteam {position:absolute;right:50px;top:30px;color:#b5966a;font-size:30px;animation:miniBreathe 1.2s infinite;}.productionSteps {display:flex;gap:9px;width:100%;}.productionSteps span {flex:1;border-top:3px solid #ded0b9;padding-top:6px;font-size:10px;color:#9d8c76;}.productionSteps .active {border-color:#af6e83;color:#96566b;}.finishedRecipe {height:165px;width:100%;object-fit:contain;filter:drop-shadow(0 12px 8px #76533922);animation:finishReveal .5s ease-out;}.finishStyle {position:absolute;right:0;bottom:0;width:75px;background:#fff9e9;border-radius:50%;border:1px solid #dac6a7;}.productionCard .craftTitle {font-size:18px;}.productionCard .primaryBtn {margin-top:4px;}.productionCard .craftNote {font-size:11px;}
+@keyframes finishReveal {from{transform:translateY(18px) scale(.85);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+.sceneWrap {background:linear-gradient(#44312360,#44312390),var(--scene-art) center/cover;}.sceneCard {background:#fff8ebf0;border:1px solid #dfc8a1;}.endingScene {background-image:linear-gradient(#44312340,#44312370),var(--scene-art);}.sceneChar {height:220px;width:155px;}.miffyPanel {background:#fff8e9;}.card {background-color:#fffdf6;}
+@media(max-width:360px){.shopDiorama{height:270px}.shopPlaque strong{font-size:17px}.recipeArtwork{width:45px;height:55px}.recipeCard{gap:7px;padding:10px 8px}.makeBtn{padding:10px}.shopGuest{width:66px}.shopGuest--1{right:66px}.shopChef{left:27%;width:90px}}
+.reduceMotion .shopDiorama *,.reduceMotion .miniRig *,.reduceMotion .productionScene * {animation:none!important;transition:none!important;}
+@media(prefers-reduced-motion:reduce){.shopDiorama *,.miniRig *,.productionScene *{animation:none!important;transition:none!important}}
+.pageHidden .shopDiorama *,.pageHidden .miniRig * {animation-play-state:paused!important;}
+
+.productionOverlay .productionCard { animation:none; opacity:1; }
+
+.miffyPanel .miffyChar {object-fit:cover;object-position:top;border-radius:12px;width:64px;height:78px;}

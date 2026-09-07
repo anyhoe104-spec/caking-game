@@ -1,6 +1,12 @@
 # CAKING 現在の開発状況
 
-更新日: 2026-09-05
+更新日: 2026-09-07
+
+## 進行中の改修（未公開）
+
+2026-09-07にmain 746c3f9を基に工房演出を改修。PR #7は統合済み。今回の差分は未コミット・未pushで、公開サイトには未反映。
+
+ショップのミニキャラ、製造3工程、ケーキ装備、4章の物語を実装。20件の自動テストとChromiumでの操作検証を実施。実機・実課金・ネイティブ配布は未完。詳細と次工程は [store-quality-roadmap.md](store-quality-roadmap.md)、証拠は [atelier-validation.md](atelier-validation.md) を参照。
 
 ## 現在地
 
