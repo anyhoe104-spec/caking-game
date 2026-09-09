@@ -104,3 +104,25 @@ html {scroll-padding-top:110px;scroll-padding-bottom:100px}
 .partPreview {padding:0;gap:8px;width:100%;border-radius:9px}
 .partPreview strong {font-size:11px;line-height:1.5;min-height:2.5em;display:flex;align-items:center}
 .partPreview:focus-visible {outline:2px solid #ad6578;outline-offset:4px}
+
+/* The handwritten recipe album and portable save desk. */
+.recipeCollection { padding: 18px; margin-bottom: 18px; background: linear-gradient(135deg,#fffaf0,#fff1e2); }
+.collectionHead { display:flex; justify-content:space-between; gap:8px; margin-bottom:10px; color:#794526; }
+.recipeCollection p { font-size:.8rem; color:#805c49; margin:10px 0 0; }
+.collectionStamps { display:grid; grid-template-columns:repeat(8,minmax(0,1fr)); gap:5px; margin-top:12px; }
+.collectionStamps span { display:grid; place-items:center; aspect-ratio:1; border:1px dashed #d4b593; border-radius:50%; color:#a08065; font-size:clamp(14px,4vw,22px); }
+.collectionStamps .mastered { background:#ffe8a3; border:2px solid #c98a33; box-shadow:0 2px 5px #bf8f4730; }
+.savePanel h3 { margin:0 0 8px; }
+.savePanel > button { margin:4px 6px 4px 0; }
+.backupBox { margin-top:14px; display:block; }
+.backupBox summary, .gameGuide summary { cursor:pointer; font-weight:700; min-height:44px; padding:10px 0; }
+.backupBox label { display:block; margin:10px 0 6px; font-size:.85rem; }
+.backupBox textarea { display:block; width:100%; min-height:100px; resize:vertical; border:1px solid #c7a58e; border-radius:10px; padding:10px; background:#fffaf4; color:#49362e; font-size:16px; }
+.backupFile input { display:block; width:100%; margin-top:8px; font-size:14px; }
+.backupBox button { margin-top:8px; }
+.backupMessage { font-size:.85rem; overflow-wrap:anywhere; }
+.gameGuide { font-size:.88rem; line-height:1.7; }
+.gameGuide ol { padding-left:24px; }
+.gameGuide li { margin-bottom:10px; }
+.saveWarning { margin:10px; padding:12px; border:1px solid #ca7939; border-radius:12px; background:#fff3d5; color:#673c20; font-size:.85rem; }
+.saveWarning button { min-height:44px; margin:8px 8px 0 0; border:1px solid #bb8c63; border-radius:8px; background:#fffaf2; padding:8px 12px; }
