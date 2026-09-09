@@ -1,0 +1,18 @@
+{
+  "dashboard": {
+    "repository": "anyhoe104-spec/project-dashboard",
+    "localPaths": [
+      "../project-dashboard"
+    ],
+    "readPaths": [
+      "README.md",
+      "CONTEXT.md",
+      "projects/",
+      "weekly-reports/"
+    ]
+  },
+  "project": {
+    "name": "CAKING！",
+    "summaryPath": "projects/04-caking-game.md"
+  }
+}
