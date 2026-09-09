@@ -34,13 +34,18 @@ export default function RecipeView({ state, canMake, onCraft, focusRecipe, onlyM
     });
   }, [state.level, canMake, demand]);
 
+  const collected = RECIPES.filter(recipe => (state.recipeRatings[recipe.name] ?? 0) > 0).length;
+  const mastered = RECIPES.filter(recipe => state.recipeRatings[recipe.name] === 3).length;
+  const totalStars = RECIPES.reduce((sum, recipe) => sum + (state.recipeRatings[recipe.name] ?? 0), 0);
+  const nextRecipe = RECIPES.find(recipe => recipe.level > state.level);
+
   const visible = onlyMakeable ? ordered.filter((entry) => entry.ready) : ordered;
 
   useEffect(() => {
     if (!focusRecipe) return;
     const node = cardRefs.current[focusRecipe];
     if (!node) return;
-    node.scrollIntoView({ behavior: "smooth", block: "center" });
+    node.scrollIntoView({ behavior: document.documentElement.classList.contains("reduceMotion") ? "instant" : "smooth", block: "center" });
     node.classList.add("recipeCard--flash");
     const timer = setTimeout(() => node.classList.remove("recipeCard--flash"), 1200);
     return () => clearTimeout(timer);
@@ -62,6 +67,15 @@ export default function RecipeView({ state, canMake, onCraft, focusRecipe, onlyM
         </button>
       </div>
 
+      <section className="recipeCollection card" aria-label="レシピ帳の完成度">
+        <div className="collectionHead"><span>港町のお菓子手帖</span><strong>{totalStars} / 24 ★</strong></div>
+        <Bar value={totalStars} max={24} tone="gold" />
+        <p>作ったお菓子 {collected} / 8 · 3つ星 {mastered} / 8</p>
+        <div className="collectionStamps">
+          {RECIPES.map(recipe => <span key={recipe.name} className={state.recipeRatings[recipe.name] === 3 ? "mastered" : ""} title={`${recipe.name}：${state.recipeRatings[recipe.name] ?? 0}つ星`} aria-label={`${recipe.name}：${state.recipeRatings[recipe.name] ?? 0}つ星`}>{state.recipeRatings[recipe.name] ? recipe.icon : "◇"}</span>)}
+        </div>
+        <p>{mastered === 8 ? "全レシピ3つ星！港町じまんのパティシエです。" : nextRecipe ? `次はLv${nextRecipe.level}で「${nextRecipe.name}」が解放されます。` : "全レシピ解放！大成功を重ねて3つ星を集めましょう。"}</p>
+      </section>
       <div className="recipeList">
         {visible.map(({ recipe, locked, ready, wanted }, index) => (
           <article
