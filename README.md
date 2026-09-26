@@ -4,6 +4,8 @@
 
 **プレイ:** https://anyhoe104-spec.github.io/caking-game/
 
+**応援:** [お布施でミフィを支える](https://ofuse.me/38bc0941)
+
 ## 現在の状態
 
 - MVPをGitHub Pagesで公開中
@@ -112,6 +114,14 @@ npm run build:root    # ルート配信向け
 python3 -m pip install numpy lameenc
 python3 scripts/generate_audio.py
 ```
+
+## 応援していただける方へ
+
+CAKING！は無料で遊べます。広告も課金もありません。
+
+遊んでみて面白かった、続きが気になる、という方は [お布施](https://ofuse.me/38bc0941) から支援していただけます。いただいたものは、このゲームと、開発の様子を書いている連載の継続にあてます。
+
+開発の過程は [AIと寄り道編集部](https://note.com/aiyorimichi) で連載しています。環境構築でつまずいたところから書いています。
 
 ## ライセンス
 
