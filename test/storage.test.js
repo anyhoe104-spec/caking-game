@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { BACKUP_KEY, STORAGE_KEY, createBackup, defaultSave, loadSave, loadSaveWithStatus, migrateSave, parseBackup, saveGame } from "../src/game/storage.js";
+import { BACKUP_KEY, STORAGE_KEY, createBackup, defaultSave, loadSave, loadSaveWithStatus, migrateSave, parseBackup, saveGame, backupFileName } from "../src/game/storage.js";
 import { generateMissions, applyMissionProgress } from "../src/game/missions.js";
 import { generateCustomerQueue, fulfillOrder } from "../src/game/customers.js";
 const memory = () => { const values = new Map(); return { values, getItem: k => values.get(k) ?? null, setItem: (k, v) => values.set(k, v) }; };
@@ -61,4 +61,10 @@ test("quota failures are observable and preserve the primary save", () => {
   storage.setItem = () => { throw new Error("quota"); };
   assert.throws(() => saveGame({ ...defaultSave(), money: 999 }, storage), /quota/);
   assert.equal(loadSave(storage).money, 321);
+});
+
+test("backup file name carries the date and avoids characters filesystems reject", () => {
+  assert.equal(backupFileName(new Date("2026-09-26T04:19:00.000Z")), "caking-backup-2026-09-26.json");
+  assert.ok(!/[:*?"<>|]/.test(backupFileName(new Date("2026-01-02T23:59:59.000Z"))));
+  assert.match(backupFileName(), /^caking-backup-\d{4}-\d{2}-\d{2}\.json$/);
 });

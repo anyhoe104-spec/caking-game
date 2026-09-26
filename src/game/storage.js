@@ -140,6 +140,14 @@ export function createBackup(state, now = new Date()) {
   return JSON.stringify({ format: "CAKING-backup", version: 1, createdAt: now.toISOString(), save: migrateSave(state) }, null, 2);
 }
 
+export const BACKUP_MIME = "application/json";
+
+// 保存したファイルを後から見分けられるよう日付を入れる。コロンを含む ISO 文字列は
+// 一部のファイルシステムで使えないため、日付部分だけを取る。
+export function backupFileName(now = new Date()) {
+  return `caking-backup-${now.toISOString().slice(0, 10)}.json`;
+}
+
 export function parseBackup(source) {
   if (typeof source !== "string" || source.length > MAX_BACKUP_LENGTH) throw new Error("バックアップは200KB以内のテキストを指定してください。");
   let data;
