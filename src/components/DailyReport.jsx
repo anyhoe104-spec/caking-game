@@ -27,7 +27,7 @@ export default function DailyReport({ state, animate, onNext, onCoinTick }) {
 
         <div className="reportSection">
           <div className="reportRow"><span>対応した注文</span><strong>{served.length}件</strong></div>
-          <div className="reportRow"><span>大成功</span><strong>{special}回</strong></div>
+          <div className="reportRow"><span>大成功で届けた注文</span><strong>{special}件</strong></div>
           <div className="reportRow"><span>作ったケーキ</span><strong>{state.craftCount}個（累計）</strong></div>
         </div>
 

@@ -87,4 +87,5 @@ function precacheManifest() {
 export default defineConfig({
   plugins: [react(), precacheManifest()],
   base,
+  server: { watch: { ignored: ['**/android/**', '**/ios/**'] } },
 })

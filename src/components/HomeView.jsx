@@ -72,6 +72,7 @@ export default function HomeView({
   expToNext,
   onPickOrder,
   onOpenRecipe,
+  onReadStory,
 }) {
   const open = state.dayPhase === "open";
   const waitingCount = state.customerQueue.filter((c) => c.status === "waiting").length;
@@ -183,7 +184,7 @@ export default function HomeView({
           </div>
         )}
       </div>
-      <StoryJournal level={state.level}/>
+      <StoryJournal level={state.level} readStoryIds={state.readStoryIds} onRead={onReadStory}/>
     </div>
   );
 }
