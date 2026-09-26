@@ -6,6 +6,7 @@ const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 const ROOT = path.resolve(__dirname, '..');
 (async () => {
+  const { migrateSave } = await import(pathToFileURL(path.join(ROOT, 'src/game/storage.js')).href);
   const { preview } = await import(pathToFileURL(path.join(ROOT, 'node_modules/vite/dist/node/index.js')).href);
   const base = fs.readFileSync(path.join(ROOT, 'dist/index.html'), 'utf8').includes('/caking-game/assets/') ? '/caking-game/' : '/';
   const server = await preview({ root: ROOT, base, preview: { host: '127.0.0.1', port: 5174 } });
@@ -29,7 +30,8 @@ const ROOT = path.resolve(__dirname, '..');
     await context.setOffline(true);
     await page.reload();
     await page.getByRole('button', { name: '工房を再開する' }).waitFor();
-    assert.equal(await page.evaluate(() => localStorage.getItem('caking-save-v4')), saved);
+    // Loading normalizes redundant customer metadata and reward defaults. Compare gameplay fields.
+    assert.deepEqual(migrateSave(JSON.parse(await page.evaluate(() => localStorage.getItem('caking-save-v4')))), migrateSave(JSON.parse(saved)));
     await page.getByRole('button', { name: '工房を再開する' }).click();
     const images = fs.readdirSync(path.join(ROOT, 'public/images'), { recursive: true }).filter(f => /\.png$/.test(f)).map(f => `images/${f}`);
     images.push('icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'favicon.svg');

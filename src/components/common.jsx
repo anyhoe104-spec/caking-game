@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { MIFFY_FALLBACK, MIFFY_IMG } from "../game/assets.js";
 
 export function CharImg({ mood = "normal", className = "" }) {
@@ -55,17 +55,36 @@ export function LiveNumber({ value, className = "" }) {
   return <span className={`liveNum ${bumped ? "liveNum--bump" : ""} ${className}`}>{value.toLocaleString()}</span>;
 }
 
-export function Modal({ title, onClose, children, footer, wide = false, labelledBy }) {
+export function Modal({ title, onClose, children, footer, wide = false, labelledBy, returnFocusRef }) {
   const cardRef = useRef(null);
-
+  const closeRef = useRef(onClose);
+  const titleId = useId();
+  const labelId = labelledBy || titleId;
+  useEffect(() => { closeRef.current = onClose; }, [onClose]);
   useEffect(() => {
-    const onKey = (event) => {
-      if (event.key === "Escape") onClose?.();
+    const previous = returnFocusRef?.current || document.activeElement;
+    const card = cardRef.current;
+    const focusables = () => [...card.querySelectorAll('button:not(:disabled), input:not(:disabled), textarea:not(:disabled), select:not(:disabled), summary, a[href], [tabindex="0"]')]
+      .filter(el => el.getClientRects().length && !el.closest('[inert]'));
+    const onKey = event => {
+      // A second dialog (such as interruption recovery) may sit above this one.
+      if (card.closest('[inert]')) return;
+      if (event.key === "Escape") { event.preventDefault(); closeRef.current?.(); }
+      if (event.key === "Tab") {
+        const elements = focusables();
+        const first = elements[0], last = elements.at(-1);
+        if (!first) { event.preventDefault(); card.focus(); }
+        else if (event.shiftKey && (document.activeElement === first || document.activeElement === card)) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && (document.activeElement === last || !card.contains(document.activeElement))) { event.preventDefault(); first.focus(); }
+      }
     };
     document.addEventListener("keydown", onKey);
-    cardRef.current?.focus();
-    return () => document.removeEventListener("keydown", onKey);
-  }, [onClose]);
+    card.focus();
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      if (previous?.isConnected && !previous.closest('[inert]')) previous.focus();
+    };
+  }, [returnFocusRef]);
 
   return (
     <div className="overlay" onClick={() => onClose?.()}>
@@ -73,14 +92,14 @@ export function Modal({ title, onClose, children, footer, wide = false, labelled
         className={`modalCard card ${wide ? "modalCard--wide" : ""}`}
         role="dialog"
         aria-modal="true"
-        aria-labelledby={labelledBy}
+        aria-labelledby={title ? labelId : labelledBy}
         tabIndex={-1}
         ref={cardRef}
         onClick={(event) => event.stopPropagation()}
       >
         {title && (
           <div className="modalHead">
-            <h2 id={labelledBy} className="modalTitle">{title}</h2>
+            <h2 id={labelId} className="modalTitle">{title}</h2>
             {onClose && (
               <button className="iconBtn modalClose" onClick={onClose} aria-label="閉じる">✕</button>
             )}
