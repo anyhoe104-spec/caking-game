@@ -1,3 +1,4 @@
+import { defaultCakeStyle, normalizeCakeParts } from "./cakeParts.js";
 import { BASE_MATERIALS } from "./data.js";
 import { DEFAULT_AUDIO, normalizeAudio } from "./audioSettings.js";
 
@@ -37,6 +38,8 @@ export const defaultSave = () => ({
   decorations: [],
   equippedDecoration: null,
   staff: [],
+  ownedCakeParts: ["berry"],
+  cakeStyle: defaultCakeStyle(),
 });
 
 const safeCount = (value, fallback = 0) => Math.max(0, Math.floor(Number.isFinite(Number(value)) ? Number(value) : fallback));
@@ -47,6 +50,7 @@ export function migrateSave(raw) {
   return {
     ...base,
     ...raw,
+    ...normalizeCakeParts(raw),
     version: SAVE_VERSION,
     audio: normalizeAudio(raw.audio, raw),
     money: safeCount(raw.money, base.money),

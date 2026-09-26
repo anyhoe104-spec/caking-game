@@ -1,10 +1,11 @@
+import { BASE } from "../game/assets.js";
 import { CharImg } from "./common.jsx";
 import { ENDING_LINES, OPENING_LINES } from "../game/data.js";
 
 export function OpeningScene({ index, onAdvance, onSkip }) {
   const last = index >= OPENING_LINES.length - 1;
   return (
-    <div className="sceneWrap">
+    <div className="sceneWrap" style={{"--scene-art": `url(${BASE}images/backgrounds/bg-shop.png)`}}>
       <div className="sceneCard card popIn">
         <div className="sceneProgress" aria-hidden="true">
           {OPENING_LINES.map((line, i) => (
@@ -26,7 +27,7 @@ export function OpeningScene({ index, onAdvance, onSkip }) {
 
 export function EndingScene({ state, onRestart, onContinue }) {
   return (
-    <div className="sceneWrap endingScene">
+    <div className="sceneWrap endingScene" style={{"--scene-art": `url(${BASE}images/backgrounds/bg-ending.png)`}}>
       <div className="sceneCard card popIn">
         <CharImg mood="happy" className="sceneChar" />
         {ENDING_LINES.map((line, index) => (

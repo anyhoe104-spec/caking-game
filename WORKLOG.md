@@ -4,58 +4,40 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-09-05 10:33 +0900 (Asia/Tokyo)
-- Agent: Claude Code
-- Branch: `claude/caking-weekly-improvements-bg3gnf` (synchronized with origin)
-- Revision: `dd151c6`
-- Working tree: clean
-- Objective: The weekly improvement request — UI, music, SE and voice, animation — which then extended into
-  a voice quality pass, host-independent builds, and the licensing and distribution decisions.
+- Updated: 2026-09-08 05:36 +0900
+- Agent: Codex
+- Branch: `codex/atelier-quality`; PR: https://github.com/anyhoe104-spec/caking-game/pull/8 （draft）
+- 保全済み基点: `955d852`。前回の手順書・おめかし改修をPR #8へ保存済み。
+- 今回の目的: 開始スキルから継続し、ストア掲載文・審査説明と撮影指示の下書きを完成させる。
 
-### State
+### 完了
 
-**PR #7** is open as a draft against `main`, with all three review findings fixed and the threads resolved.
-The published site at https://anyhoe104-spec.github.io/caking-game/ still serves the pre-session build,
-because deployment runs on push to `main` only. No CI is configured for pull requests.
+- `docs/store-submission-draft.md` に掲載文、撮影6画面、審査向け説明、技術的データ棚卸し、本人確認欄を作成。Windows gradlew.batを内容変更なしでGitの改行属性に正規化。
 
-- UI rebuilt: service screen sub-tabs, service HUD, orders linking into the recipe screen, settings modal.
-- Audio: 5 scene BGM loops with crossfades, 15 SE, 9 voice cues, per-channel volume and mute. All generated
-  from code (`scripts/generate_audio.py`), so the project owns all 29 files with no licence obligation.
-- Animation: screen and list transitions, bake results, level up, recipe unlock, with a reduced-motion switch.
-- Build is host-independent: the same source builds for GitHub Pages and for a root-serving host.
-- Licensing settled: MIT for code (`LICENSE`), rights reserved for assets (`LICENSE-ASSETS.md`).
-- Distribution settled: free, with itch.io pay-what-you-want at a zero minimum.
+- 動く工房、8レシピ24工程、パーツ・物語・中断復帰、Capacitor両OS構成とアイコンを実装済み。
+- おめかしの帯取り外し/定番復帰、6パーツのケーキ上プレビュー、形状に沿う帯とリボン結びを追加。購入履歴・通貨を保持して再装備できる。
+- 実機の意味、Codex/本人の分担、Android/iPhone接続、17確認項目、不具合報告、課金・審査までの順序を `docs/release-runbook.md` にまとめた。
+- `docs/device-test-record.md` に未記入の実機記録テンプレートを作成。native-buildとroadmapからリンク。
 
-### Blockers and risks
+### 検証
 
-- **PR #7 is still a draft and unmerged.** Nothing from this session is visible to anyone until it reaches
-  `main` (or a Cloudflare Pages preview). This blocks writing about it.
-- No physical-device check. All verification so far is headless Chromium.
-- The copyright holder in `LICENSE` and `LICENSE-ASSETS.md` is the GitHub handle `anyhoe104`.
-  Replace it before this reaches a wider audience if a real name or brand is wanted.
-- `public/sounds/` is 2.93 MB. BGM is fetched lazily per scene, but mobile-network load is unmeasured.
-- Offline coverage on a first visit is shell-only; images and audio are cached as they are visited.
+- 文書リンクと17項目の未実施テンプレートを点検。追加改修後にlint、単体21件、通常buildとnative:syncを実行して成功。追加ブラウザ検証で6プレビュー、帯取り外し、試着から定番復帰、通貨/所持保持、リロード後の再装備が合格。
+- 直前セッション: lint/単体20件/通常build/native:sync、Chromium全8レシピ24工程・中断/境界/4幅×5画面、通常配布オフライン42画像が合格。
+- 実機記録は全件「未実施」。署名ビルド/実機/実購入は合格扱いしない。
 
-### Next actions
+### 未完・担当
 
-1. **Take PR #7 out of draft and decide how to publish.** Either merge to `main` (the site updates
-   automatically), or run the deploy workflow manually on the branch via Actions, or move to Cloudflare
-   Pages for per-branch preview URLs. Until one of these happens the work is invisible.
-2. Generate one `shop-bgm` candidate in Suno and run the A/B in `docs/audio-generation.md`. That single
-   listening test decides both whether paid audio is adopted and whether the repository goes private,
-   because those two questions are the same question.
-3. Device check on Android and iOS — `docs/deployment-policy.md` lists the items.
+- 実機接続・認証・契約/販売情報・採否/公開判断は本人または協力者の操作が必要。
+- 実装・不具合解析・美術/音声・課金連携・テスト・ストア資料下書きはCodexが継続担当可能。SDK/端末/ストアに未接続という環境制限を、全残作業が代行不能という意味にしない。
+- Android SDK、Mac/Xcode、署名、実課金サーバー/復元/返金、最終品質/審査は未完。有料パーツは試着のみ。
+- 現金課金なしの先行公開は要件の延期判断なので本人が決める。mainマージ・公開は未実施。
 
-### How to resume
+### 次回
 
-Run `$resume-project`. The four dated reports below cover this session in order: the main improvement pass,
-the voice rework, the host-independent build, and the licensing and Cloudflare preparation.
-
-### Validation at close
-
-`npm run lint` clean; `npm test` 16/16 passing; `npm run build` and `npm run build:root` both succeed;
-`git diff --check` clean. Rerunning `scripts/generate_audio.py` produced a zero-byte diff across all 29
-audio files, confirming generation is still deterministic. No secrets or machine-specific paths in the diff.
+1. 開始スキルで最新PR/WORKLOGを照合。
+2. `docs/release-runbook.md` 3-CでAndroid実機を起動。PC/端末の用意とUSB許可は本人、ビルド失敗ログの解析・修正はCodex。
+3. D01〜D17を記録。失敗項目のログ/動画を受けて修正、同条件で再確認。
+4. SDKがなくても美術/音声案・課金設計・ストア資料下書きは進められる。今回は手順書とおめかし改修・検証を終えて終了する。
 
 ## Dated work reports
 
@@ -412,3 +394,74 @@ audio files, confirming generation is still deterministic. No secrets or machine
 - Unresolved issues: unchanged from the previous entry — PR #7 is still a draft, no physical-device check,
   and the copyright holder is still the GitHub handle.
 - Next actions: as listed in `Current handoff`.
+
+### 2026-09-07 10:41 +0900 — Codex — 工房・2D演出とパーツ改修
+
+- 目的: CAKINGをストア品質へ近づけ、ミニキャラ・製造演出・ケーキパーツ・物語を実装。中断後も再開できる状態を残す。
+- 実施: 最新mainを取得し、AGENTSとresume-project、WORKLOG全履歴、README、現状/配布資料、関連ソースを確認。PR #7統合済みというGit証拠に合わせて引き継ぎを訂正。
+- 完了: 上記Current handoffの実装項目。今回の新規素材はコードで描画するSVG。外部画像・音楽の追加取得は行っていない。
+- 影響範囲: src/App.jsx、atelier.css、componentsのショップ/製造/ケーキ/日記/既存画面、gameのassets/storage/cakeParts/story、test/cake-parts.test.js、README、docs/current-status.md、docs/store-quality-roadmap.md、docs/atelier-validation.md、WORKLOG.md。
+- 検証: lint警告0、テスト20/20、通常/rootビルド成功、diff --check成功。ブラウザの境界操作・幅320/390/430/768での検証成功。日本語/絵文字の実機表示は未検証。
+- 設計判断: 結果は製造タップ時に一度で保存。演出は確定結果の提示なのでスキップや中断で再抽選しない。終了時に日報/エンディングと競合しない。Pと現金決済を分離し、未接続決済を成功扱いしない。
+- 解消した不具合: 旧craftCardの1.5秒で消えるアニメーションとの衝突、スキップ後の残タイマーによる工程巻き戻り、エンディング継続後の製造ロック、営業終了の日報による結果の隠蔽。
+- 未完: 本番課金/ネイティブ/実機/品質レビュー/レシピ固有演出。利用上限の自動解除検知・自動再開は未設定。
+- 次: 明示承認後の専用ブランチ保存とPR作成、実機レビュー、残る品質工程。コミット/push/mergeは実施していない。
+
+### 2026-09-07 17:24 +0900 — Codex — 再開とレシピ固有演出
+
+- 目的: PR作成を完了し、既存の未完演出を継続する。
+- 完了: PR #8作成、8レシピ24工程の固有演出、ケーキ形状別プレビュー、装飾時の完成形、再検証スクリプト、文書更新。
+- 影響: src/game/craftPresentation.js、src/components/CraftStage.jsx、CraftResult.jsx、CakeModel.jsx、CakeAtelier.jsx、src/atelier.css、scripts/verify-atelier.cjs、READMEと状況/要件/検証資料。
+- 検証: lint警告0、20/20テスト、通常/root build成功、ブラウザ全8レシピ24工程と前回の境界操作、diffチェック。
+- 判断: 製造結果・経済バランスは維持し、表示層を拡張。既存コミットを消さずローカル控えブランチに保持し、GitHub側の履歴を作業基点とした。
+- 未完: 実機、美術統一、実課金、ネイティブ配布。モデル選択・上限解除検知を予約タスクが保証するとは扱わない。
+- 次: PRの最新状態を起点に残作業を進める。変更保存後もmainへのマージ・公開は未実施。
+
+### 2026-09-07 18:45 +0900 — Codex — 中断復帰・ネイティブ土台・配布資産
+
+- 目的: 残作業を進め、アプリ中断復帰とAndroid/iOS配布準備までを実装して終了可能な状態にする。
+- 完了: 一時停止/再開ダイアログ、ページ非表示時の営業・素材・製造演出停止、再読み込み後の明示再開、SVG美術の陰影追加、Service Workerの画像/バンドルprecaching修正、Capacitor 8.5.1によるAndroid/iOSプロジェクト、縦画面・仮ID・アイコン・起動画面、native-build手順書。
+- 影響範囲: `src/App.jsx`、`src/components/ResumeDialog.jsx`、`src/components/CraftResult.jsx`、`src/components/MiniCharacter.jsx`、`src/components/CakeModel.jsx`、`src/atelier.css`、`public/sw.js`、`vite.config.js`、`src/main.jsx`、`capacitor.config.json`、`android/`、`ios/`、アイコン、検証スクリプト、`docs/native-build.md`、`package.json`/lock、`WORKLOG.md`。
+- 検証: lint 0、単体テスト20/20、通常/root build、`npm run native:sync`、Chromium全8レシピ24工程＋中断/再読み込み/再開＋境界/幅検証、オフライン再起動と42画像のデコードに成功。Xcode/Android SDK/実機は未接続のためネイティブコンパイルと60fpsは未検証。
+- 判断: 営業・製造の経済処理は従来どおりタップ時に一度だけ確定し、表示中断で再抽選しない。仮のアプリIDと試着のみの有料パーツを明記し、実課金を未接続のまま成功扱いしない。WebのService Workerはネイティブでは登録しない。
+- 未解決: 実機評価、署名・ストアID、StoreKit/Play Billingとサーバー検証、審査素材、最終美術レビュー。
+- 次回: `docs/native-build.md`に沿って各OS Debug→実機→Release候補を確認し、結果を文書へ追記する。
+
+### 2026-09-07 18:55 +0900 — Codex — 終了チェックポイント
+
+- 目的: ここまでの作業を終了スキルの形式で引き継ぐ。
+- 完了: 現在の実装、検証結果、未完項目、次回手順をCurrent handoffへ反映。ローカルで `0b2d0a1 feat: add pause resume and native app scaffolding` を作成。
+- 検証: 終了直前に `npm run lint` 成功、`npm test` 20/20成功。直前の `npm run build`、`npm run build:root`、`npm run native:sync`、Chromium通し検証、オフライン検証も成功済み。
+- 保存状態: 通常のgit pushは認証不可。接続済みGitHub保存は今回、利用上限で拒否された。迂回操作は行わず、リモートPR #8は `f155e72` のまま。ローカルHEADは `0b2d0a1`。
+- 未解決: リモートへの追加コミット保存、実機/SDK検証、署名、実課金、ストア登録・審査、最終美術レビュー。
+- 次回: `git status`と`git log`を確認し、GitHub保存が可能になったらローカル `0b2d0a1` のツリーをPR #8へ保存してから、`docs/native-build.md`に沿って実機確認を行う。
+
+### 2026-09-07 22:56 +0900 — Codex — 開始スキルから再開・GitHub保全と配布設定整合
+
+- 目的: 前回リモート未保存の2コミットを保全し、ネイティブ配布の不整合を修正する。
+- 開始確認: resume-project、AGENTS、WORKLOG全履歴、Git状態とPR #8を照合。作業ツリーはクリーン、ローカル3a6252dがリモートf155e72より2コミット先。
+- 完了: 前回分を接続済みGitHubへ保存。リモートe0f65d2とローカル3a6252dのツリーは01bd48449e008c4bfa7dbfa9abe217fdff68d479で一致。元のローカルコミットは保持。AndroidテストID、Node enginesと配布workflow、Windows改行属性、状況/配布/要件資料を修正。
+- 検証: lint、20単体テスト、通常ビルド、native:sync成功。Chromiumの営業/製造中断・復帰、全8レシピ24工程、日報・エンディング、4幅×5画面を再確認。通常配布のオフライン再起動・42画像も合格。初期の実時間ベース検証ではスキップ待ち/1秒境界/工程確認が失敗したため、境界と工程は仮想時計へ変更し、修正後の全検証が合格。
+- 判断: 未実施の実機/SDKコンパイルを合格扱いしない。再読み込みで製造演出そのものが復元されるという以前の曖昧な記述を訂正。
+- 未完: Android SDK/Xcode/実機、署名・ストアID、実課金と購入権利検証、最終美術/音声評価。
+- 次回: PR #8の最新HEADからdocs/native-build.mdのSDK・実機手順を実行。mainへのマージ/公開は行っていない。
+
+### 2026-09-07 23:30 +0900 — Codex — 実機・残作業手順書と終了
+
+- 目的: 残作業の委任可能範囲を説明し、実機と公開までの手順書を完成して終了スキルを適用。
+- 完了: release-runbook（分担、Android/iPhone接続、実機17ケース、ログ提出、優先度/依存/所要時間/完了条件、課金と審査、再開プロンプト）、device-test-recordを作成。native-build/roadmapへリンクしhandoffを更新。
+- 影響: 文書5ファイルとおめかしUI/描画/パーツ操作/単体・ブラウザ検証。追加指示「進められる作業が残っていれば進めて」に従い、取り外し/復帰/ケーキ上の一覧プレビューを実装。
+- 検証: 実装設定・既存コマンド・Android/Apple一次資料と手順を照合。差分と文書内のローカルリンク、17項目を確認。追加改修後にlint/単体21件/通常build/native:sync成功。実機テストは未実行。
+- 判断: 本人操作が必要なのは端末・認証・契約・最終判断であり、残実装全体を本人待ちにしない。実機とブラウザ検証、進行保存と演出復元を区別した。
+- 追加検証: 6パーツのプリン形状プレビュー、帯取り外し、定番復帰、試着解除、通貨/所持保持、リロード後再装備をブラウザで確認。SVGの一覧スクリーンショットを確認（Linuxの日本語フォント欠如は実機とは別）。
+- 未完: 実機/SDK/署名/課金/最終品質/審査。次回は手順書3-Cと実機記録を起点に再開する。
+
+検証補足: 今回の通しスクリプト初回は、追加ケースのレシピ名を「とろけるプリン」と誤記して選択待ちで停止した。実装データの「プリン」へ修正し、修正した追加ケースを独立実行して全件合格。全通しの再実行完了は今回主張しない。
+
+### 2026-09-08 05:36 +0900 — Codex — 再開と掲載資料の下書き
+
+- 目的: 開始スキルで保存状態を照合し、端末未接続でも進められる掲載資料を作る。
+- 完了: 直前の手順書/おめかし改修をPR #8の955d852へ保存。掲載文案、撮影6画面、審査向け操作案、データ棚卸しと本人の確定項目をstore-submission-draft.mdへ作成。Windows用batの改行だけを正規化。
+- 検証: 元のbatとの空白差分無視比較で内容一致。文書のローカルリンク・実装の保存/通信箇所・一次資料を確認。今回はゲームロジックを変更しておらず、テスト再実行はしない。前回追加ケースの単独検証結果と通し検証の制限は既報を保持。
+- 未完: 実機・署名・実課金・画像/音声の最終採否とストアへの提出。今回の資料は下書きで公開済みの申告ではない。
+- 次: release-runbookの実機記録、またはstore-submission-draftの本人確定情報を受けて候補を仕上げる。

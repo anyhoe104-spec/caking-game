@@ -1,3 +1,4 @@
+import { recipeImg } from "../game/assets.js";
 import { useEffect, useMemo, useRef } from "react";
 import { Bar, Stars } from "./common.jsx";
 import { MATERIAL_ICONS, RECIPES } from "../game/data.js";
@@ -72,7 +73,7 @@ export default function RecipeView({ state, canMake, onCraft, focusRecipe, onlyM
             {wanted > 0 && <span className="orderFlag">注文中 ×{wanted}</span>}
             {locked && <span className="lockRibbon">🔒 Lv{recipe.level}</span>}
 
-            <span className="rIcon">{recipe.icon}</span>
+            <img className="recipeArtwork" src={recipeImg(recipe.name)} alt={recipe.name} loading="lazy"/>
             <div className="rInfo">
               <div className="rName">{recipe.name}</div>
               <Stars rating={state.recipeRatings[recipe.name] ?? 0} />

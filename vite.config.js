@@ -68,7 +68,7 @@ function precacheManifest() {
       }
       const buildId = digest.digest('hex').slice(0, 12)
 
-      let replaced = source.replace('"__BUILD_ASSETS__"', JSON.stringify(assets))
+      let replaced = source.replace('"__BUILD_ASSETS__"', JSON.stringify([...assets, ...walk(outDir).filter((file) => file.startsWith("images/"))]))
       if (replaced === source) {
         this.warn('service worker precache placeholder not found — offline start-up may break')
       }

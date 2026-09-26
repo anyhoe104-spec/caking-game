@@ -1,0 +1,8 @@
+{
+  "appId": "io.github.anyhoe104spec.caking",
+  "appName": "CAKING",
+  "webDir": "dist",
+  "backgroundColor": "#fff8ec",
+  "ios": { "contentInset": "automatic" },
+  "android": { "backgroundColor": "#fff8ec" }
+}
