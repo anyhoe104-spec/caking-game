@@ -175,7 +175,9 @@ body {
   align-items: center;
   gap: 6px;
   padding: 5px 10px;
-  background: linear-gradient(90deg, rgba(245, 200, 66, 0.16), rgba(245, 194, 213, 0.12));
+  /* sticky なので下を本文が流れる。半透明だと文字が背景と混ざって読めないため、
+     色味は保ったまま不透明の下地を敷く。 */
+  background: linear-gradient(90deg, rgba(245, 200, 66, 0.38), rgba(245, 194, 213, 0.3)), #fff8ec;
   border-bottom: 1px solid var(--line);
   font-size: 11.5px;
   position: sticky;
