@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 import "./animations.css";
 import "./atelier.css";
+import StoryReader from "./components/StoryReader.jsx";
+import { finishStory } from "./game/story.js";
 import ResumeDialog from "./components/ResumeDialog.jsx";
 import CakeAtelier from "./components/CakeAtelier.jsx";
 import { buyCakePart, equipCakePart, resetCakeParts } from "./game/cakeParts.js";
@@ -79,6 +81,8 @@ export default function App() {
   const [miffyMood, setMiffyMood] = useState("normal");
   const [lastResult, setLastResult] = useState(null);
   const [lastRecipe, setLastRecipe] = useState("");
+  const [storyChapter, setStoryChapter] = useState(null);
+  const storyOpener = useRef(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const settingsOpener = useRef(null);
   const openSettings = () => { settingsOpener.current = document.activeElement; setSettingsOpen(true); };
@@ -233,7 +237,7 @@ export default function App() {
 
   // ── Material regen (respects リコ's hiring bonus) ────────────
   useEffect(() => {
-    if (paused || settingsOpen) return;
+    if (paused || settingsOpen || storyChapter) return;
     const timer = setInterval(() => {
       if (document.hidden) return;
       setState((current) => {
@@ -248,16 +252,16 @@ export default function App() {
       });
     }, REGEN_MS);
     return () => clearInterval(timer);
-  }, [paused, settingsOpen]);
+  }, [paused, settingsOpen, storyChapter]);
 
   // ── Business timer ─────────────────────────────────────────
   useEffect(() => {
-    if (state.dayPhase !== "open" || paused || settingsOpen) return;
+    if (state.dayPhase !== "open" || paused || settingsOpen || storyChapter) return;
     const timer = setInterval(() => {
       if (!document.hidden) setState((current) => tickBusiness(current));
     }, 1000);
     return () => clearInterval(timer);
-  }, [state.dayPhase, paused, settingsOpen]);
+  }, [state.dayPhase, paused, settingsOpen, storyChapter]);
 
   // ── Day phase cues ─────────────────────────────────────────
   const previousPhase = useRef(state.dayPhase);
@@ -411,6 +415,7 @@ export default function App() {
     setState({ ...fresh, audio });
     setActiveTab(null);
     setSettingsOpen(false);
+    setStoryChapter(null);
     setLastResult(null);
     setMiffyMood("normal");
   }, [audio, cancelVoice, finishCraft]);
@@ -427,6 +432,7 @@ export default function App() {
     setSaveStatus("saved");
     setSaveNotice(null);
     setSettingsOpen(false);
+    setStoryChapter(null);
     setPaused(restored.gamePhase === "playing" && restored.dayPhase === "open");
     setActiveTab(null);
     setHomeTabPick(null);
@@ -521,7 +527,7 @@ export default function App() {
   return (
     <>
     <div className={`phoneStage ${effect ? `fx-${effect}` : ""}`} inert={paused}>
-      <div className="appShell" inert={!!craftResult || settingsOpen}>
+      <div className="appShell" inert={!!craftResult || settingsOpen || !!storyChapter}>
         <Header
           state={state}
           expToNext={expToNext}
@@ -550,6 +556,7 @@ export default function App() {
               expToNext={expToNext}
               onPickOrder={pickOrder}
               onOpenRecipe={() => nav("recipe")}
+              onReadStory={(chapter, opener) => { storyOpener.current = opener; cancelVoice(); setStoryChapter(chapter); }}
             />
           )}
 
@@ -593,7 +600,7 @@ export default function App() {
         </main>
       </div>
 
-      <nav className="bottomNav" aria-label="メインメニュー" inert={!!craftResult || settingsOpen}>
+      <nav className="bottomNav" aria-label="メインメニュー" inert={!!craftResult || settingsOpen || !!storyChapter}>
         {NAV_ITEMS.map(({ id, label, icon }) => {
           const active = id === "business" ? activeTab === null : activeTab === id;
           return (
@@ -610,7 +617,7 @@ export default function App() {
         })}
       </nav>
 
-      {state.dayPhase === "prep" && !craftResult && !settingsOpen && (
+      {state.dayPhase === "prep" && !craftResult && !settingsOpen && !storyChapter && (
         <button className="startBtn pressable" onClick={startBusiness}>
           🍰 営業スタート！
         </button>
@@ -627,6 +634,8 @@ export default function App() {
           onCoinTick={() => sfx("coin")}
         />
       )}
+
+      {storyChapter && <StoryReader key={storyChapter.id} chapter={storyChapter} returnFocusRef={storyOpener} onClose={() => setStoryChapter(null)} onFinish={id => { setState(current => finishStory(current, id)); setStoryChapter(null); }} />}
 
       {settingsOpen && (
         <SettingsModal

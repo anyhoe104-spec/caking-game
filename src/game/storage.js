@@ -1,3 +1,4 @@
+import { normalizeReadStories } from "./story.js";
 import { defaultCakeStyle, normalizeCakeParts } from "./cakeParts.js";
 import { BASE_MATERIALS, RECIPES, OPENING_LINES } from "./data.js";
 import { DEFAULT_AUDIO, normalizeAudio } from "./audioSettings.js";
@@ -40,6 +41,7 @@ export const defaultSave = () => ({
   decorations: [],
   equippedDecoration: null,
   staff: [],
+  readStoryIds: [],
   ownedCakeParts: ["berry"],
   cakeStyle: defaultCakeStyle(),
 });
@@ -58,6 +60,7 @@ export function migrateSave(raw) {
   for (const [key, value] of Object.entries(base)) {
     if (typeof value === "number") state[key] = safeCount(raw[key], value);
   }
+  state.readStoryIds = normalizeReadStories(raw.readStoryIds);
   state.version = SAVE_VERSION;
   state.level = Math.max(1, Math.min(99, state.level));
   state.dayNumber = Math.max(1, state.dayNumber);

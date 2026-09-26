@@ -126,3 +126,24 @@ html {scroll-padding-top:110px;scroll-padding-bottom:100px}
 .gameGuide li { margin-bottom:10px; }
 .saveWarning { margin:10px; padding:12px; border:1px solid #ca7939; border-radius:12px; background:#fff3d5; color:#673c20; font-size:.85rem; }
 .saveWarning button { min-height:44px; margin:8px 8px 0 0; border:1px solid #bb8c63; border-radius:8px; background:#fffaf2; padding:8px 12px; }
+
+/* Illustrated conversations advance only at the player's pace. */
+.journalSummary,.storyPauseNote { font-size:11px; line-height:1.7; color:var(--muted); }
+.storyTheater { height:220px; position:relative; isolation:isolate; overflow:hidden; display:flex; align-items:flex-end; justify-content:space-around; border:1px solid #cbb394; border-radius:14px; background:#d9c0a0 var(--story-background) center/cover; }
+.storyTheater:before { content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(#f4e0b855,#63433466); }
+.storyLocation { position:absolute; top:10px; left:10px; background:#fff7e8eb; color:#67472e; border-radius:20px; padding:5px 10px; font-size:10px; }
+.storyPortrait { width:45%; height:170px; display:flex; align-items:center; flex-direction:column; filter:saturate(.5); opacity:.65; transition:opacity .25s,filter .25s; }
+.storyPortrait img { width:100%; height:140px; object-fit:contain; filter:drop-shadow(0 8px 8px #35231755); }
+.storyPortrait span { font-size:11px; padding:4px 14px; background:#fffaef; border:1px solid #cfb799; border-radius:20px; }
+.storyPortrait.isSpeaking { opacity:1; filter:none; }
+.storyPortrait.isSpeaking img { animation:storyBreath 3s ease-in-out infinite; transform-origin:bottom; }
+.storyDialogue { min-height:155px; padding:16px 4px 8px; color:var(--brown); }
+.storyDialogue strong { color:#995568; font-size:13px; }
+.storyDialogue p { font-size:15px; line-height:1.9; margin:10px 0; animation:storyLine .25s ease-out; }
+.storyReaderControls { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.storyReaderControls button { min-height:44px; padding:10px 14px; font-size:12px; }
+.storyReaderControls>span { font-size:11px; white-space:nowrap; color:var(--muted); }
+@keyframes storyBreath { 0%,100% { transform:translateY(0) rotate(-1deg); } 50% { transform:translateY(-3px) rotate(1deg); } }
+@keyframes storyLine { from { opacity:.3; transform:translateY(4px); } to { opacity:1; transform:none; } }
+.reduceMotion .storyTheater *,.reduceMotion .storyDialogue * { animation:none!important; transition:none!important; }
+@media(prefers-reduced-motion:reduce) { .storyTheater *,.storyDialogue * { animation:none!important; transition:none!important; } }
