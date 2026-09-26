@@ -1,9 +1,11 @@
 import MiniCharacter from "./MiniCharacter.jsx";
 import CakeModel from "./CakeModel.jsx";
 import { BASE } from "../game/assets.js";
+import { DECORATIONS } from "../game/shop.js";
 export default function ShopDiorama({ state, onRecipe, onOrder }) {
   const open = state.dayPhase === "open";
   const guests = state.customerQueue.filter(c=> c.status === "waiting").slice(0,2);
+  const decoration = DECORATIONS.find(d => d.id === state.equippedDecoration) ?? null;
   return <section className={`shopDiorama shopDiorama--${state.equippedDecoration ?? "classic"}`} aria-label="港町のケーキ工房">
     <img className="shopBackdrop" src={`${BASE}images/backgrounds/bg-shop.png`} alt="木のカウンターと海を望む小さな洋菓子店"/>
     <div className="shopSun" aria-hidden="true"/>
@@ -13,9 +15,10 @@ export default function ShopDiorama({ state, onRecipe, onOrder }) {
     <button className="shopChef" onClick={onRecipe} aria-label="ミフィとケーキをつくる"><span className="miniSpeech">{open ? "焼きたて、どうぞ！" : "なにを作ろう？"}</span><MiniCharacter action={open ? "work" : "walk"}/></button>
     <button className="shopCake" onClick={onRecipe} aria-label="工房で製造する"><CakeModel style={state.cakeStyle}/><span>工房へ ›</span></button>
     {guests.map((guest,i)=><button key={guest.uid} className={`shopGuest shopGuest--${i}`} onClick={()=>onOrder(guest.order)} aria-label={`${guest.name}の注文 ${guest.order}をつくる`}><span className="miniSpeech">{guest.order}</span><MiniCharacter variant={i ? "rose" : "guest"} action="walk"/></button>)}
-    {state.equippedDecoration === "harbor-lamp" && <div className="shopLantern" aria-label="港町のランプ">✦</div>}
-    {state.equippedDecoration === "rose-table" && <div className="shopFlowers" aria-label="ローズテーブルの花">❀ ❀ ❀</div>}
-    {state.equippedDecoration === "royal-case" && <div className="shopRoyal" aria-label="王室のショーケース">ROYAL PATISSERIE</div>}
+    {state.equippedDecoration === "harbor-lamp" && <div className="shopLantern" aria-hidden="true"><i>✦</i><i>✦</i></div>}
+    {state.equippedDecoration === "rose-table" && <div className="shopFlowers" aria-hidden="true">❀ ❀ ❀ ❀</div>}
+    {state.equippedDecoration === "royal-case" && <div className="shopRoyal" aria-hidden="true">ROYAL PATISSERIE</div>}
+    {decoration && <p className="shopDecoLabel" role="status">{decoration.icon} {decoration.name} を飾っています</p>}
     <div className="shopCaption">ミフィやお客様をタップして、工房へ</div>
   </section>;
 }

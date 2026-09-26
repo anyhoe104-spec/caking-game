@@ -23,9 +23,11 @@
 .shopCaption {position:absolute;bottom:0;left:0;right:0;padding:5px;text-align:center;font-size:9px;background:#fff5daeb;color:#7a5d43;}
 .shopDust i {position:absolute;width:4px;height:4px;border-radius:50%;background:#ffefb6;top:40%;left:25%;animation:dustFloat 8s linear infinite;}
 .shopDust i:nth-child(2){left:70%;animation-delay:-3s;}.shopDust i:nth-child(3){left:49%;animation-delay:-6s;}
-.shopLantern {position:absolute;right:45px;top:72px;color:#ffe8a0;font-size:55px;text-shadow:0 0 22px #fff2aa;animation:lampGlow 3s ease-in-out infinite;}
-.shopFlowers {position:absolute;bottom:62px;left:10px;color:#cd708a;font-size:25px;}
-.shopRoyal {position:absolute;left:20px;top:99px;border:2px solid #d7ae5e;background:#65513ad9;color:#fce9aa;padding:7px;font:9px Georgia,serif;letter-spacing:1px;}
+.shopLantern {position:absolute;right:18px;top:40px;display:flex;gap:26px;color:#ffe8a0;font-size:96px;line-height:1;text-shadow:0 0 34px #fff2aa,0 0 68px #ffc96e;animation:lampGlow 3s ease-in-out infinite;pointer-events:none;}
+.shopLantern i {font-style:normal;}
+.shopLantern i:nth-child(2) {font-size:64px;opacity:.85;align-self:flex-end;}
+.shopFlowers {position:absolute;bottom:46px;left:6px;color:#e0577c;font-size:52px;letter-spacing:4px;text-shadow:0 3px 10px #7b3a4d55;pointer-events:none;}
+.shopRoyal {position:absolute;left:14px;top:74px;right:14px;text-align:center;border:4px solid #d7ae5e;border-radius:8px;background:#4a3a24f2;color:#fce9aa;padding:14px 8px;font:20px Georgia,serif;letter-spacing:3px;box-shadow:0 0 26px #d7ae5e88;pointer-events:none;}
 .miniRig {overflow:visible;}.miniHead {transform-origin:60px 80px;animation:miniNod 4s ease-in-out infinite;}.miniBody {transform-origin:60px 128px;animation:miniBreathe 3s ease-in-out infinite;}.miniEyes {transform-origin:60px 60px;animation:miniBlink 5.2s infinite;}.miniArm {transform-origin:40px 91px;}.miniArm--right {transform-origin:80px 91px;}.miniLeg--left {transform-origin:44px 125px;}.miniLeg--right {transform-origin:76px 125px;}
 .miniRig--walk .miniLeg--left {animation:miniStep .65s ease-in-out infinite alternate;}.miniRig--walk .miniLeg--right {animation:miniStep .65s ease-in-out -.65s infinite alternate;}.miniRig--walk .miniArm--left {animation:miniStep .65s ease-in-out -.65s infinite alternate;}.miniRig--walk .miniArm--right {animation:miniStep .65s ease-in-out infinite alternate;}.miniRig--work .miniArm--right {animation:miniStir .65s ease-in-out infinite alternate;}.miniRig--work .miniHead {animation:miniNod 1.6s ease-in-out infinite;}
 @keyframes miniBlink {0%,42%,46%,100%{transform:scaleY(1)}44%{transform:scaleY(.08)}}
@@ -147,3 +149,7 @@ html {scroll-padding-top:110px;scroll-padding-bottom:100px}
 @keyframes storyLine { from { opacity:.3; transform:translateY(4px); } to { opacity:1; transform:none; } }
 .reduceMotion .storyTheater *,.reduceMotion .storyDialogue * { animation:none!important; transition:none!important; }
 @media(prefers-reduced-motion:reduce) { .storyTheater *,.storyDialogue * { animation:none!important; transition:none!important; } }
+
+/* 装飾が反映されていることを一目で確認できるようにする。見た目の変化だけだと
+   何が適用されているのか判断できないため、名前を併記する。 */
+.shopDecoLabel {position:absolute;left:50%;bottom:8px;transform:translateX(-50%);margin:0;padding:5px 13px;border-radius:999px;background:#3f2f1ff2;color:#ffe9bd;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 2px 8px #0003;pointer-events:none;z-index:4;}
