@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { createBackup, parseBackup, MAX_BACKUP_LENGTH } from "../game/storage.js";
+import { createBackup, parseBackup, backupFileName, BACKUP_MIME, MAX_BACKUP_LENGTH } from "../game/storage.js";
 
 export default function SavePanel({ state, saveStatus, onRestore, onRetry }) {
   const [source, setSource] = useState("");
@@ -20,17 +20,36 @@ export default function SavePanel({ state, saveStatus, onRestore, onRetry }) {
     try { setSource(await file.text()); setMessage("読み込みました。内容を確認してください。"); }
     catch { setMessage("ファイルを開けませんでした。テキストの貼り付けも使えます。"); }
   };
+  // 端末に保存する導線。iOS の PWA では <a download> が働かないことがあるため、
+  // 共有シートを先に試し、駄目ならダウンロード、それも駄目なら本文のコピーへ落とす。
+  const saveToFile = async text => {
+    const name = backupFileName();
+    const file = typeof File === "function" ? new File([text], name, { type: BACKUP_MIME }) : null;
+    if (file && navigator.canShare?.({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: "CAKINGのバックアップ" }); setMessage("共有先に保存しました。"); return; }
+      catch (error) { if (error?.name === "AbortError") return; }
+    }
+    try {
+      const url = URL.createObjectURL(new Blob([text], { type: BACKUP_MIME }));
+      const link = document.createElement("a");
+      link.href = url; link.download = name;
+      document.body.appendChild(link); link.click(); link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+      setMessage(`${name} を保存しました。復元するときはこのファイルを選んでください。`);
+    } catch { setMessage("この端末ではファイルに保存できません。下の全文をコピーして保管してください。"); }
+  };
   const restore = () => {
     try { onRestore(candidate); }
     catch { setMessage("端末に保存できないため復元を中止しました。現在の進行は変更していません。"); }
   };
   return <section className="settingsSection savePanel">
     <h3>工房のバックアップ</h3>
-    <p className="settingsHint">進行はこの端末に自動保存されます。アプリの削除や端末の変更に備えて、バックアップの全文をメモなどに保管してください。購入の証明には使えません。</p>
+    <p className="settingsHint">進行はこの端末に自動保存されます。アプリの削除や端末の変更に備えて、バックアップをファイルに保存しておいてください。復元はそのファイルを選ぶだけです。購入の証明には使えません。</p>
     <p role="status">{saveStatus === "saved" ? "✓ この端末に保存済み" : "端末への保存を確認してください"}</p>
     {saveStatus !== "saved" && <button className="secondaryBtn" onClick={onRetry}>保存を再試行</button>}
-    <button className="secondaryBtn" onClick={() => { setExported(createBackup(state)); setMessage("バックアップを作成しました。全文を端末の外にも保管してください。"); }}>バックアップを作る</button>
+    <button className="secondaryBtn" onClick={() => { const text = createBackup(state); setExported(text); saveToFile(text); }}>バックアップをファイルに保存</button>
     {exported && <div className="backupBox">
+      <p className="settingsHint">ファイルに保存できなかったときは、この全文をコピーして保管してください。</p>
       <label htmlFor="backup-output">保管するバックアップ</label>
       <textarea id="backup-output" ref={output} value={exported} readOnly rows={5} spellCheck={false} />
       <button className="secondaryBtn" onClick={async () => {
@@ -44,7 +63,7 @@ export default function SavePanel({ state, saveStatus, onRestore, onRetry }) {
       <p className="settingsHint">内容を確認してから、今の工房を置き換えます。先に現在のバックアップを保管してください。</p>
       <label htmlFor="backup-input">バックアップの全文</label>
       <textarea id="backup-input" value={source} maxLength={MAX_BACKUP_LENGTH} rows={5} spellCheck={false} onChange={e => { setSource(e.target.value); setCandidate(null); setMessage(""); }} />
-      <label className="backupFile">テキストファイルを選ぶ<input type="file" accept=".json,.txt,application/json,text/plain" onChange={readFile} /></label>
+      <label className="backupFile">保存したファイルを選ぶ<input type="file" accept=".json,.txt,application/json,text/plain" onChange={readFile} /></label>
       <button className="secondaryBtn" disabled={!source.trim()} onClick={inspect}>復元内容を確認</button>
       {candidate && <div className="confirmBox">
         <p>{candidate.dayNumber}日目・Lv{candidate.level}・{candidate.money.toLocaleString()}P</p>
