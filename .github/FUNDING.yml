@@ -1,0 +1,3 @@
+# GitHub がリポジトリ上部に Sponsor ボタンを表示するための設定です。
+# GitHub Sponsors への登録は不要で、外部の支援先URLを指すだけで機能します。
+custom: ["https://ofuse.me/38bc0941"]
