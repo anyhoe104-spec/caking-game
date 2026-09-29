@@ -4,7 +4,7 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-09-29 17:20 JST
+- Updated: 2026-09-29 17:45 JST
 - 作業者: **Claude**（caking-game 開始スキルのセッション）
 - ブランチ / 改訂: `main` = `31262ea`（PR #23 のマージ。このチェックポイントより前の最終作業改訂）
 - 目的: 開始スキルで見つかった2件を直して `main` に入れる。2件は、起動時BGM修正が `main` に入っていなかったことと、Issue #21（飾りパーツのレシピ別保持）。
@@ -22,17 +22,16 @@ This file is the shared source of truth for cross-device and cross-agent handoff
   - 🟡 **PRごとに自動で走るCIがない。** Actions はデプロイ用の `deploy.yml` だけで、テストは各エージェントが手元で実行している。オーナーは 2026-09-29 に「問題ない」と判断済み
   - 🟡 旧版へ戻すと、レシピ別の飾りは初期状態に戻る（購入済みパーツは残る）
 - 次のアクション:
-  1. **実機（iPhone PWA）で次をまとめて確認し**、`docs/device-tests/` に記録する（オーナー作業）
-     - 起動直後にBGMが鳴るか
-     - 営業中に再起動したときの再開ダイアログ中は無音か
-     - 既存セーブの飾りが全ケーキに残っているか
-     - レシピごとに別の飾りを付けられるか
-     - 店頭が最後に作ったケーキになるか
-     - バックアップのファイル保存で、どの経路（共有シート／ダウンロード／全文コピー）が働くか
-     - D08・D09（アプリを完全終了してから再起動したときのセーブ復帰）
-  2. 行き止まりブランチを整理する。削除候補は、内容が `main` に入っている `agent/add-business-navigation`、`agent/document-deployment-policy`、`codex/atelier-quality`、`integrate/phase0-to-phase7`、`codex/phase0-to-phase7`（08-04 の統合で書き直して取り込み済み）
+  1. **実機確認の残り（オーナー作業）**。オーナー報告（2026-09-29 チャット）で **D01〜D10 は合格**（記録は `docs/device-tests/2026-09-29-owner-report.md`。機種・コミットは未記入）。残りは次のとおり
+     - D11〜D17
+     - 起動直後のBGM／再開ダイアログ中の無音
+     - 既存セーブの飾りが全ケーキに残るか／レシピ別の飾り／店頭のケーキ
+     - バックアップのファイル保存がどの経路で働くか
+     - 報告したビルドが PR #22・#23 より前なら D07・D10 の再確認。どのビルドだったかをオーナーに記入してもらう
+  2. **行き止まりブランチの削除（オーナー作業。GitHub の Branches 画面から）**。このセッションからの削除は HTTP 403 で拒否された（2026-09-29 17:30 JST、`git push origin --delete`。セッションが書き込めるのは指定の作業ブランチだけ）
+     - 削除してよい4本（`git cherry` で全コミットが `main` と一致）。先端コミットを復元用に記録する: `agent/add-business-navigation`（`46a57ec`）、`agent/document-deployment-policy`（`2048402`）、`codex/atelier-quality`（`7a49100`）、`integrate/phase0-to-phase7`（`d02ee9d`）
+     - **`codex/phase0-to-phase7`（`3e8a8e2`）は保留**。コード（`65f36ca` が追加したファイル）はすべて `main` にある。ただし `docs/branch-integration-plan.md`（2026-08-01 の統合計画、160行）が `main` に無い。移すか、そのまま消すかをオーナーが判断する
      - `claude/caking-weekly-improvements-bg3gnf` も削除してよい。コード（`78548b1`）は PR #22 で取り込み済み。WORKLOG にしか無かった 2026-09-05 (7)(8) の2件も、オーナーの指示で本WORKLOGの時系列の位置へ移した（2026-09-29）
-  3. `docs/current-status.md`（2026-09-07 のまま）と、9/26 のPWA記録の「修正コミット」欄（指摘1・3は PR #17・#18 で修正済み、指摘2は PR #23）を最新にする
 - ダッシュボードの未解決事項との照合: 「未マージ11ブランチの滞留」は、実作業を持つ未マージブランチが0本になった（削除は未実施）。W38 の「投げ銭リンク」は PR #14、「リポジトリ説明文」はオーナーが 2026-09-26 に対応済み。CAKING の個別評価（2026-08-25）は古いまま。ダッシュボードは編集していない。
 - 検証（2026-09-29 17:19 JST、`main` = `31262ea` で実行）: `npm ci` → `npm run lint` 0件、`npm test` **45件 pass**、`npm run build` 成功。`verify-bgm` / `verify-atelier` / `verify-save` / `verify-story` 全件 PASS（`verify-playthrough` は PR #23 のブランチ上で PASS。`main` では再実行していない）。
 
@@ -629,3 +628,21 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 決定: WORKLOG の記録を失わないように、`claude/caking-weekly-improvements-bg3gnf` の削除はオーナー判断とした。
 - 追記（同日）: オーナーの指示で、同ブランチにしか無かった 2026-09-05 (7)(8) の作業記録2件を、本文を変えずに 2026-09-05 (6) の直後へ移した。移した経緯は引用で添えた。これで同ブランチは削除しても何も失われない。
 - 未解決の課題と次のアクション: 上記 `Current handoff` を参照。
+
+### 2026-09-29 17:45 JST (5) — Claude — 記録の移し替え・ドキュメント更新・ブランチ整理の試行
+
+- 目的: オーナーの指示3件。(a) 旧ブランチにしか無い 9/5 の作業記録を WORKLOG に移す、(b) 古いドキュメントを更新し、D01〜D10 合格を記録する、(c) 行き止まりブランチを削除する。
+- 完了した作業:
+  - (a) `claude/caking-weekly-improvements-bg3gnf` の 2026-09-05 (7)(8) を、2026-09-05 (6) の直後に本文を変えずに移した。元ブランチの該当行と `diff` で完全一致を確認した。元にあった余分な `\n` の1行だけは除いた。移した経緯を引用で添えた
+  - (b) 実機記録と現状文書を更新した
+    - `docs/device-tests/2026-09-29-owner-report.md` を新規作成。オーナーの「D0〜10までは通してある」を D01〜D10 合格として記録した。機種・コミット・実行方法は報告に無いため**未記入のまま**にした（未実施を合格扱いしない、という runbook の方針に従い、書かれていないことは埋めない）
+    - `docs/device-tests/2026-09-26-pwa.md` の「修正コミット」欄を記入（指摘1は PR #17、2は PR #23、3は PR #18）。D08・D09 未実施の注意書きは、報告記録へのリンク付きで取り消し線にした
+    - `docs/current-status.md` の前半（2026-09-07 の状態）を書き直した。変更内容は、更新日、現在地、完了済みに PR #14〜#23 の内容を追加、次の優先作業を実機確認の残りから並べ直す、の4点。後半（将来検討・正本と履歴）は現状と合っているので残した
+  - (c) 削除は失敗（下記）。削除候補ごとに根拠と先端 SHA を handoff に記録した
+- **うまくいかなかったこと**:
+  - **ブランチ削除は HTTP 403 で拒否された。** `git push origin --delete` で4本をまとめて削除しようとした。このセッションの push は指定の作業ブランチにしか許可されていないとみられる。プロキシの指示どおり再試行や迂回はしていない。オーナーが GitHub の画面で削除する必要がある
+  - **「中身が全部 `main` に入った5本」という前回の説明は1本だけ不正確だった。** `codex/phase0-to-phase7` を消す前にファイル単位で確認したところ、コードはすべて `main` にあった。ただし `docs/branch-integration-plan.md` が `main` に無かった。前回は「08-04 の統合で書き直して取り込み済み」とだけ書き、文書まで確認していなかった。そのためこのブランチは削除候補から外した
+- 影響範囲: `WORKLOG.md`、`docs/current-status.md`、`docs/device-tests/2026-09-26-pwa.md`、`docs/device-tests/2026-09-29-owner-report.md`（新規）。コードの変更なし。
+- 検証: `npm test` 45件 pass（ドキュメントのみの変更後、2026-09-29 17:40 JST 頃に実行）。移した作業記録は `diff` で一致を確認。
+- 決定: オーナー報告の記録は、日付を実施日ではなく報告日（2026-09-29）とした。実施日が不明なため。
+- 次のアクション: 上記 `Current handoff` を参照。
