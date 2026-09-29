@@ -4,30 +4,37 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-09-29 JST
+- Updated: 2026-09-29 17:20 JST
 - 作業者: **Claude**（caking-game 開始スキルのセッション）
-- 作業ブランチ: `claude/issue-21-cake-styles`。**`claude/nifty-cori-cbmgi6`（PR #22）の上に積んでいる**。PRのbaseは `main`（子のbaseを親ブランチにしない。9/26の失敗の再発防止）
-- 目的: Issue #21（飾りパーツがレシピ別に保持されない）を直す。PR #22（起動時BGM）はレビュー待ちのまま。
-- 外部状態確認（**2026-09-29、`git fetch origin '+refs/heads/*:refs/remotes/origin/*'` と GitHub API で実測**）:
-  - `main` = `2cc7aa7`。PR #22 は OPEN・未マージ
-  - 開いているIssue: #21 のみ（本作業で対応）
-- オーナーの判断（2026-09-29、チャットで回答）:
-  - 店頭のケーキ: **最後に作ったケーキの飾り**を出す
-  - パーツの所有: **一度買えば全レシピで使える**（買い物の仕組みは変更しない）
+- ブランチ / 改訂: `main` = `31262ea`（PR #23 のマージ。このチェックポイントより前の最終作業改訂）
+- 目的: 開始スキルで見つかった2件を直して `main` に入れる。2件は、起動時BGM修正が `main` に入っていなかったことと、Issue #21（飾りパーツのレシピ別保持）。
+- 外部状態確認（**2026-09-29 17:19 JST、`git fetch origin '+refs/heads/*:refs/remotes/origin/*'` と GitHub API で実測**）:
+  - PR #22（起動時BGM）と PR #23（Issue #21）は **2026-09-29 17:15〜17:16 JST にマージ済み**。開いているPRは0件
+  - Issue #21 は **CLOSED**（PR #23 のマージで自動クローズ）。開いているIssueは0件
+  - GitHub Pages のデプロイは PR #22（run 20）、PR #23（run 21）とも **success**（Actions の実行一覧で確認）
 - 完了:
-  - PR #22: 9/5 の起動時BGM修正を一時停止と両立させて取り込み
-  - 本ブランチ: `cakeStyle`（単一）→ `cakeStyles`（レシピ別）＋ `lastCraftedRecipe`。旧セーブの飾りは全レシピへ複製。店頭は最後に作ったケーキを形ごと表示
-  - `scripts/verify-save.cjs` の古いボタン名（PR #19 で変更）を修正。**この修正前は `main` でも失敗していた**
-- 進行中: なし。PR のレビュー・マージ待ち。
+  - 起動直後にタップを待たずBGMを鳴らす。一時停止中・非表示中は鳴らさない（PR #22）
+  - 飾りをレシピごとに保持する。旧セーブの飾りは全レシピへ引き継ぐ。店頭には最後に作ったケーキを出す。パーツの所有は共有のまま（PR #23）
+  - 前から `main` で失敗していた `scripts/verify-save.cjs` を修復（PR #23）
+- 進行中: なし。
 - ブロッカーとリスク:
-  - 🟡 **マージ順**: PR #22 → Issue #21 のPR の順にマージする。逆順でも内容は入るが、Issue #21 のPRがBGM修正も一緒に持ち込む
-  - 🟡 **旧版に戻すとレシピ別の飾りは消える。** 旧版は `cakeStyle` しか読まないため、初期の飾りに戻る（購入済みパーツは残る）。PWAの更新後に旧版へ戻る経路は通常ないため許容
-  - 🟡 自動再生ブロック環境でのBGM、セーブのファイル保存、D08・D09 は実機未確認
+  - 🟡 **実機での確認が未実施**（下記の次のアクション1）。自動検証ではヘッドレスChromiumが自動再生ブロックを再現できない
+  - 🟡 **PRごとに自動で走るCIがない。** Actions はデプロイ用の `deploy.yml` だけで、テストは各エージェントが手元で実行している。オーナーは 2026-09-29 に「問題ない」と判断済み
+  - 🟡 旧版へ戻すと、レシピ別の飾りは初期状態に戻る（購入済みパーツは残る）
 - 次のアクション:
-  1. オーナーが PR #22 → Issue #21 のPR の順にマージ
-  2. 実機（iPhone PWA）で1回にまとめて確認: 起動直後のBGM／再開ダイアログ中の無音／**既存セーブの飾りが全ケーキに残っているか**／レシピごとに別の飾りを付けられるか／店頭が最後に作ったケーキになるか／バックアップのファイル保存／D08・D09
-  3. 両PRのマージ後に行き止まりブランチを整理（`claude/caking-weekly-improvements-bg3gnf` を含めてよい）
-- 検証（2026-09-29、本ブランチ）: `npm run lint` 0件、`npm test` **45件 pass**（37→45）、`npm run build` 成功、`verify-bgm` / `verify-atelier` / `verify-save` / `verify-story` / `verify-playthrough` すべて PASS。
+  1. **実機（iPhone PWA）で次をまとめて確認し**、`docs/device-tests/` に記録する（オーナー作業）
+     - 起動直後にBGMが鳴るか
+     - 営業中に再起動したときの再開ダイアログ中は無音か
+     - 既存セーブの飾りが全ケーキに残っているか
+     - レシピごとに別の飾りを付けられるか
+     - 店頭が最後に作ったケーキになるか
+     - バックアップのファイル保存で、どの経路（共有シート／ダウンロード／全文コピー）が働くか
+     - D08・D09（アプリを完全終了してから再起動したときのセーブ復帰）
+  2. 行き止まりブランチを整理する。削除候補は、内容が `main` に入っている `agent/add-business-navigation`、`agent/document-deployment-policy`、`codex/atelier-quality`、`integrate/phase0-to-phase7`、`codex/phase0-to-phase7`（08-04 の統合で書き直して取り込み済み）
+     - **`claude/caking-weekly-improvements-bg3gnf` は、コード（`78548b1`）は PR #22 で取り込み済み。ただし WORKLOG の 2026-09-05 (7)(8) の2件は `main` に無い。** 消す前に、その2件を WORKLOG に移すかどうかをオーナーが判断する
+  3. `docs/current-status.md`（2026-09-07 のまま）と、9/26 のPWA記録の「修正コミット」欄（指摘1・3は PR #17・#18 で修正済み、指摘2は PR #23）を最新にする
+- ダッシュボードの未解決事項との照合: 「未マージ11ブランチの滞留」は、実作業を持つ未マージブランチが0本になった（削除は未実施）。W38 の「投げ銭リンク」は PR #14、「リポジトリ説明文」はオーナーが 2026-09-26 に対応済み。CAKING の個別評価（2026-08-25）は古いまま。ダッシュボードは編集していない。
+- 検証（2026-09-29 17:19 JST、`main` = `31262ea` で実行）: `npm ci` → `npm run lint` 0件、`npm test` **45件 pass**、`npm run build` 成功。`verify-bgm` / `verify-atelier` / `verify-save` / `verify-story` 全件 PASS（`verify-playthrough` は PR #23 のブランチ上で PASS。`main` では再実行していない）。
 
 ## Dated work reports
 ### 2026-09-29 — Claude
@@ -543,3 +550,16 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 決定: ブランチは PR #22 の上に積み、PR の base は `main` にした。WORKLOG の handoff を両PRが書き換えるため、`main` から分けると必ず衝突する。9/26 のスタックPR事故（子の base を親にしていた）は base を `main` にすることで避けた。
 - ダッシュボードの未解決事項: Issue #21 は本PRで対応（マージで close）。未マージブランチの滞留は、両PRのマージ後の整理で解消できる。
 - 次のアクション: 上記 `Current handoff` の「次のアクション」を参照。
+
+### 2026-09-29 17:20 JST (4) — Claude — セッション終了チェックポイント
+
+- 目的: PR #22・#23 のマージ後の状態を確かめて区切る。
+- 完了した作業: 3件の外部状態を実測して記録した（マージ・Issueのクローズ・デプロイ成功）。`main` で lint・単体・ブラウザ検証を再実行した。残ったブランチを `git cherry` と差分で1本ずつ調べ、引き継ぎを書き直した。
+- **うまくいかなかったこと・訂正したこと**:
+  - `git cherry` だけで判断すると、`claude/caking-weekly-improvements-bg3gnf` は「未取り込み3件」と出る。cherry-pick 時に手を加えたため patch-id が一致しないからで、コードは取り込み済み。一方、同ブランチの WORKLOG の2件は本当に `main` に無かった。「中身は全部入った」とも「全部未取り込み」とも言えず、コミットごとに見る必要があった
+  - `codex/phase0-to-phase7` も `git cherry` では未取り込み2件と出る。2026-08-04 の統合（`integrate/phase0-to-phase7`）で書き直して入れたためで、残っている差分は古い版の文書との差分
+  - セッションの最初に、前回の handoff の「未マージブランチはすべて行き止まり」を誤りと指摘した（BGM修正が未取り込みだった）。今回の記述はそれを受けて、ブランチごとに根拠を付けた
+- 影響範囲: `WORKLOG.md` のみ。
+- 検証: 上記 `Current handoff` の「検証」を参照。
+- 決定: WORKLOG の記録を失わないように、`claude/caking-weekly-improvements-bg3gnf` の削除はオーナー判断とした。
+- 未解決の課題と次のアクション: 上記 `Current handoff` を参照。
