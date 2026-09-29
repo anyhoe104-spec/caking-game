@@ -6,26 +6,28 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 - Updated: 2026-09-29 JST
 - 作業者: **Claude**（caking-game 開始スキルのセッション）
-- 作業ブランチ: `claude/nifty-cori-cbmgi6`。基点 `2cc7aa7`（PR #20 マージ後の `main`）
-- 目的: 9/5 に書かれたまま `main` に入っていなかった「起動時BGM」修正を取り込む。
+- 作業ブランチ: `claude/issue-21-cake-styles`。**`claude/nifty-cori-cbmgi6`（PR #22）の上に積んでいる**。PRのbaseは `main`（子のbaseを親ブランチにしない。9/26の失敗の再発防止）
+- 目的: Issue #21（飾りパーツがレシピ別に保持されない）を直す。PR #22（起動時BGM）はレビュー待ちのまま。
 - 外部状態確認（**2026-09-29、`git fetch origin '+refs/heads/*:refs/remotes/origin/*'` と GitHub API で実測**）:
-  - `main` = `2cc7aa7`。PR #14〜#20 はマージ済み。開いているPRは本作業のもののみ
-  - 開いているIssue: **#21（飾りパーツのレシピ別保持）**。project-dashboard から起票
-  - **前回の handoff の「未マージブランチはすべて行き止まり」は誤り。** `claude/caking-weekly-improvements-bg3gnf` の `78548b1`（起動時BGM修正）が `main` に無かった。本作業で取り込み、当該ブランチは取り込み後に行き止まりとなる
+  - `main` = `2cc7aa7`。PR #22 は OPEN・未マージ
+  - 開いているIssue: #21 のみ（本作業で対応）
+- オーナーの判断（2026-09-29、チャットで回答）:
+  - 店頭のケーキ: **最後に作ったケーキの飾り**を出す
+  - パーツの所有: **一度買えば全レシピで使える**（買い物の仕組みは変更しない）
 - 完了:
-  - `78548b1` を `main` へ移植。**移植時に一時停止との衝突を解消**（下記の dated report 参照）
-  - `scripts/verify-bgm.cjs` を追加
-- 進行中: なし。PRのレビュー・マージ待ち。
+  - PR #22: 9/5 の起動時BGM修正を一時停止と両立させて取り込み
+  - 本ブランチ: `cakeStyle`（単一）→ `cakeStyles`（レシピ別）＋ `lastCraftedRecipe`。旧セーブの飾りは全レシピへ複製。店頭は最後に作ったケーキを形ごと表示
+  - `scripts/verify-save.cjs` の古いボタン名（PR #19 で変更）を修正。**この修正前は `main` でも失敗していた**
+- 進行中: なし。PR のレビュー・マージ待ち。
 - ブロッカーとリスク:
-  - **🔴 Issue #21 が未着手。** Issue に判断事項が2つある（店頭ケーキに何を出すか／パーツをレシピごとに買い直すか）。オーナーの判断を得てから着手する
-  - **🟡 自動再生がブロックされた環境でのBGM起動は実機未確認。** ヘッドレスChromiumはブロック指定を無視するため、自動検証では「許可時に無操作で鳴る」「一時停止中は鳴らない」までしか確かめられない
-  - 🟡 セーブのファイル保存（PR #19）と D08・D09 は実機未確認のまま
+  - 🟡 **マージ順**: PR #22 → Issue #21 のPR の順にマージする。逆順でも内容は入るが、Issue #21 のPRがBGM修正も一緒に持ち込む
+  - 🟡 **旧版に戻すとレシピ別の飾りは消える。** 旧版は `cakeStyle` しか読まないため、初期の飾りに戻る（購入済みパーツは残る）。PWAの更新後に旧版へ戻る経路は通常ないため許容
+  - 🟡 自動再生ブロック環境でのBGM、セーブのファイル保存、D08・D09 は実機未確認
 - 次のアクション:
-  1. 本作業のPRをオーナーがマージする
-  2. **Issue #21 の判断事項2点をオーナーに確認し、着手する。** 単独PRとし、移行処理のテストを先に書く
-  3. 実機（iPhone PWA）で1回にまとめて確認: 起動直後のBGM、再起動時の再開ダイアログ中の無音、バックアップのファイル保存、D08・D09
-  4. 行き止まりブランチを整理する。**本PRのマージ後なら `claude/caking-weekly-improvements-bg3gnf` も削除してよい**。それ以前は削除しない
-- 検証（2026-09-29、本ブランチで実行）: `npm run lint` 0件、`npm test` **37件 pass**、`npm run build` 成功、`node scripts/verify-bgm.cjs` 全件合格。
+  1. オーナーが PR #22 → Issue #21 のPR の順にマージ
+  2. 実機（iPhone PWA）で1回にまとめて確認: 起動直後のBGM／再開ダイアログ中の無音／**既存セーブの飾りが全ケーキに残っているか**／レシピごとに別の飾りを付けられるか／店頭が最後に作ったケーキになるか／バックアップのファイル保存／D08・D09
+  3. 両PRのマージ後に行き止まりブランチを整理（`claude/caking-weekly-improvements-bg3gnf` を含めてよい）
+- 検証（2026-09-29、本ブランチ）: `npm run lint` 0件、`npm test` **45件 pass**（37→45）、`npm run build` 成功、`verify-bgm` / `verify-atelier` / `verify-save` / `verify-story` / `verify-playthrough` すべて PASS。
 
 ## Dated work reports
 ### 2026-09-29 — Claude
@@ -520,4 +522,24 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 検証（2026-09-29、本ブランチ）: `npm ci` → `npm run lint` 0件、`npm test` 37件 pass、`npm run build` 成功。`PLAYWRIGHT_MODULE=<グローバルのplaywright> node scripts/verify-bgm.cjs` で「許可時に無操作で running」「再起動の再開ダイアログ中は suspended」「ダイアログ中の誤タップでも suspended」「再開で running」「一時停止ボタンで suspended」「非表示→表示で suspended かつ再開ダイアログ表示」が合格。
 - 決定: 一時停止の意味（音を止める）を優先し、元の修正の「非表示から戻ったら即再生」は捨てた。自動再生の機会を広げる部分（起動時の即試行・statechange・タイマー・毎回のジェスチャ）はすべて残した。
 - ダッシュボードの未解決事項: 「CAKING の未マージブランチ滞留」は、本PRのマージで実作業を持つ未マージブランチが0本になる。ブランチの削除自体は未実施。Issue #21 は未着手。
+- 次のアクション: 上記 `Current handoff` の「次のアクション」を参照。
+
+### 2026-09-29 (3) — Claude — Issue #21 飾りパーツのレシピ別保持
+
+- 目的: 9/26 の実機確認の指摘2（公開前に直す唯一の項目）。project-dashboard から Issue #21 として起票されていた。
+- オーナーの判断: 店頭は「最後に作ったケーキの飾り」、パーツは「一度買えば全レシピで使える」。Issue に挙がっていた判断事項2点を、着手前にチャットで確認した。
+- 完了した作業:
+  - **テストを先に書いた**（Issue の推奨）。`test/cake-styles.test.js` の8件は、実装前に import エラーで全件失敗することを確認した。内容は、旧セーブの全レシピ複製、飾りなしセーブ、レシピ単位・スロット単位の検証、`__proto__` や未知のレシピ名、装着・解除が1レシピだけに効くこと、所有の共有、店頭、保存・バックアップの往復
+  - `src/game/cakeParts.js`: `normalizeCakeParts` が `cakeStyles` と `lastCraftedRecipe` を返すように変更。`cakeStyleFor` と `storefrontCakeStyle` を追加。`equipCakePart` と `resetCakeParts` はレシピ名を受け取る
+  - `src/game/crafting.js`: 製造時に `lastCraftedRecipe` を記録。`src/game/storage.js`: 既定セーブを新形式に。`SAVE_VERSION` は据え置いた（移行は正規化で吸収でき、形式番号を上げる必要がない）
+  - UI: デコレーション画面には既に「ケーキの種類」の選択があり、試着表示にしか使われていなかった。これを「どのケーキを飾るか」の選択に転用し、初期値を最後に作ったケーキにした。店頭 (`ShopDiorama`) は最後に作ったケーキを**形ごと**表示する（判断は「飾り」だったが、ショートケーキの形にプリンの飾りを載せると別のケーキに見えるため）
+  - `test/cake-parts.test.js` と `test/storage.test.js` を新しいAPIに書き換えた（意図は維持）。`scripts/verify-atelier.cjs` にはレシピ間の独立性と店頭の形のチェックを、`scripts/verify-save.cjs` には旧形式バックアップの復元チェックを追加した
+- **うまくいかなかったこと**:
+  - **`verify-atelier` が1回失敗した。** 追加した店頭チェックで営業タブへ移動したまま次の手順（レシピタブの「つくる」を押す）に進んでいた。アプリの不具合ではなく、スクリプト側の手順の誤り。ループ後にレシピタブへ戻して解消した
+  - **`verify-save` はこの変更の前から `main` で失敗していた。** 別の作業コピーで `origin/main` を実行して確認した。PR #19 でボタン名が「バックアップを作る」から「バックアップをファイルに保存」に変わったのに、スクリプトが更新されていなかった。前回までの handoff の「検証」欄は単体テストのみで、ブラウザ検証は走っていなかった
+  - 最初は `verify-save` の復元データに旧形式の `cakeStyle` だけを足した。しかし現行セーブ由来の `cakeStyles` が残っていて旧形式として扱われず、移行の検証になっていなかった。`cakeStyles` と `lastCraftedRecipe` を消してから復元するように直した
+- 影響範囲: `src/game/cakeParts.js`、`src/game/crafting.js`、`src/game/storage.js`、`src/App.jsx`、`src/components/CakeAtelier.jsx`、`src/components/ShopDiorama.jsx`、`test/cake-styles.test.js`（新規）、`test/cake-parts.test.js`、`test/storage.test.js`、`scripts/verify-atelier.cjs`、`scripts/verify-save.cjs`、`WORKLOG.md`。
+- 検証（2026-09-29、PR #22 の上に積んだ状態）: lint 0件、単体 45件 pass、build 成功。ブラウザ検証 `verify-bgm` / `verify-atelier` / `verify-save` / `verify-story` / `verify-playthrough` 全件 PASS（`PLAYWRIGHT_MODULE` にグローバルの playwright を指定）。
+- 決定: ブランチは PR #22 の上に積み、PR の base は `main` にした。WORKLOG の handoff を両PRが書き換えるため、`main` から分けると必ず衝突する。9/26 のスタックPR事故（子の base を親にしていた）は base を `main` にすることで避けた。
+- ダッシュボードの未解決事項: Issue #21 は本PRで対応（マージで close）。未マージブランチの滞留は、両PRのマージ後の整理で解消できる。
 - 次のアクション: 上記 `Current handoff` の「次のアクション」を参照。
