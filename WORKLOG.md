@@ -31,7 +31,7 @@ This file is the shared source of truth for cross-device and cross-agent handoff
      - バックアップのファイル保存で、どの経路（共有シート／ダウンロード／全文コピー）が働くか
      - D08・D09（アプリを完全終了してから再起動したときのセーブ復帰）
   2. 行き止まりブランチを整理する。削除候補は、内容が `main` に入っている `agent/add-business-navigation`、`agent/document-deployment-policy`、`codex/atelier-quality`、`integrate/phase0-to-phase7`、`codex/phase0-to-phase7`（08-04 の統合で書き直して取り込み済み）
-     - **`claude/caking-weekly-improvements-bg3gnf` は、コード（`78548b1`）は PR #22 で取り込み済み。ただし WORKLOG の 2026-09-05 (7)(8) の2件は `main` に無い。** 消す前に、その2件を WORKLOG に移すかどうかをオーナーが判断する
+     - `claude/caking-weekly-improvements-bg3gnf` も削除してよい。コード（`78548b1`）は PR #22 で取り込み済み。WORKLOG にしか無かった 2026-09-05 (7)(8) の2件も、オーナーの指示で本WORKLOGの時系列の位置へ移した（2026-09-29）
   3. `docs/current-status.md`（2026-09-07 のまま）と、9/26 のPWA記録の「修正コミット」欄（指摘1・3は PR #17・#18 で修正済み、指摘2は PR #23）を最新にする
 - ダッシュボードの未解決事項との照合: 「未マージ11ブランチの滞留」は、実作業を持つ未マージブランチが0本になった（削除は未実施）。W38 の「投げ銭リンク」は PR #14、「リポジトリ説明文」はオーナーが 2026-09-26 に対応済み。CAKING の個別評価（2026-08-25）は古いまま。ダッシュボードは編集していない。
 - 検証（2026-09-29 17:19 JST、`main` = `31262ea` で実行）: `npm ci` → `npm run lint` 0件、`npm test` **45件 pass**、`npm run build` 成功。`verify-bgm` / `verify-atelier` / `verify-save` / `verify-story` 全件 PASS（`verify-playthrough` は PR #23 のブランチ上で PASS。`main` では再実行していない）。
@@ -421,6 +421,71 @@ This file is the shared source of truth for cross-device and cross-agent handoff
   and the copyright holder is still the GitHub handle.
 - Next actions: as listed in `Current handoff`.
 
+> Ported on 2026-09-29 from `claude/caking-weekly-improvements-bg3gnf` (commits `cf4eb6f`, `ef1d51d`), where these two
+> reports were written but never reached `main`. Text is unchanged. The code fix in (8) reached `main` via PR #22, with
+> one change: the visibility handler no longer calls `unlock()` on return, because `main` now pauses the game when
+> hidden; see the 2026-09-29 (2) report.
+
+### 2026-09-05 (7) — Claude Code — PR #7 merged and deployed
+
+- Objective: Merge PR #7 at the user's instruction and confirm the deployment.
+- Work completed:
+  - PR #7 was a draft, which cannot be merged, so it was marked ready for review first.
+  - Merged with a merge commit, matching the convention set by PR #1, so the eight commit messages survive
+    in the history rather than being squashed away. Merge commit `746c3f9`, guarded with
+    `expectedHeadSha=08f012c`.
+  - The deploy workflow (run 9) completed with `conclusion: success`.
+  - The `github-pages` deployment for `746c3f9` reports `state: success` with the environment URL.
+  - Restarted this branch from `origin/main`, having first confirmed with `git merge-base --is-ancestor`
+    that the old tip was fully contained in `main` and nothing would be lost.
+- What could not be verified: the live site itself. `anyhoe104-spec.github.io` is blocked by this
+  environment's network policy, the same way Suno and the stock audio sites are, so the served HTML,
+  bundle hashes and audio files were not fetched. The deployment status is the evidence used instead.
+- Decisions: a merge commit rather than squash, to preserve the per-topic commit messages, and because
+  PR #1 established that convention.
+- Unresolved issues:
+  - No physical-device check, now the largest gap since the build is live.
+  - Whether an existing installation actually picks up the new service worker has not been observed on a
+    real device, only reasoned about from the cache-name change.
+  - Copyright holder is still the GitHub handle.
+- Next actions: as listed in `Current handoff`.
+
+### 2026-09-05 (8) — Claude Code — BGM start-up fix from the device test
+
+- Objective: Fix the problem found in the user's device test — after a PWA relaunch, BGM did not start until
+  some interaction (a tab change, a tap) occurred.
+- Root cause: `bus.unlock()` was only ever called from the `pointerdown` / `keydown` listeners, so on a fresh
+  page load — which is what a PWA relaunch is — audio was never even attempted. `playBgm()` stashed the
+  scene in `pendingScene` and returned. A second, latent problem sat behind it: `unlock()` set `unlocked`
+  before doing anything and the listeners were `{ once: true }`, so a failed first attempt permanently
+  disarmed every retry path.
+- Fix:
+  - Attempt `unlock()` immediately on mount. An installed PWA is normally allowed to autoplay, and the
+    gesture-only approach threw that case away.
+  - `playBgm()` no longer waits for a gesture; it starts the source even while the context is suspended.
+    A suspended context does not advance its clock, so the track begins from its first sample when the
+    browser permits playback — measured: five seconds of wall clock while blocked left
+    `ctx.currentTime` at 0.000.
+  - Retries widened: every pointer/touch/key event (no longer `once`), the context's own `statechange`,
+    and timers at 400 ms and 1500 ms. The visibility handler now calls `unlock()` rather than `resume()`
+    so a relaunch that was never unlocked is covered too.
+  - Split graph construction (`#ensureGraph`) from unlocking, so both are idempotent.
+- Honest limitation, stated to the user: a timer alone cannot defeat autoplay policy. The gesture path
+  remains the only guaranteed trigger; the rest widen the cases where music starts on its own.
+- Validation:
+  - Autoplay allowed (installed-PWA equivalent): four seconds with no input at all, `ctx` reaches `running`
+    and `opening-theme` is playing.
+  - Autoplay blocked: the source is started and waiting; a tap brings `ctx` to `running` and it plays.
+  - No regression in scene BGM switching (opening -> menu -> shop), SE, voice, or offline relaunch.
+  - `npm run lint`, `npm test` 16/16, `npm run build`, `git diff --check` all pass.
+- False alarm investigated and dismissed: `opening-theme.mp3` appeared twice in a request tally. Measuring
+  by `fromServiceWorker` showed one page-level request and one service-worker passthrough for the same
+  bytes; on both a cold and a warm load, zero mp3 responses came from the network rather than the worker.
+  There is no duplicate download.
+- Unresolved issues: the fix is undeployed and needs a new PR; the device that showed the problem has not
+  been re-tested; audio quality evaluation had not started when the session ended.
+- Next actions: as listed in `Current handoff`.
+
 ### 2026-09-07 10:41 +0900 — Codex — 工房・2D演出とパーツ改修
 
 - 目的: CAKINGをストア品質へ近づけ、ミニキャラ・製造演出・ケーキパーツ・物語を実装。中断後も再開できる状態を残す。
@@ -562,4 +627,5 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 影響範囲: `WORKLOG.md` のみ。
 - 検証: 上記 `Current handoff` の「検証」を参照。
 - 決定: WORKLOG の記録を失わないように、`claude/caking-weekly-improvements-bg3gnf` の削除はオーナー判断とした。
+- 追記（同日）: オーナーの指示で、同ブランチにしか無かった 2026-09-05 (7)(8) の作業記録2件を、本文を変えずに 2026-09-05 (6) の直後へ移した。移した経緯は引用で添えた。これで同ブランチは削除しても何も失われない。
 - 未解決の課題と次のアクション: 上記 `Current handoff` を参照。
