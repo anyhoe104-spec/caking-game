@@ -4,30 +4,36 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-09-29 JST
+- Updated: 2026-09-29 17:45 JST
 - 作業者: **Claude**（caking-game 開始スキルのセッション）
-- 作業ブランチ: `claude/issue-21-cake-styles`。**`claude/nifty-cori-cbmgi6`（PR #22）の上に積んでいる**。PRのbaseは `main`（子のbaseを親ブランチにしない。9/26の失敗の再発防止）
-- 目的: Issue #21（飾りパーツがレシピ別に保持されない）を直す。PR #22（起動時BGM）はレビュー待ちのまま。
-- 外部状態確認（**2026-09-29、`git fetch origin '+refs/heads/*:refs/remotes/origin/*'` と GitHub API で実測**）:
-  - `main` = `2cc7aa7`。PR #22 は OPEN・未マージ
-  - 開いているIssue: #21 のみ（本作業で対応）
-- オーナーの判断（2026-09-29、チャットで回答）:
-  - 店頭のケーキ: **最後に作ったケーキの飾り**を出す
-  - パーツの所有: **一度買えば全レシピで使える**（買い物の仕組みは変更しない）
+- ブランチ / 改訂: `main` = `31262ea`（PR #23 のマージ。このチェックポイントより前の最終作業改訂）
+- 目的: 開始スキルで見つかった2件を直して `main` に入れる。2件は、起動時BGM修正が `main` に入っていなかったことと、Issue #21（飾りパーツのレシピ別保持）。
+- 外部状態確認（**2026-09-29 17:19 JST、`git fetch origin '+refs/heads/*:refs/remotes/origin/*'` と GitHub API で実測**）:
+  - PR #22（起動時BGM）と PR #23（Issue #21）は **2026-09-29 17:15〜17:16 JST にマージ済み**。開いているPRは0件
+  - Issue #21 は **CLOSED**（PR #23 のマージで自動クローズ）。開いているIssueは0件
+  - GitHub Pages のデプロイは PR #22（run 20）、PR #23（run 21）とも **success**（Actions の実行一覧で確認）
 - 完了:
-  - PR #22: 9/5 の起動時BGM修正を一時停止と両立させて取り込み
-  - 本ブランチ: `cakeStyle`（単一）→ `cakeStyles`（レシピ別）＋ `lastCraftedRecipe`。旧セーブの飾りは全レシピへ複製。店頭は最後に作ったケーキを形ごと表示
-  - `scripts/verify-save.cjs` の古いボタン名（PR #19 で変更）を修正。**この修正前は `main` でも失敗していた**
-- 進行中: なし。PR のレビュー・マージ待ち。
+  - 起動直後にタップを待たずBGMを鳴らす。一時停止中・非表示中は鳴らさない（PR #22）
+  - 飾りをレシピごとに保持する。旧セーブの飾りは全レシピへ引き継ぐ。店頭には最後に作ったケーキを出す。パーツの所有は共有のまま（PR #23）
+  - 前から `main` で失敗していた `scripts/verify-save.cjs` を修復（PR #23）
+- 進行中: なし。
 - ブロッカーとリスク:
-  - 🟡 **マージ順**: PR #22 → Issue #21 のPR の順にマージする。逆順でも内容は入るが、Issue #21 のPRがBGM修正も一緒に持ち込む
-  - 🟡 **旧版に戻すとレシピ別の飾りは消える。** 旧版は `cakeStyle` しか読まないため、初期の飾りに戻る（購入済みパーツは残る）。PWAの更新後に旧版へ戻る経路は通常ないため許容
-  - 🟡 自動再生ブロック環境でのBGM、セーブのファイル保存、D08・D09 は実機未確認
+  - 🟡 **実機での確認が未実施**（下記の次のアクション1）。自動検証ではヘッドレスChromiumが自動再生ブロックを再現できない
+  - 🟡 **PRごとに自動で走るCIがない。** Actions はデプロイ用の `deploy.yml` だけで、テストは各エージェントが手元で実行している。オーナーは 2026-09-29 に「問題ない」と判断済み
+  - 🟡 旧版へ戻すと、レシピ別の飾りは初期状態に戻る（購入済みパーツは残る）
 - 次のアクション:
-  1. オーナーが PR #22 → Issue #21 のPR の順にマージ
-  2. 実機（iPhone PWA）で1回にまとめて確認: 起動直後のBGM／再開ダイアログ中の無音／**既存セーブの飾りが全ケーキに残っているか**／レシピごとに別の飾りを付けられるか／店頭が最後に作ったケーキになるか／バックアップのファイル保存／D08・D09
-  3. 両PRのマージ後に行き止まりブランチを整理（`claude/caking-weekly-improvements-bg3gnf` を含めてよい）
-- 検証（2026-09-29、本ブランチ）: `npm run lint` 0件、`npm test` **45件 pass**（37→45）、`npm run build` 成功、`verify-bgm` / `verify-atelier` / `verify-save` / `verify-story` / `verify-playthrough` すべて PASS。
+  1. **実機確認の残り（オーナー作業）**。オーナー報告（2026-09-29 チャット）で **D01〜D10 は合格**（記録は `docs/device-tests/2026-09-29-owner-report.md`。機種・コミットは未記入）。残りは次のとおり
+     - D11〜D17
+     - 起動直後のBGM／再開ダイアログ中の無音
+     - 既存セーブの飾りが全ケーキに残るか／レシピ別の飾り／店頭のケーキ
+     - バックアップのファイル保存がどの経路で働くか
+     - 報告したビルドが PR #22・#23 より前なら D07・D10 の再確認。どのビルドだったかをオーナーに記入してもらう
+  2. **行き止まりブランチの削除（オーナー作業。GitHub の Branches 画面から）**。このセッションからの削除は HTTP 403 で拒否された（2026-09-29 17:30 JST、`git push origin --delete`。セッションが書き込めるのは指定の作業ブランチだけ）
+     - 削除してよい4本（`git cherry` で全コミットが `main` と一致）。先端コミットを復元用に記録する: `agent/add-business-navigation`（`46a57ec`）、`agent/document-deployment-policy`（`2048402`）、`codex/atelier-quality`（`7a49100`）、`integrate/phase0-to-phase7`（`d02ee9d`）
+     - **`codex/phase0-to-phase7`（`3e8a8e2`）は保留**。コード（`65f36ca` が追加したファイル）はすべて `main` にある。ただし `docs/branch-integration-plan.md`（2026-08-01 の統合計画、160行）が `main` に無い。移すか、そのまま消すかをオーナーが判断する
+     - `claude/caking-weekly-improvements-bg3gnf` も削除してよい。コード（`78548b1`）は PR #22 で取り込み済み。WORKLOG にしか無かった 2026-09-05 (7)(8) の2件も、オーナーの指示で本WORKLOGの時系列の位置へ移した（2026-09-29）
+- ダッシュボードの未解決事項との照合: 「未マージ11ブランチの滞留」は、実作業を持つ未マージブランチが0本になった（削除は未実施）。W38 の「投げ銭リンク」は PR #14、「リポジトリ説明文」はオーナーが 2026-09-26 に対応済み。CAKING の個別評価（2026-08-25）は古いまま。ダッシュボードは編集していない。
+- 検証（2026-09-29 17:19 JST、`main` = `31262ea` で実行）: `npm ci` → `npm run lint` 0件、`npm test` **45件 pass**、`npm run build` 成功。`verify-bgm` / `verify-atelier` / `verify-save` / `verify-story` 全件 PASS（`verify-playthrough` は PR #23 のブランチ上で PASS。`main` では再実行していない）。
 
 ## Dated work reports
 ### 2026-09-29 — Claude
@@ -414,6 +420,71 @@ This file is the shared source of truth for cross-device and cross-agent handoff
   and the copyright holder is still the GitHub handle.
 - Next actions: as listed in `Current handoff`.
 
+> Ported on 2026-09-29 from `claude/caking-weekly-improvements-bg3gnf` (commits `cf4eb6f`, `ef1d51d`), where these two
+> reports were written but never reached `main`. Text is unchanged. The code fix in (8) reached `main` via PR #22, with
+> one change: the visibility handler no longer calls `unlock()` on return, because `main` now pauses the game when
+> hidden; see the 2026-09-29 (2) report.
+
+### 2026-09-05 (7) — Claude Code — PR #7 merged and deployed
+
+- Objective: Merge PR #7 at the user's instruction and confirm the deployment.
+- Work completed:
+  - PR #7 was a draft, which cannot be merged, so it was marked ready for review first.
+  - Merged with a merge commit, matching the convention set by PR #1, so the eight commit messages survive
+    in the history rather than being squashed away. Merge commit `746c3f9`, guarded with
+    `expectedHeadSha=08f012c`.
+  - The deploy workflow (run 9) completed with `conclusion: success`.
+  - The `github-pages` deployment for `746c3f9` reports `state: success` with the environment URL.
+  - Restarted this branch from `origin/main`, having first confirmed with `git merge-base --is-ancestor`
+    that the old tip was fully contained in `main` and nothing would be lost.
+- What could not be verified: the live site itself. `anyhoe104-spec.github.io` is blocked by this
+  environment's network policy, the same way Suno and the stock audio sites are, so the served HTML,
+  bundle hashes and audio files were not fetched. The deployment status is the evidence used instead.
+- Decisions: a merge commit rather than squash, to preserve the per-topic commit messages, and because
+  PR #1 established that convention.
+- Unresolved issues:
+  - No physical-device check, now the largest gap since the build is live.
+  - Whether an existing installation actually picks up the new service worker has not been observed on a
+    real device, only reasoned about from the cache-name change.
+  - Copyright holder is still the GitHub handle.
+- Next actions: as listed in `Current handoff`.
+
+### 2026-09-05 (8) — Claude Code — BGM start-up fix from the device test
+
+- Objective: Fix the problem found in the user's device test — after a PWA relaunch, BGM did not start until
+  some interaction (a tab change, a tap) occurred.
+- Root cause: `bus.unlock()` was only ever called from the `pointerdown` / `keydown` listeners, so on a fresh
+  page load — which is what a PWA relaunch is — audio was never even attempted. `playBgm()` stashed the
+  scene in `pendingScene` and returned. A second, latent problem sat behind it: `unlock()` set `unlocked`
+  before doing anything and the listeners were `{ once: true }`, so a failed first attempt permanently
+  disarmed every retry path.
+- Fix:
+  - Attempt `unlock()` immediately on mount. An installed PWA is normally allowed to autoplay, and the
+    gesture-only approach threw that case away.
+  - `playBgm()` no longer waits for a gesture; it starts the source even while the context is suspended.
+    A suspended context does not advance its clock, so the track begins from its first sample when the
+    browser permits playback — measured: five seconds of wall clock while blocked left
+    `ctx.currentTime` at 0.000.
+  - Retries widened: every pointer/touch/key event (no longer `once`), the context's own `statechange`,
+    and timers at 400 ms and 1500 ms. The visibility handler now calls `unlock()` rather than `resume()`
+    so a relaunch that was never unlocked is covered too.
+  - Split graph construction (`#ensureGraph`) from unlocking, so both are idempotent.
+- Honest limitation, stated to the user: a timer alone cannot defeat autoplay policy. The gesture path
+  remains the only guaranteed trigger; the rest widen the cases where music starts on its own.
+- Validation:
+  - Autoplay allowed (installed-PWA equivalent): four seconds with no input at all, `ctx` reaches `running`
+    and `opening-theme` is playing.
+  - Autoplay blocked: the source is started and waiting; a tap brings `ctx` to `running` and it plays.
+  - No regression in scene BGM switching (opening -> menu -> shop), SE, voice, or offline relaunch.
+  - `npm run lint`, `npm test` 16/16, `npm run build`, `git diff --check` all pass.
+- False alarm investigated and dismissed: `opening-theme.mp3` appeared twice in a request tally. Measuring
+  by `fromServiceWorker` showed one page-level request and one service-worker passthrough for the same
+  bytes; on both a cold and a warm load, zero mp3 responses came from the network rather than the worker.
+  There is no duplicate download.
+- Unresolved issues: the fix is undeployed and needs a new PR; the device that showed the problem has not
+  been re-tested; audio quality evaluation had not started when the session ended.
+- Next actions: as listed in `Current handoff`.
+
 ### 2026-09-07 10:41 +0900 — Codex — 工房・2D演出とパーツ改修
 
 - 目的: CAKINGをストア品質へ近づけ、ミニキャラ・製造演出・ケーキパーツ・物語を実装。中断後も再開できる状態を残す。
@@ -543,3 +614,35 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 決定: ブランチは PR #22 の上に積み、PR の base は `main` にした。WORKLOG の handoff を両PRが書き換えるため、`main` から分けると必ず衝突する。9/26 のスタックPR事故（子の base を親にしていた）は base を `main` にすることで避けた。
 - ダッシュボードの未解決事項: Issue #21 は本PRで対応（マージで close）。未マージブランチの滞留は、両PRのマージ後の整理で解消できる。
 - 次のアクション: 上記 `Current handoff` の「次のアクション」を参照。
+
+### 2026-09-29 17:20 JST (4) — Claude — セッション終了チェックポイント
+
+- 目的: PR #22・#23 のマージ後の状態を確かめて区切る。
+- 完了した作業: 3件の外部状態を実測して記録した（マージ・Issueのクローズ・デプロイ成功）。`main` で lint・単体・ブラウザ検証を再実行した。残ったブランチを `git cherry` と差分で1本ずつ調べ、引き継ぎを書き直した。
+- **うまくいかなかったこと・訂正したこと**:
+  - `git cherry` だけで判断すると、`claude/caking-weekly-improvements-bg3gnf` は「未取り込み3件」と出る。cherry-pick 時に手を加えたため patch-id が一致しないからで、コードは取り込み済み。一方、同ブランチの WORKLOG の2件は本当に `main` に無かった。「中身は全部入った」とも「全部未取り込み」とも言えず、コミットごとに見る必要があった
+  - `codex/phase0-to-phase7` も `git cherry` では未取り込み2件と出る。2026-08-04 の統合（`integrate/phase0-to-phase7`）で書き直して入れたためで、残っている差分は古い版の文書との差分
+  - セッションの最初に、前回の handoff の「未マージブランチはすべて行き止まり」を誤りと指摘した（BGM修正が未取り込みだった）。今回の記述はそれを受けて、ブランチごとに根拠を付けた
+- 影響範囲: `WORKLOG.md` のみ。
+- 検証: 上記 `Current handoff` の「検証」を参照。
+- 決定: WORKLOG の記録を失わないように、`claude/caking-weekly-improvements-bg3gnf` の削除はオーナー判断とした。
+- 追記（同日）: オーナーの指示で、同ブランチにしか無かった 2026-09-05 (7)(8) の作業記録2件を、本文を変えずに 2026-09-05 (6) の直後へ移した。移した経緯は引用で添えた。これで同ブランチは削除しても何も失われない。
+- 未解決の課題と次のアクション: 上記 `Current handoff` を参照。
+
+### 2026-09-29 17:45 JST (5) — Claude — 記録の移し替え・ドキュメント更新・ブランチ整理の試行
+
+- 目的: オーナーの指示3件。(a) 旧ブランチにしか無い 9/5 の作業記録を WORKLOG に移す、(b) 古いドキュメントを更新し、D01〜D10 合格を記録する、(c) 行き止まりブランチを削除する。
+- 完了した作業:
+  - (a) `claude/caking-weekly-improvements-bg3gnf` の 2026-09-05 (7)(8) を、2026-09-05 (6) の直後に本文を変えずに移した。元ブランチの該当行と `diff` で完全一致を確認した。元にあった余分な `\n` の1行だけは除いた。移した経緯を引用で添えた
+  - (b) 実機記録と現状文書を更新した
+    - `docs/device-tests/2026-09-29-owner-report.md` を新規作成。オーナーの「D0〜10までは通してある」を D01〜D10 合格として記録した。機種・コミット・実行方法は報告に無いため**未記入のまま**にした（未実施を合格扱いしない、という runbook の方針に従い、書かれていないことは埋めない）
+    - `docs/device-tests/2026-09-26-pwa.md` の「修正コミット」欄を記入（指摘1は PR #17、2は PR #23、3は PR #18）。D08・D09 未実施の注意書きは、報告記録へのリンク付きで取り消し線にした
+    - `docs/current-status.md` の前半（2026-09-07 の状態）を書き直した。変更内容は、更新日、現在地、完了済みに PR #14〜#23 の内容を追加、次の優先作業を実機確認の残りから並べ直す、の4点。後半（将来検討・正本と履歴）は現状と合っているので残した
+  - (c) 削除は失敗（下記）。削除候補ごとに根拠と先端 SHA を handoff に記録した
+- **うまくいかなかったこと**:
+  - **ブランチ削除は HTTP 403 で拒否された。** `git push origin --delete` で4本をまとめて削除しようとした。このセッションの push は指定の作業ブランチにしか許可されていないとみられる。プロキシの指示どおり再試行や迂回はしていない。オーナーが GitHub の画面で削除する必要がある
+  - **「中身が全部 `main` に入った5本」という前回の説明は1本だけ不正確だった。** `codex/phase0-to-phase7` を消す前にファイル単位で確認したところ、コードはすべて `main` にあった。ただし `docs/branch-integration-plan.md` が `main` に無かった。前回は「08-04 の統合で書き直して取り込み済み」とだけ書き、文書まで確認していなかった。そのためこのブランチは削除候補から外した
+- 影響範囲: `WORKLOG.md`、`docs/current-status.md`、`docs/device-tests/2026-09-26-pwa.md`、`docs/device-tests/2026-09-29-owner-report.md`（新規）。コードの変更なし。
+- 検証: `npm test` 45件 pass（ドキュメントのみの変更後、2026-09-29 17:40 JST 頃に実行）。移した作業記録は `diff` で一致を確認。
+- 決定: オーナー報告の記録は、日付を実施日ではなく報告日（2026-09-29）とした。実施日が不明なため。
+- 次のアクション: 上記 `Current handoff` を参照。
