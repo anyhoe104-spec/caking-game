@@ -28,6 +28,7 @@ export function completeCraft(state, recipe, result) {
     todaySales, customerQueue: order.queue,
     recipeRatings: updateRecipeRating(state.recipeRatings, recipe.name, result),
     lastEvent: { type: result, recipe: recipe.name },
+    lastCraftedRecipe: recipe.name,
     dailyStats: { ...state.dailyStats,
       filledOrders: state.dailyStats.filledOrders + Number(order.fulfilled),
       satisfiedCustomers: state.dailyStats.satisfiedCustomers + Number(order.fulfilled),

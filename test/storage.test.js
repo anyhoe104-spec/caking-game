@@ -30,11 +30,11 @@ test("damaged candidates do not prevent legacy recovery; total corruption and de
 });
 
 test("backup round-trip preserves playable orders, earned mission rewards and cake ownership", () => {
-  let state = { ...defaultSave(), gamePhase: "playing", dayPhase: "open", money: 5000, customerQueue: generateCustomerQueue(1), missions: generateMissions(1, 1), ownedCakeParts: ["berry", "mint", "ribbon"], cakeStyle: { top: "mint", band: "ribbon" } };
+  let state = { ...defaultSave(), gamePhase: "playing", dayPhase: "open", money: 5000, customerQueue: generateCustomerQueue(1), missions: generateMissions(1, 1), ownedCakeParts: ["berry", "mint", "ribbon"], cakeStyles: { ...defaultSave().cakeStyles, "プリン": { top: "mint", band: "ribbon" } } };
   state = applyMissionProgress(state, "satisfy_customers", 100);
   const restored = parseBackup(createBackup(state));
   assert.equal(restored.money, state.money);
-  assert.deepEqual(restored.cakeStyle, state.cakeStyle);
+  assert.deepEqual(restored.cakeStyles, state.cakeStyles);
   assert.deepEqual(restored.ownedCakeParts, state.ownedCakeParts);
   assert.equal(applyMissionProgress(restored, "satisfy_customers", 100).totalPoints, state.totalPoints);
   assert.equal(fulfillOrder(restored.customerQueue, "ショートケーキ", "success").fulfilled, true);
@@ -52,7 +52,7 @@ test("malformed rows and untrusted scalar fields cannot break game rendering or 
   assert.deepEqual(state.customerQueue, []);
   assert.deepEqual(state.missions, []);
   assert.equal(state.recipeRatings["プリン"], 3);
-  assert.equal(state.cakeStyle.top, "berry");
+  assert.ok(Object.values(state.cakeStyles).every(style => style.top === "berry"));
 });
 
 test("quota failures are observable and preserve the primary save", () => {
