@@ -21,55 +21,86 @@ export class AudioBus {
     this.gains = {};
     this.buffers = new Map();
     this.current = null; // { scene, source, gain }
-    this.pendingScene = null;
     this.unlocked = false;
     this.fallback = new Map();
     this.fallbackBgm = null;
     this.activeVoice = null;
     this.loopLengths = null; // key -> exact pre-encode seconds, from the manifest
+    this.stateHandler = null;
     this.supported = typeof window !== "undefined" && Boolean(window.AudioContext || window.webkitAudioContext);
   }
 
   // ── Lifecycle ──────────────────────────────────────────────
 
-  /** Must run inside a user gesture; browsers keep the context suspended otherwise. */
-  unlock() {
-    if (this.unlocked) return;
-    this.unlocked = true;
-    if (this.supported) {
-      try {
-        const Ctx = window.AudioContext || window.webkitAudioContext;
-        this.ctx = new Ctx();
-        this.master = this.ctx.createGain();
-        this.master.connect(this.ctx.destination);
-        for (const channel of ["bgm", "se", "voice"]) {
-          const gain = this.ctx.createGain();
-          gain.connect(this.master);
-          this.gains[channel] = gain;
-        }
-        this.applySettings();
-      } catch {
-        this.supported = false;
+  /**
+   * Build the audio graph. Idempotent, and safe to call outside a user gesture —
+   * a context created without one simply starts suspended.
+   */
+  #ensureGraph() {
+    if (this.ctx || !this.supported) return;
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      this.ctx = new Ctx();
+      this.master = this.ctx.createGain();
+      this.master.connect(this.ctx.destination);
+      for (const channel of ["bgm", "se", "voice"]) {
+        const gain = this.ctx.createGain();
+        gain.connect(this.master);
+        this.gains[channel] = gain;
       }
+      if (this.stateHandler) this.ctx.onstatechange = () => this.stateHandler();
+      this.applySettings();
+    } catch {
+      this.supported = false;
+    }
+  }
+
+  /**
+   * Bring audio up. Safe to call on load, on a gesture, or on returning to the
+   * app, and cheap to call repeatedly.
+   *
+   * Autoplay policy may refuse, which is why this used to wait for a tap — but
+   * waiting meant never even asking, and an installed PWA is usually allowed to
+   * start straight away. So ask immediately and let `resume()` be retried: the
+   * BGM source is started even while the context is suspended, and a suspended
+   * context does not advance its clock, so the track begins cleanly from its
+   * first sample once the browser permits it.
+   */
+  unlock() {
+    this.#ensureGraph();
+    if (!this.unlocked) {
+      this.unlocked = true;
+      this.#loadManifest();
+      EAGER_SE.forEach((key) => this.#buffer(key).catch(() => {}));
     }
     this.resume();
-    this.#loadManifest();
-    EAGER_SE.forEach((key) => this.#buffer(key).catch(() => {}));
-    if (this.pendingScene) {
-      const scene = this.pendingScene;
-      this.pendingScene = null;
-      this.playBgm(scene);
-    }
   }
 
   resume() {
     if (this.ctx?.state === "suspended") this.ctx.resume().catch(() => {});
     // The fallback path pauses its element in suspend(), and playBgm() will not
     // restart it because `current.scene` still matches the scene on screen — so
-    // without this the music stays dead until the player changes scene.
+    // without this the music stays dead until the player changes scene. The same
+    // call covers a first-load play() that autoplay policy rejected.
     if (this.fallbackBgm?.paused && channelGain(this.settings, "bgm") > 0) {
       this.fallbackBgm.play().catch(() => {});
     }
+  }
+
+  /**
+   * Subscribe to the context becoming runnable. The browser can grant playback
+   * without any gesture from us — an installed PWA often does — and this is the
+   * only way to notice it.
+   */
+  onStateChange(handler) {
+    this.stateHandler = handler;
+    if (this.ctx) this.ctx.onstatechange = handler ? () => handler() : null;
+  }
+
+  /** True while audio exists but the browser has not let it run yet. */
+  isBlocked() {
+    if (this.ctx) return this.ctx.state !== "running";
+    return Boolean(this.fallbackBgm?.paused);
   }
 
   suspend() {
@@ -111,10 +142,7 @@ export class AudioBus {
   async playBgm(scene, { fade = FADE_IN } = {}) {
     if (!scene || !BGM_KEYS[scene]) return;
     if (this.current?.scene === scene) return;
-    if (!this.unlocked) {
-      this.pendingScene = scene;
-      return;
-    }
+    this.#ensureGraph();
     if (!this.ctx) return this.#playBgmFallback(scene, fade);
 
     this.stopBgm({ fade: FADE_OUT });

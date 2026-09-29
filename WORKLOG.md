@@ -5,31 +5,27 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 ## Current handoff
 
 - Updated: 2026-09-29 JST
-- 作業者: **Claude**（ダッシュボード管理セッション）
-- 作業ブランチ: `claude/checkpoint-2026-09-29`。基点 `ed3a9ed`
-- 目的: 実機確認で挙がった指摘の解消と、お布施導線・セーブ運用の整備。
-- 外部状態確認（**2026-09-29、明示refspecで再取得して実測**）:
-  - `main` = `ed3a9ed`。**PR #14〜#19 はすべてマージ済み**
-  - 未マージブランチ: `codex/atelier-quality` ほか。内容は `main` に包含されており行き止まり
+- 作業者: **Claude**（caking-game 開始スキルのセッション）
+- 作業ブランチ: `claude/nifty-cori-cbmgi6`。基点 `2cc7aa7`（PR #20 マージ後の `main`）
+- 目的: 9/5 に書かれたまま `main` に入っていなかった「起動時BGM」修正を取り込む。
+- 外部状態確認（**2026-09-29、`git fetch origin '+refs/heads/*:refs/remotes/origin/*'` と GitHub API で実測**）:
+  - `main` = `2cc7aa7`。PR #14〜#20 はマージ済み。開いているPRは本作業のもののみ
+  - 開いているIssue: **#21（飾りパーツのレシピ別保持）**。project-dashboard から起票
+  - **前回の handoff の「未マージブランチはすべて行き止まり」は誤り。** `claude/caking-weekly-improvements-bg3gnf` の `78548b1`（起動時BGM修正）が `main` に無かった。本作業で取り込み、当該ブランチは取り込み後に行き止まりとなる
 - 完了:
-  - お布施（OFUSE）への導線。`.github/FUNDING.yml` により GitHub がリポジトリ上部に Sponsor ボタンを表示する（PR #14）
-  - 2026-09-26 のPWA通しプレイ記録（PR #15）
-  - **PR #10・#13 の積み残しを `main` へ取り込み**（PR #16、36ファイル・+907/−285）
-  - 指摘1：`.hintStrip` を不透明化し、セリフが背景と混ざる問題を解消（PR #17）
-  - 指摘3：店舗装飾を拡大し、装飾名ラベルを常時表示（PR #18）
-  - セーブのファイル保存・復元（PR #19）
-- 進行中: なし。
+  - `78548b1` を `main` へ移植。**移植時に一時停止との衝突を解消**（下記の dated report 参照）
+  - `scripts/verify-bgm.cjs` を追加
+- 進行中: なし。PRのレビュー・マージ待ち。
 - ブロッカーとリスク:
-  - **🔴 指摘2が未着手。ケーキの飾りパーツが全レシピで共有される。** `storage.js` の `cakeStyle` が単一オブジェクトでレシピ別のキーを持たない。退行ではなく未完成。修正は9ファイルに及び、**セーブ形式の変更と移行処理**を伴う
-  - **🟡 セーブのファイル保存が実機未確認。** iOS の PWA では `<a download>` が無視されることがあるため共有シート→ダウンロード→全文コピーの3段構えにしたが、どの経路が実際に働くかは未検証
-  - **🟡 D08・D09（アプリ完全終了→再起動でのセーブ復帰）が未実施。** ブラウザ終了→再起動での復旧は確認済みだが、セーブの書き出し・読み込みは試していない
-  - 🟡 リポジトリの Description と Topics は Git 管理外。2026-09-26 にオーナーが設定済み（`gemeprotetyape` から変更）
+  - **🔴 Issue #21 が未着手。** Issue に判断事項が2つある（店頭ケーキに何を出すか／パーツをレシピごとに買い直すか）。オーナーの判断を得てから着手する
+  - **🟡 自動再生がブロックされた環境でのBGM起動は実機未確認。** ヘッドレスChromiumはブロック指定を無視するため、自動検証では「許可時に無操作で鳴る」「一時停止中は鳴らない」までしか確かめられない
+  - 🟡 セーブのファイル保存（PR #19）と D08・D09 は実機未確認のまま
 - 次のアクション:
-  1. **指摘2（パーツのレシピ別保持）に着手する。** 単独PRとし、移行処理のテストを先に書く
-  2. PWAで「バックアップをファイルに保存」を押し、共有シート／ダウンロード／全文コピーのどれが働くか確認する
-  3. D08・D09 を実施する（営業中にアプリを完全終了して再起動）
-  4. `codex/atelier-quality` ほか行き止まりブランチを整理する
-- 検証（2026-09-29、`main` で実行）: `npm test` **37件 pass**、`npm run lint` **0件**、`npm run build` 成功、`npm audit --production` **0件**。
+  1. 本作業のPRをオーナーがマージする
+  2. **Issue #21 の判断事項2点をオーナーに確認し、着手する。** 単独PRとし、移行処理のテストを先に書く
+  3. 実機（iPhone PWA）で1回にまとめて確認: 起動直後のBGM、再起動時の再開ダイアログ中の無音、バックアップのファイル保存、D08・D09
+  4. 行き止まりブランチを整理する。**本PRのマージ後なら `claude/caking-weekly-improvements-bg3gnf` も削除してよい**。それ以前は削除しない
+- 検証（2026-09-29、本ブランチで実行）: `npm run lint` 0件、`npm test` **37件 pass**、`npm run build` 成功、`node scripts/verify-bgm.cjs` 全件合格。
 
 ## Dated work reports
 ### 2026-09-29 — Claude
@@ -507,3 +503,21 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 試行記録: ブラウザ欠損を検査で発見し別名展開。画面検証1回目は動き軽減のCSS期待値で失敗し、明示的な停止指定へ統一後、2回目が全件合格。
 - 外部確認: 上記日時のfetch/履歴とダッシュボード読取。レビューの未収録音源などは古いが、実機/音の品質課題は残る。mainへのマージ/公開やダッシュボード更新はしていない。
 - 次: 新ブランチのPRを起点に会話の実機確認、未完の課金/美術音声/審査を進める。
+
+### 2026-09-29 (2) — Claude — 起動時BGM修正の取り込み
+
+- 目的: 開始スキルで見つけた未取り込みの修正 `78548b1`（2026-09-05、起動直後にBGMが鳴らずタップ待ちになる問題）を `main` へ入れる。
+- 開始時の照合: ダッシュボード（2026-09-15 最終更新）の CAKING 評価は 2026-08-25 時点で古い（テスト9件・未マージ11ブランチ等）。W38 の「投げ銭リンク」と「リポジトリ説明文」は対応済み。前回 handoff の「未マージブランチはすべて行き止まり」は誤りで、`git cherry origin/main origin/claude/caking-weekly-improvements-bg3gnf` で3コミットが未取り込みと判明し、`src/game/audio.js` に `#ensureGraph` が無いことで確認した。
+- 完了した作業:
+  - `78548b1` を cherry-pick。`src/game/audio.js` は分岐後 `main` で無変更だったためそのまま適用。`src/App.jsx` は衝突
+  - **衝突の中身は見た目以上に重かった。** `main` は分岐後に「非表示で一時停止し音を止める」「営業中の再起動では再開ダイアログを出す」を追加していた。元の修正は再試行のたびに無条件で `unlock()`→`resume()` を呼び、しかも `suspend()` 自体が statechange を発火するため、そのまま合わせると一時停止した直後に自分で鳴り直す
+  - 再試行（`kick`）を「一時停止中・非表示中は `suspend()`、それ以外は `unlock()`」に変更。`pausedRef` を追加。非表示時の処理は `main` の一時停止動作を維持し、元の修正の「復帰時に `unlock()`」は採らなかった（復帰時は再開ダイアログが出るため）
+  - `scripts/verify-bgm.cjs` を追加。AudioContext をフックして状態を読み、5場面を確認
+- **うまくいかなかったこと**:
+  - **最初は単純な cherry-pick で済むと見積もった**（前回ブリーフィングで「約30分・3ファイル」）。衝突の片側を採るだけでは一時停止中にBGMが鳴る不具合を持ち込むところだった。ガードを外した版で検証を走らせ、`relaunch paused: [ 'running' ]` で失敗することを確認してからガードを残した
+  - **自動再生ブロックの再現に失敗した。** `--autoplay-policy=user-gesture-required` を渡してもヘッドレスChromiumは無操作で `running` になる。ケース2のタップ前の状態は表示のみとし、アサートから外した。ブロック環境は実機でしか確かめられない
+- 影響範囲: `src/App.jsx`、`src/game/audio.js`、`scripts/verify-bgm.cjs`、`WORKLOG.md`。
+- 検証（2026-09-29、本ブランチ）: `npm ci` → `npm run lint` 0件、`npm test` 37件 pass、`npm run build` 成功。`PLAYWRIGHT_MODULE=<グローバルのplaywright> node scripts/verify-bgm.cjs` で「許可時に無操作で running」「再起動の再開ダイアログ中は suspended」「ダイアログ中の誤タップでも suspended」「再開で running」「一時停止ボタンで suspended」「非表示→表示で suspended かつ再開ダイアログ表示」が合格。
+- 決定: 一時停止の意味（音を止める）を優先し、元の修正の「非表示から戻ったら即再生」は捨てた。自動再生の機会を広げる部分（起動時の即試行・statechange・タイマー・毎回のジェスチャ）はすべて残した。
+- ダッシュボードの未解決事項: 「CAKING の未マージブランチ滞留」は、本PRのマージで実作業を持つ未マージブランチが0本になる。ブランチの削除自体は未実施。Issue #21 は未着手。
+- 次のアクション: 上記 `Current handoff` の「次のアクション」を参照。

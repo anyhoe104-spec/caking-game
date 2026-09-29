@@ -71,6 +71,7 @@ export default function App() {
   const [saveStatus, setSaveStatus] = useState(initialSave.status);
   const [saveNotice, setSaveNotice] = useState(initialSave.status === "recovered" || initialSave.status === "damaged" ? initialSave.status : null);
   const [paused, setPaused] = useState(() => state.gamePhase === "playing" && state.dayPhase === "open");
+  const pausedRef = useRef(paused);
   const [activeTab, setActiveTab] = useState(null);
   const [homeTabPick, setHomeTabPick] = useState(null); // { phase, tab } — cleared when the phase turns over
   const [toast, setToast] = useState(null);
@@ -196,10 +197,32 @@ export default function App() {
   }, [reduceMotion]);
 
   // ── Audio wiring ───────────────────────────────────────────
+  // Audio is attempted immediately rather than waiting for a tap. An installed
+  // PWA is normally allowed to start on its own, and the previous gesture-only
+  // approach meant a relaunch stayed silent until the player happened to touch
+  // something. When policy does refuse, these retries cover it:
+  //
+  //   - every pointer or key event, until the context is actually running
+  //   - the context's own statechange, for when the browser relents unprompted
+  //   - two short timers, for launches where the decision settles after load
+  //
+  // Only the gesture path is guaranteed; the rest widen the cases where music
+  // starts on its own. bus.unlock() is idempotent and cheap to call repeatedly.
   useEffect(() => {
-    const unlock = () => bus.unlock();
-    window.addEventListener("pointerdown", unlock, { once: true });
-    window.addEventListener("keydown", unlock, { once: true });
+    // While the game is paused or hidden, every retry path holds audio down
+    // instead of raising it. suspend() itself fires statechange, and the
+    // browser can move a fresh context to running on its own, so a kick that
+    // unconditionally unlocked would restart the music behind the pause dialog.
+    const kick = () => (pausedRef.current || document.hidden ? bus.suspend() : bus.unlock());
+    kick();
+
+    const pointerOpts = { passive: true };
+    window.addEventListener("pointerdown", kick, pointerOpts);
+    window.addEventListener("touchstart", kick, pointerOpts);
+    window.addEventListener("keydown", kick);
+    bus.onStateChange(kick);
+
+    const timers = [setTimeout(kick, 400), setTimeout(kick, 1500)];
     const onVisibility = () => {
       document.documentElement.classList.toggle("pageHidden", document.hidden);
       if (document.hidden) {
@@ -209,9 +232,13 @@ export default function App() {
       }
     };
     document.addEventListener("visibilitychange", onVisibility);
+
     return () => {
-      window.removeEventListener("pointerdown", unlock);
-      window.removeEventListener("keydown", unlock);
+      window.removeEventListener("pointerdown", kick, pointerOpts);
+      window.removeEventListener("touchstart", kick, pointerOpts);
+      window.removeEventListener("keydown", kick);
+      bus.onStateChange(null);
+      timers.forEach(clearTimeout);
       document.removeEventListener("visibilitychange", onVisibility);
       cancelVoice();
     };
@@ -230,6 +257,7 @@ export default function App() {
   }, [state.dayPhase]);
 
   useEffect(() => {
+    pausedRef.current = paused;
     document.documentElement.classList.toggle("gamePaused", paused);
     if (paused) bus.suspend(); else if (!document.hidden) bus.resume();
     return () => document.documentElement.classList.remove("gamePaused");
