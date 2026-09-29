@@ -33,9 +33,10 @@ fs.mkdirSync(QA,{recursive:true});
  await p.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:false});document.dispatchEvent(new Event('visibilitychange'));});
  await p.getByRole('button',{name:'工房を再開する'}).click();
 await p.getByText('演出をスキップ',{exact:true}).evaluateAll(buttons=>buttons[0]?.click());await p.waitForTimeout(1600);assert.equal(await p.getByText('演出をスキップ',{exact:true}).count(),0);await p.getByText('工房にもどる',{exact:true}).click();
- await p.getByRole('button',{name:'デコレーション',exact:true}).click();await p.locator('.partCard').filter({hasText:'小さなハーブ園'}).getByText('Pで購入',{exact:true}).click();await p.locator('.partCard').filter({hasText:'小さなハーブ園'}).getByText('飾る',{exact:true}).click();assert.equal((await save()).cakeStyle.top,'mint');
- await p.locator('.partCard').filter({hasText:'港町の小さな王冠'}).getByRole('button',{name:'港町の小さな王冠を試着'}).click();assert.equal((await save()).cakeStyle.top,'mint');assert.equal(await p.locator('.partCard').filter({hasText:'港町の小さな王冠'}).getByText('試着のみ',{exact:true}).isDisabled(),true);
- await p.screenshot({path:path.join(QA,'atelier.png'),fullPage:true});await p.reload();assert.equal((await save()).cakeStyle.top,'mint');
+ await p.getByRole('button',{name:'デコレーション',exact:true}).click();await p.locator('.partCard').filter({hasText:'小さなハーブ園'}).getByText('Pで購入',{exact:true}).click();await p.locator('.partCard').filter({hasText:'小さなハーブ園'}).getByText('飾る',{exact:true}).click();
+ const chosen=await p.getByLabel('ケーキの種類').inputValue();assert.equal((await save()).cakeStyles[chosen].top,'mint');assert.equal(Object.values((await save()).cakeStyles).filter(s=>s.top==='mint').length,1);
+ await p.locator('.partCard').filter({hasText:'港町の小さな王冠'}).getByRole('button',{name:'港町の小さな王冠を試着'}).click();assert.equal((await save()).cakeStyles[chosen].top,'mint');assert.equal(await p.locator('.partCard').filter({hasText:'港町の小さな王冠'}).getByText('試着のみ',{exact:true}).isDisabled(),true);
+ await p.screenshot({path:path.join(QA,'atelier.png'),fullPage:true});await p.reload();assert.equal((await save()).cakeStyles[chosen].top,'mint');
  await p.clock.install({time:new Date()});await p.clock.pauseAt(new Date(Date.now()+1000));
  await patch({dayPhase:'open',businessTimer:1,materials:{egg:30,cream:30,strawberry:30,flour:30,sugar:30,milk:30,butter:30}});
  await p.getByRole('button',{name:'レシピ',exact:true}).click();await p.getByRole('button',{name:'つくる',exact:true}).first().click();await p.clock.runFor(2700);
@@ -48,7 +49,7 @@ await p.getByText('演出をスキップ',{exact:true}).evaluateAll(buttons=>but
  const {getCraftPresentation}=await import(pathToFileURL(path.join(ROOT,'src/game/craftPresentation.js')).href);
  await p.clock.pauseAt(await p.evaluate(()=>Date.now()+1000));
  for(const recipe of RECIPES){
-   await patch({dayPhase:'prep',level:10,endingReached:true,materials:{egg:30,cream:30,strawberry:30,flour:30,sugar:30,milk:30,butter:30},ownedCakeParts:['berry','mint'],cakeStyle:{top:'mint',band:null}});
+   await patch({dayPhase:'prep',level:10,endingReached:true,materials:{egg:30,cream:30,strawberry:30,flour:30,sugar:30,milk:30,butter:30},ownedCakeParts:['berry','mint'],cakeStyles:Object.fromEntries(RECIPES.map(r=>[r.name,{top:'mint',band:null}]))});
    await p.getByRole('button',{name:'レシピ',exact:true}).click();
    await p.locator('.recipeCard').filter({has:p.getByText(recipe.name,{exact:true})}).getByRole('button',{name:'つくる',exact:true}).click();
    const profile=getCraftPresentation(recipe.name);
@@ -58,29 +59,33 @@ await p.getByText('演出をスキップ',{exact:true}).evaluateAll(buttons=>but
    await p.getByText('演出をスキップ',{exact:true}).evaluateAll(buttons=>buttons[0]?.click());
    assert.equal(await p.locator('.finishedRecipe').getAttribute('data-shape'),profile.shape);
    await p.getByText('工房にもどる',{exact:true}).click();
+   assert.equal((await save()).lastCraftedRecipe,recipe.name);
+   await p.getByRole('button',{name:'営業',exact:true}).click();assert.equal(await p.locator('.shopCake .cakeModel').getAttribute('data-shape'),profile.shape);
  }
- await p.clock.resume();
- console.log('PASS: all 8 recipes, 24 stage props, decorated recipe shapes');
+ await p.clock.resume();await p.getByRole('button',{name:'レシピ',exact:true}).click();
+ console.log('PASS: all 8 recipes, 24 stage props, decorated recipe shapes, storefront shows the last cake made');
  await p.emulateMedia({reducedMotion:'reduce'});await p.getByRole('button',{name:'つくる',exact:true}).first().click();assert.equal(await p.getByText('演出をスキップ',{exact:true}).count(),0);await p.getByText('工房にもどる',{exact:true}).click();
  for(const width of [320,390,430,768]) {await p.setViewportSize({width,height:844});for(const label of ['営業','レシピ','デコレーション','食材','スタッフ']){await p.getByRole('button',{name:label,exact:true}).click();assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`overflow ${width} ${label}`);}}
- await patch({dayPhase:'prep',money:5000,ownedCakeParts:['berry','mint','ribbon'],cakeStyle:{top:'mint',band:'ribbon'}});
+ await patch({dayPhase:'prep',money:5000,ownedCakeParts:['berry','mint','ribbon'],lastCraftedRecipe:'ショートケーキ',cakeStyles:Object.fromEntries(RECIPES.map(r=>[r.name,{top:'mint',band:'ribbon'}]))});
  await p.getByRole('button',{name:'デコレーション',exact:true}).click();
  assert.equal(await p.locator('.partThumbnail .cakeModel').count(),6);
  await p.getByLabel('ケーキの種類').selectOption('プリン');
  assert.equal(await p.locator('.partThumbnail [data-shape="pudding"]').count(),6);
  await p.getByRole('button',{name:'帯を外す',exact:true}).click();
- assert.deepEqual((await save()).cakeStyle,{top:'mint',band:null});
+ assert.deepEqual((await save()).cakeStyles['プリン'],{top:'mint',band:null});
+ assert.deepEqual((await save()).cakeStyles['ショートケーキ'],{top:'mint',band:'ribbon'});
  await p.locator('.partCard').filter({hasText:'いちご色のリボン'}).getByText('飾る',{exact:true}).click();
  await p.getByRole('button',{name:'港町の小さな王冠を試着',exact:true}).click();
  await p.getByRole('button',{name:'定番のおめかしにもどす',exact:true}).click();
- assert.deepEqual((await save()).cakeStyle,{top:'berry',band:null});
+ assert.deepEqual((await save()).cakeStyles['プリン'],{top:'berry',band:null});
+ assert.deepEqual((await save()).cakeStyles['ショートケーキ'],{top:'mint',band:'ribbon'});
  assert.equal((await save()).money,5000);assert.deepEqual((await save()).ownedCakeParts,['berry','mint','ribbon']);
- await p.reload();assert.deepEqual((await save()).cakeStyle,{top:'berry',band:null});
- await p.getByRole('button',{name:'デコレーション',exact:true}).click();
+ await p.reload();assert.deepEqual((await save()).cakeStyles['プリン'],{top:'berry',band:null});
+ await p.getByRole('button',{name:'デコレーション',exact:true}).click();await p.getByLabel('ケーキの種類').selectOption('プリン');
  await p.locator('.partCard').filter({hasText:'いちご色のリボン'}).getByText('飾る',{exact:true}).click();
- assert.equal((await save()).money,5000);assert.equal((await save()).cakeStyle.band,'ribbon');
+ assert.equal((await save()).money,5000);assert.equal((await save()).cakeStyles['プリン'].band,'ribbon');
  await p.screenshot({path:path.join(QA,'dressing.png'),fullPage:true});
- console.log('PASS: six recipe thumbnails, remove band, reset preview, preserve/re-equip paid-with-P inventory after reload');
+ console.log('PASS: six recipe thumbnails, per-recipe styles stay independent, remove band, reset preview, preserve/re-equip paid-with-P inventory after reload');
  await p.setViewportSize({width:390,height:844});await p.getByRole('button',{name:'営業',exact:true}).click();await p.screenshot({path:path.join(QA,'home.png'),fullPage:true});assert.deepEqual(errors,[]);console.log('PASS: opening, guest-order link, double craft, skip, purchase/equip/reload, paid preview guard, report during production, next day, ending/continue, reduced motion, 20 viewport/tab overflow checks; no page errors');
  }finally {await b.close();await server.close()}
 })().catch(e=>{console.error(e);process.exitCode=1});

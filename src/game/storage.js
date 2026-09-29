@@ -1,5 +1,5 @@
 import { normalizeReadStories } from "./story.js";
-import { defaultCakeStyle, normalizeCakeParts } from "./cakeParts.js";
+import { normalizeCakeParts } from "./cakeParts.js";
 import { BASE_MATERIALS, RECIPES, OPENING_LINES } from "./data.js";
 import { DEFAULT_AUDIO, normalizeAudio } from "./audioSettings.js";
 
@@ -43,7 +43,8 @@ export const defaultSave = () => ({
   staff: [],
   readStoryIds: [],
   ownedCakeParts: ["berry"],
-  cakeStyle: defaultCakeStyle(),
+  cakeStyles: normalizeCakeParts().cakeStyles,
+  lastCraftedRecipe: null,
 });
 
 const record = value => value !== null && typeof value === "object" && !Array.isArray(value);

@@ -6,7 +6,7 @@ import StoryReader from "./components/StoryReader.jsx";
 import { finishStory } from "./game/story.js";
 import ResumeDialog from "./components/ResumeDialog.jsx";
 import CakeAtelier from "./components/CakeAtelier.jsx";
-import { buyCakePart, equipCakePart, resetCakeParts } from "./game/cakeParts.js";
+import { buyCakePart, cakeStyleFor, equipCakePart, resetCakeParts } from "./game/cakeParts.js";
 
 import { loadSaveWithStatus, saveGame, defaultSave as createDefaultSave, STORAGE_KEY as SAVE_KEY, LEGACY_STORAGE_KEYS, BACKUP_KEY } from "./game/storage.js";
 import { startBusiness as openBusiness, tickBusiness, nextDay as advanceDay } from "./game/business.js";
@@ -612,7 +612,7 @@ export default function App() {
 
           {activeTab === "deco" && (
             <>
-            <CakeAtelier state={state} onReset={slot => { sfx("equip"); setState(current => resetCakeParts(current,slot)); }} onBuy={id => { sfx("buy"); setState(current => buyCakePart(current,id)); }} onEquip={id => { sfx("equip"); setState(current => equipCakePart(current,id)); }}/>
+            <CakeAtelier state={state} onReset={(slot, recipe) => { sfx("equip"); setState(current => resetCakeParts(current, slot, recipe)); }} onBuy={id => { sfx("buy"); setState(current => buyCakePart(current,id)); }} onEquip={(id, recipe) => { sfx("equip"); setState(current => equipCakePart(current, id, recipe)); }}/>
             <UpgradeView
               kind="deco"
               state={state}
@@ -652,7 +652,7 @@ export default function App() {
       )}
 
       <Toast toast={toast} />
-      <CraftResult paused={paused} result={craftResult} onReveal={revealCraft} reduced={reduceMotion} onFinish={finishCraft} cakeStyle={state.cakeStyle} />
+      <CraftResult paused={paused} result={craftResult} onReveal={revealCraft} reduced={reduceMotion} onFinish={finishCraft} cakeStyle={craftResult ? cakeStyleFor(state, craftResult.recipe) : undefined} />
 
       {state.dayPhase === "report" && !craftResult && (
         <DailyReport
