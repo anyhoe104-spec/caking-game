@@ -27,6 +27,11 @@ const ROOT = path.resolve(__dirname, '..');
     await page.getByRole('button', { name: '営業スタート！' }).click();
     await page.getByRole('button', { name: '一時停止', exact: true }).click();
     const saved = await page.evaluate(() => localStorage.getItem('caking-save-v4'));
+    const voices = JSON.parse(fs.readFileSync(path.join(ROOT, 'public/sounds/manifest.json'), 'utf8')).assets.filter(a => a.kind === 'voice');
+    // Audio is runtime-cached: warm these lines before testing an offline repeat.
+    await page.evaluate(async ({voices, base}) => {
+      for (const {file} of voices) await (await fetch(`${base}sounds/${file}`)).arrayBuffer();
+    }, {voices, base});
     await context.setOffline(true);
     await page.reload();
     await page.getByRole('button', { name: '工房を再開する' }).waitFor();
@@ -41,8 +46,16 @@ const ROOT = path.resolve(__dirname, '..');
     })), { images, base });
     assert.ok(results.every(Boolean), `offline images failed: ${images.filter((_, i) => !results[i])}`);
     for (const name of ['レシピ', 'デコレーション', '食材', 'スタッフ']) await page.getByRole('button', { name, exact: true }).click();
+    const voiceSizes = await page.evaluate(async ({voices, base}) => {
+      const ctx = new AudioContext();
+      try { return await Promise.all(voices.map(async ({file}) => {
+        const bytes = await (await fetch(`${base}sounds/${file}`)).arrayBuffer();
+        await ctx.decodeAudioData(bytes.slice(0)); return bytes.byteLength;
+      })); } finally { await ctx.close(); }
+    }, {voices, base});
+    assert.deepEqual(voiceSizes, voices.map(a => a.bytes));
     assert.deepEqual(errors, []);
-    console.log(`PASS: ${base} offline relaunch, save preservation, four tabs and ${images.length} decoded images`);
+    console.log(`PASS: ${base} offline relaunch, save preservation, four tabs and ${images.length} decoded images, ${voices.length} warmed voices decoded offline`);
   } finally {
     await browser?.close();
     await new Promise(resolve => server.httpServer.close(resolve));

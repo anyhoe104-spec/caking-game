@@ -94,8 +94,8 @@ export default function SettingsModal({ audio, onToggleMute, onVolume, onToggleM
       <section className="settingsSection">
         <div className="settingsLabel">音源について</div>
         <p className="settingsHint">
-          BGM・効果音・ボイスはすべてCAKINGのために自動生成したオリジナル音源です。
-          第三者の権利を含まないため、クレジット表記は不要です。
+          BGM・効果音はCAKINGオリジナル。ボイスには音声合成を使用しています。
+          ミフィ：VOICEVOX:四国めたん ／ ミル：VOICEVOX:ずんだもん。
         </p>
       </section>
 

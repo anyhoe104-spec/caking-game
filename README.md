@@ -12,7 +12,7 @@
 - PCブラウザとスマートフォンで基本動作・リンクを確認済み
 - `main` へのpushをGitHub Actionsで自動デプロイ
 - Phase 0〜7の機能・画像統合を完了
-- BGM5曲・効果音15種・ボイス9種を実装済み（すべて自作の生成音源）
+- BGM5曲・効果音15種・ボイス9種を実装済み（BGM/SEは自作、ボイスはVOICEVOX）
 - UI刷新・アニメーション・サウンド設定を追加
 - 次の重点はPWA最終確認、通しプレイ、ゲームバランス調整
 
@@ -116,7 +116,10 @@ npm run build:root    # ルート配信向け
 
 画像・音源を追加する場合は、生成元、利用条件、クレジット要否を [`docs/audio-licenses.md`](docs/audio-licenses.md) に記録します。
 
-音源はすべて `scripts/generate_audio.py` によるコード合成で生成したCAKINGのオリジナルです。第三者の権利を含まないため、クレジット表記は不要です。再生成は次のコマンドで行えます。
+BGM/効果音は `scripts/generate_audio.py` によるCAKINGオリジナルです。
+ボイス：**VOICEVOX:四国めたん**（ミフィ）、**VOICEVOX:ずんだもん**（ミル）。
+[出典・利用条件・ボイス再生成](docs/voice-production.md)を参照してください。
+次のコマンドはBGM/SEのみを再生成し、収録済みボイスを保全します。
 
 ```bash
 python3 -m pip install numpy lameenc
