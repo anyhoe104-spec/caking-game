@@ -153,3 +153,46 @@ html {scroll-padding-top:110px;scroll-padding-bottom:100px}
 /* 装飾が反映されていることを一目で確認できるようにする。見た目の変化だけだと
    何が適用されているのか判断できないため、名前を併記する。 */
 .shopDecoLabel {position:absolute;left:50%;bottom:8px;transform:translateX(-50%);margin:0;padding:5px 13px;border-radius:999px;background:#3f2f1ff2;color:#ffe9bd;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 2px 8px #0003;pointer-events:none;z-index:4;}
+
+/* Layered miniature set: foreground carpentry, glass, cloth and hanging herbs. */
+.atelierScenery {position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.shopDiorama {background:#a78058;box-shadow:0 12px 28px #65472925,inset 0 0 0 4px #fff1ce66}
+.shopBackdrop {filter:saturate(.88) contrast(.95)}
+.shopSun {background:linear-gradient(115deg,transparent 20%,#fff1c744 38%,transparent 57%);mix-blend-mode:screen}
+.shopPlaque {padding:9px 12px;left:16px;top:14px;background:linear-gradient(110deg,#473b2feb,#473b2fb0);border:1px solid #dfc89788;border-radius:3px 3px 15px 3px;box-shadow:0 5px 12px #36241430}
+.shopPlaque span {font-size:8px;color:#edce9f}.shopPlaque strong {font-size:18px}
+.shopChef,.shopGuest {filter:drop-shadow(0 4px 2px #55361c28)}
+.shopChef {bottom:38px}.shopCake {bottom:42px;left:16px;width:104px}
+.shopCake .cakeModel {filter:drop-shadow(0 6px 3px #67452945)}
+.shopCaption {background:#4c3b2ff5;color:#fff0ce;letter-spacing:.4px;padding:7px}
+.shopDecoLabel {bottom:29px;font-size:10px;max-width:94%;white-space:normal;text-align:center}
+.atelierHerbs {transform-origin:370px 8px;animation:herbSway 6s ease-in-out infinite}
+.atelierBunting {transform-origin:200px 80px;animation:buntingSway 7s ease-in-out infinite}
+.miniHairTips {transform-origin:60px 48px;animation:hairFollow 4s ease-in-out infinite}
+.miniEars {transform-origin:60px 35px;animation:earTwitch 7s ease-in-out infinite}
+.shopGuest--1 .miniHead,.shopGuest--1 .miniEyes {animation-delay:-1.8s}
+.shopChef:focus-visible,.shopGuest:focus-visible,.shopCake:focus-visible {outline:3px solid #fff4bb;outline-offset:4px;border-radius:12px}
+@keyframes herbSway {0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg)}}
+@keyframes buntingSway {0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.035)}}
+@keyframes hairFollow {0%,100%{transform:rotate(1deg)}50%{transform:rotate(-2deg)}}
+@keyframes earTwitch {0%,82%,100%{transform:rotate(0)}86%{transform:rotate(-4deg)}90%{transform:rotate(2deg)}}
+/* Workbench materials, soft stage light, and a plated reveal. */
+.productionScene {isolation:isolate;border-radius:50% 50% 18px 18px;background:radial-gradient(ellipse at 50% 35%,#fffdf4,#f2dec152 65%,transparent 66%)}
+.productionHalo {position:absolute;inset:12px 30px 5px;z-index:-1;border-radius:50%;background:repeating-conic-gradient(from 15deg,#e9c98700 0deg 20deg,#e9c98745 20deg 23deg);opacity:0;transform:scale(.7)}
+.isFinished .productionHalo {opacity:.75;transform:scale(1);transition:opacity .5s,transform .7s}
+.productionMotes {position:absolute;inset:0;pointer-events:none;opacity:0}
+.isFinished .productionMotes {opacity:1}
+.productionMotes i {position:absolute;left:17%;top:40%;width:5px;height:5px;border-radius:1px;background:#c99242;animation:atelierSparkle 2.8s ease-in-out infinite}
+.productionMotes i:nth-child(2){left:80%;top:35%;animation-delay:-.6s}.productionMotes i:nth-child(3){left:32%;top:15%;animation-delay:-1.2s}.productionMotes i:nth-child(4){left:66%;top:10%;animation-delay:-1.8s}.productionMotes i:nth-child(5){left:86%;top:70%;animation-delay:-2.3s}
+@keyframes atelierSparkle {0%,100%{opacity:.2;transform:translateY(5px) rotate(0) scale(.5)}50%{opacity:.9;transform:translateY(-6px) rotate(90deg) scale(1)}}
+.stationTable {background:linear-gradient(#e5c294 0 25%,#b18156 30% 65%,#8c6343 70%);box-shadow:0 5px 0 #664834,0 10px 10px #66483425}
+.stationBowl {background:linear-gradient(110deg,#fff0d7,#d7a393 45%,#ae7664);box-shadow:inset 0 4px #fff4e6,inset 0 -6px #9b665733,0 4px 5px #56332122}
+.stationBowl:before {content:"";position:absolute;left:3px;right:3px;top:-5px;height:10px;border-radius:50%;background:#f8e4b6;border:2px solid #edc9a6}
+.stationOven {background:linear-gradient(110deg,#bd9b72,#896f57);box-shadow:inset 0 2px #e6d1ae,3px 4px 0 #5c4836}
+.stationOven:after {content:"";position:absolute;left:30px;right:30px;top:28px;height:4px;background:#dbc8a4;border-radius:3px;box-shadow:0 2px 2px #31231c}
+.stationDough {box-shadow:inset 0 5px 8px #fff0d4,inset 0 -4px 4px #caa16c55,0 3px 3px #63462722}
+.stationRollingPin {background:linear-gradient(#e4be8d,#ae7b4e);border:1px solid #a2774e}
+.stationPiping {background:linear-gradient(90deg,#d1b89a,#fff9e9 45%,#dac5a8)}
+@media(max-width:360px){.shopPlaque strong{font-size:15px}.shopPlaque{padding:7px 9px}.shopCake{left:9px;width:90px;bottom:37px}}
+img.finishedRecipe {mix-blend-mode:multiply}
+.productionScene {background-color:#fff8e9}

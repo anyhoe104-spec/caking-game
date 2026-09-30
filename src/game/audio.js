@@ -7,6 +7,7 @@
 // volume ramp — fewer niceties, but the game still makes noise.
 
 import { assetUrl, BGM_KEYS, EAGER_SE } from "./audioAssets.js";
+import { playCraftSound } from "./craftSound.js";
 import { channelGain } from "./audioSettings.js";
 
 const FADE_IN = 1.1;
@@ -223,6 +224,12 @@ export class AudioBus {
         }
       })
       .catch(() => {});
+  }
+
+  playCraft(kind) {
+    // Never unlock or resume here: a decorative cue cannot wake a paused game.
+    if (!this.unlocked || this.ctx?.state !== "running" || channelGain(this.settings, "se") === 0) return undefined;
+    return playCraftSound(this.ctx, this.gains.se, kind);
   }
 
   /** Voice lines never stack: a new line cuts the previous one off. */
