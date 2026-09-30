@@ -3,7 +3,7 @@
 Copyright (c) 2026 anyhoe104. All rights reserved.
 
 ルートの [`LICENSE`](LICENSE)（MIT License）が適用されるのは**ソースコードのみ**です。
-本ファイルが対象とする素材はMITの範囲に含まれず、**すべての権利を留保**します。
+本ファイルが対象とする素材はMITの範囲に含まれず、CAKING独自素材の権利を留保します。第三者音源の条件は下記を優先します。
 
 ## 対象
 
@@ -35,9 +35,13 @@ fork してソースコードを利用する場合は、`public/images/`、`publ
 
 ## 音源について
 
-`public/sounds/` の音源は `scripts/generate_audio.py` によりCAKINGのために生成した
-オリジナルです。第三者の権利は含まれていません。出典の記録は
-[`docs/audio-licenses.md`](docs/audio-licenses.md) にあります。
+BGM/効果音はCAKING独自の合成音源です。`public/sounds/voice-*.mp3` は
+VOICEVOX:四国めたん／VOICEVOX:ずんだもんを使用しています。第三者音声ライブラリの権利を
+CAKINGが独占するものではありません。音声を利用する場合はクレジットを保持し、
+[VOICEVOX音声モデル規約](https://github.com/VOICEVOX/voicevox_vvm/blob/0.16.0/README.md)と
+[音声ライブラリ規約](https://zunko.jp/con_ongen_kiyaku.html)に従ってください。
+音声の利用を他者へ許諾する場合も、同じ規約の遵守義務を引き継いでください。
+出典と生成設定は [`docs/voice-production.md`](docs/voice-production.md) に記録しています。
 
 ## 問い合わせ
 
