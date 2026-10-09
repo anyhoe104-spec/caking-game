@@ -4,36 +4,33 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-09-29 17:45 JST
+- Updated: 2026-10-09 JST
 - 作業者: **Claude**（caking-game 開始スキルのセッション）
-- ブランチ / 改訂: `main` = `31262ea`（PR #23 のマージ。このチェックポイントより前の最終作業改訂）
-- 目的: 開始スキルで見つかった2件を直して `main` に入れる。2件は、起動時BGM修正が `main` に入っていなかったことと、Issue #21（飾りパーツのレシピ別保持）。
-- 外部状態確認（**2026-09-29 17:19 JST、`git fetch origin '+refs/heads/*:refs/remotes/origin/*'` と GitHub API で実測**）:
-  - PR #22（起動時BGM）と PR #23（Issue #21）は **2026-09-29 17:15〜17:16 JST にマージ済み**。開いているPRは0件
-  - Issue #21 は **CLOSED**（PR #23 のマージで自動クローズ）。開いているIssueは0件
-  - GitHub Pages のデプロイは PR #22（run 20）、PR #23（run 21）とも **success**（Actions の実行一覧で確認）
-- 完了:
-  - 起動直後にタップを待たずBGMを鳴らす。一時停止中・非表示中は鳴らさない（PR #22）
-  - 飾りをレシピごとに保持する。旧セーブの飾りは全レシピへ引き継ぐ。店頭には最後に作ったケーキを出す。パーツの所有は共有のまま（PR #23）
-  - 前から `main` で失敗していた `scripts/verify-save.cjs` を修復（PR #23）
+- ブランチ / 改訂: `claude/dazzling-heisenberg-30tovi`（`main` = `3a243ed` から分岐）
+- 目的: `docs/world/` の世界観シート・キャラ設定を追加し、画像素材・ストーリー・UI文言の正とするルールを `AGENTS.md` に追記する。
+- 外部状態確認（**2026-10-09、`git fetch origin` と GitHub API で実測**）:
+  - 開いているPRは **2件**: #25（`codex/atelier-av-upgrade`、工房のグラフィックと製造工程音）、#26（`codex/japanese-voices`、VOICEVOX 日本語ボイス）。前回 handoff の「開いているPRは0件」は 2026-09-30 以降古くなった
+  - `docs/world/` は当初どのリモートブランチにも無かった（全ブランチの `git ls-tree` で確認）。同日、オーナーがチャットで2ファイルを渡し、本ブランチに追加した
+- 完了: `AGENTS.md` に「World and characters」節を追加（1行）。`docs/world/world.md`（70行）と `docs/world/characters.md`（80行）を、オーナーから受け取った内容のまま追加。
 - 進行中: なし。
 - ブロッカーとリスク:
-  - 🟡 **実機での確認が未実施**（下記の次のアクション1）。自動検証ではヘッドレスChromiumが自動再生ブロックを再現できない
-  - 🟡 **PRごとに自動で走るCIがない。** Actions はデプロイ用の `deploy.yml` だけで、テストは各エージェントが手元で実行している。オーナーは 2026-09-29 に「問題ない」と判断済み
-  - 🟡 旧版へ戻すと、レシピ別の飾りは初期状態に戻る（購入済みパーツは残る）
+  - 🟡 **既存の素材・文言は新しい設定とまだ合っていない。** 例: ミルは猫耳・しっぽ付き（設定では妖精らしい見た目に作り直す）、客12名の名前（さくら、ひろと等）は命名ルール外、港町の名前「マサリエ」が作中に出ているか未確認。設定シート自体が「既存のゲーム素材は作り直す」「後で付け直す」としており、今回は照合も修正もしていない
+  - 🟡 実機確認の残り（下記）と、PRごとに自動で走るCIが無い点は前回から継続
 - 次のアクション:
-  1. **実機確認の残り（オーナー作業）**。オーナー報告（2026-09-29 チャット）で **D01〜D10 は合格**（記録は `docs/device-tests/2026-09-29-owner-report.md`。機種・コミットは未記入）。残りは次のとおり
+  1. PR #28（本ブランチ）のレビューとマージ判断（オーナー）
+  2. 既存の物語・UI文言・画像、および PR #25・#26 を世界観シートと照合し、食い違いの一覧を作る（修正はその後、オーナーの優先度に従う）
+  3. **実機確認の残り（オーナー作業）**。オーナー報告（2026-09-29 チャット）で **D01〜D10 は合格**（記録は `docs/device-tests/2026-09-29-owner-report.md`。機種・コミットは未記入）。残りは次のとおり
      - D11〜D17
      - 起動直後のBGM／再開ダイアログ中の無音
      - 既存セーブの飾りが全ケーキに残るか／レシピ別の飾り／店頭のケーキ
      - バックアップのファイル保存がどの経路で働くか
      - 報告したビルドが PR #22・#23 より前なら D07・D10 の再確認。どのビルドだったかをオーナーに記入してもらう
-  2. **行き止まりブランチの削除（オーナー作業。GitHub の Branches 画面から）**。このセッションからの削除は HTTP 403 で拒否された（2026-09-29 17:30 JST、`git push origin --delete`。セッションが書き込めるのは指定の作業ブランチだけ）
+  4. **行き止まりブランチの削除（オーナー作業。GitHub の Branches 画面から）**。このセッションからの削除は HTTP 403 で拒否された（2026-09-29 17:30 JST、`git push origin --delete`。セッションが書き込めるのは指定の作業ブランチだけ）
      - 削除してよい4本（`git cherry` で全コミットが `main` と一致）。先端コミットを復元用に記録する: `agent/add-business-navigation`（`46a57ec`）、`agent/document-deployment-policy`（`2048402`）、`codex/atelier-quality`（`7a49100`）、`integrate/phase0-to-phase7`（`d02ee9d`）
      - **`codex/phase0-to-phase7`（`3e8a8e2`）は保留**。コード（`65f36ca` が追加したファイル）はすべて `main` にある。ただし `docs/branch-integration-plan.md`（2026-08-01 の統合計画、160行）が `main` に無い。移すか、そのまま消すかをオーナーが判断する
      - `claude/caking-weekly-improvements-bg3gnf` も削除してよい。コード（`78548b1`）は PR #22 で取り込み済み。WORKLOG にしか無かった 2026-09-05 (7)(8) の2件も、オーナーの指示で本WORKLOGの時系列の位置へ移した（2026-09-29）
-- ダッシュボードの未解決事項との照合: 「未マージ11ブランチの滞留」は、実作業を持つ未マージブランチが0本になった（削除は未実施）。W38 の「投げ銭リンク」は PR #14、「リポジトリ説明文」はオーナーが 2026-09-26 に対応済み。CAKING の個別評価（2026-08-25）は古いまま。ダッシュボードは編集していない。
-- 検証（2026-09-29 17:19 JST、`main` = `31262ea` で実行）: `npm ci` → `npm run lint` 0件、`npm test` **45件 pass**、`npm run build` 成功。`verify-bgm` / `verify-atelier` / `verify-save` / `verify-story` 全件 PASS（`verify-playthrough` は PR #23 のブランチ上で PASS。`main` では再実行していない）。
+- ダッシュボードとの照合（2026-10-09、`project-dashboard` を `181ec4e`（2026-10-03）で読取）: CAKING の個別評価 `projects/04-caking-game.md` は 2026-08-25 調査のままで古い。最新週報 W39 は「CAKING の滞留ゼロ」としたが、その後 PR #25・#26 が開いている。ダッシュボードは編集していない。
+- 検証: 文書のみの変更のため、テスト・ビルドは実行していない。`git diff --check` のみ実行。
 
 ## Dated work reports
 ### 2026-09-29 — Claude
@@ -645,4 +642,18 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 影響範囲: `WORKLOG.md`、`docs/current-status.md`、`docs/device-tests/2026-09-26-pwa.md`、`docs/device-tests/2026-09-29-owner-report.md`（新規）。コードの変更なし。
 - 検証: `npm test` 45件 pass（ドキュメントのみの変更後、2026-09-29 17:40 JST 頃に実行）。移した作業記録は `diff` で一致を確認。
 - 決定: オーナー報告の記録は、日付を実施日ではなく報告日（2026-09-29）とした。実施日が不明なため。
+- 次のアクション: 上記 `Current handoff` を参照。
+
+### 2026-10-09 — Claude — 世界観シートを正とするルールの追記
+
+- 目的: オーナー指示。`docs/world/` に追加した世界観シート（`world.md`）とキャラ設定（`characters.md`）を、今後の画像素材・ストーリー・UI文言の正とする旨を `AGENTS.md` に一行追記し、commit・push する。
+- 開始時の照合: WORKLOG 全文、Git 状態（作業ツリーはクリーン、`main` と同一の `3a243ed`）、ダッシュボード（`README.md` の表、`projects/04-caking-game.md`、`weekly-reports/2026-W39.md`）を確認した。
+- 完了した作業: `AGENTS.md` に「World and characters」節を新設し、ルールを1行で追加した。その後オーナーがチャットで2ファイルを渡したので、手を加えずに `docs/world/` へ追加した。
+- **うまくいかなかったこと**:
+  - **指示の前提だった `docs/world/` が存在しなかった。** 作業ツリー、`origin/main`、全リモートブランチ（25本）を確認したが、どこにも無い。内容をこちらで作ることはせず、まず `AGENTS.md` の追記だけを push してオーナーに伝えた。オーナーがファイルを渡して解消した（push 2回）
+  - ダッシュボードはセッションのGitHub範囲外で最初は読めず（アクセス拒否）、読み取り専用で追加して clone した
+- 影響範囲: `AGENTS.md`、`WORKLOG.md`、`docs/world/world.md`（新規）、`docs/world/characters.md`（新規）。
+- 検証: `git diff --check`。追加した2ファイルがアップロード元と一致することを `cmp` で確認。コード変更なしのためテスト・ビルドは未実行。
+- 決定: ルールの文面は英語（`AGENTS.md` 全体が英語のため）。置き場所は独立した節にし、既存の節の意味を変えないようにした。
+- ダッシュボードの未解決事項: 本作業では対応なし（未マージ旧ブランチの削除、実機確認は継続）。
 - 次のアクション: 上記 `Current handoff` を参照。

@@ -30,6 +30,10 @@ These instructions apply to every agent working in this repository, whether or n
 6. Preserve all previous dated entries. Never claim an unrun check passed or conceal incomplete or failing work.
 7. When supported, use `$checkpoint-project` from `.agents/skills/checkpoint-project`.
 
+## World and characters
+
+- When creating image assets, story text, or UI copy, treat `docs/world/world.md` (world sheet) and `docs/world/characters.md` (character sheet) as the source of truth and follow them.
+
 ## Work-report articles
 
 1. Treat `WORKLOG.md` and repository evidence as factual sources.
