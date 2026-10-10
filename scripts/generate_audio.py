@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Generate every BGM, SE and voice file shipped in public/sounds/.
+"""Generate procedural BGM/SE, preserving separately recorded voices.
 
-The audio is synthesised from code, so the repository owns the result outright:
+BGM and SE are synthesised from code:
 no stock licence, no attribution requirement, no Content ID exposure. Output is
 deterministic — rerunning this script reproduces byte-identical audio.
 
     python3 -m pip install numpy lameenc
-    python3 scripts/generate_audio.py              # everything
+    python3 scripts/generate_audio.py              # BGM/SE; preserve voices
     python3 scripts/generate_audio.py --only great # one asset
     python3 scripts/generate_audio.py --manifest   # rewrite the manifest only
 
@@ -28,7 +28,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from audio.music import TRACKS  # noqa: E402
 from audio.sfx import EFFECTS  # noqa: E402
 from audio.synth import SR  # noqa: E402
-from audio.voice import VOICES  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "public" / "sounds"
@@ -92,15 +91,17 @@ def main() -> int:
     parser.add_argument("--manifest", action="store_true", help="rewrite manifest.json from existing files")
     args = parser.parse_args()
 
+    if any(key.startswith("voice-") for key in args.only):
+        parser.error("Use scripts/generate_voices.py for VOICEVOX voice assets")
     OUT.mkdir(parents=True, exist_ok=True)
-    groups = [("bgm", TRACKS), ("se", EFFECTS), ("voice", VOICES)]
+    groups = [("bgm", TRACKS), ("se", EFFECTS)]
 
     if args.manifest:
         # `seconds` cannot be recovered from the encoded file, and the BGM loop
         # points depend on it — carry it over from the existing manifest.
         known = {}
         if MANIFEST.exists():
-            known = {a["file"]: a.get("seconds") for a in json.loads(MANIFEST.read_text(encoding="utf-8")).get("assets", [])}
+            known = {a["file"]: a for a in json.loads(MANIFEST.read_text(encoding="utf-8")).get("assets", [])}
         entries = []
         missing = []
         for kind, group in groups:
@@ -108,9 +109,10 @@ def main() -> int:
                 path = OUT / f"{key}.mp3"
                 if not path.exists():
                     continue
-                entry = {"file": path.name, "kind": kind, "bytes": path.stat().st_size, "description": description}
-                if known.get(path.name):
-                    entry["seconds"] = known[path.name]
+                entry = dict(known.get(path.name, {}))
+                entry.update(file=path.name, kind=kind, bytes=path.stat().st_size, description=description)
+                if known.get(path.name, {}).get("seconds"):
+                    entry["seconds"] = known[path.name]["seconds"]
                 elif kind == "bgm":
                     missing.append(path.name)
                 entries.append(entry)
@@ -135,6 +137,8 @@ def main() -> int:
 
 
 def _write_manifest(entries: list[dict]) -> None:
+    existing = json.loads(MANIFEST.read_text(encoding="utf-8")) if MANIFEST.exists() else {}
+    entries += [a for a in existing.get("assets", []) if a.get("kind") == "voice"]
     payload = {
         "generator": "scripts/generate_audio.py",
         "method": "procedural synthesis (numpy) + LAME encoding",
@@ -142,6 +146,9 @@ def _write_manifest(entries: list[dict]) -> None:
         "sampleRate": SR,
         "assets": entries,
     }
+    if any(a.get("source") == "VOICEVOX" for a in entries):
+        for key in ["generator", "method", "license"]:
+            payload[key] = existing[key]
     MANIFEST.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"\nmanifest -> {MANIFEST.relative_to(ROOT)}")
 

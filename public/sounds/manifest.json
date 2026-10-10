@@ -1,7 +1,7 @@
 {
-  "generator": "scripts/generate_audio.py",
-  "method": "procedural synthesis (numpy) + LAME encoding",
-  "license": "Original to the CAKING project. No third-party rights, no credit required.",
+  "generator": "scripts/generate_audio.py + scripts/generate_voices.py",
+  "method": "Procedural BGM/SE; VOICEVOX Core 0.16.3 voices; MP3 encoding",
+  "license": "BGM/SE: CAKING original. Voices: VOICEVOX:四国めたん / VOICEVOX:ずんだもん; see docs/voice-production.md",
   "sampleRate": 44100,
   "assets": [
     {
@@ -147,65 +147,119 @@
     {
       "file": "voice-miffy-ready.mp3",
       "kind": "voice",
-      "seconds": 1.449,
-      "bytes": 20845,
-      "description": "ミフィ「がんばります！」"
+      "seconds": 0.768,
+      "bytes": 13418,
+      "description": "ミフィ「がんばります！」",
+      "source": "VOICEVOX",
+      "styleId": 2,
+      "credit": "VOICEVOX:四国めたん",
+      "text": "がんばります！",
+      "speed": 1.12,
+      "modelSha256": "917e592cae92a02fb7668bd9e168df4e39c8ab2f5302c2be71906c70ec4e2df2"
     },
     {
       "file": "voice-miffy-done.mp3",
       "kind": "voice",
-      "seconds": 1.516,
-      "bytes": 21943,
-      "description": "ミフィ「できました！」"
+      "seconds": 0.704,
+      "bytes": 12164,
+      "description": "ミフィ「できました！」",
+      "source": "VOICEVOX",
+      "styleId": 2,
+      "credit": "VOICEVOX:四国めたん",
+      "text": "できました！",
+      "speed": 1.12,
+      "modelSha256": "917e592cae92a02fb7668bd9e168df4e39c8ab2f5302c2be71906c70ec4e2df2"
     },
     {
       "file": "voice-miffy-great.mp3",
       "kind": "voice",
-      "seconds": 1.546,
-      "bytes": 22308,
-      "description": "ミフィ「だいせいこう！」"
+      "seconds": 0.853,
+      "bytes": 14672,
+      "description": "ミフィ「だいせいこう！」",
+      "source": "VOICEVOX",
+      "styleId": 2,
+      "credit": "VOICEVOX:四国めたん",
+      "text": "大成功！",
+      "speed": 1.08,
+      "modelSha256": "917e592cae92a02fb7668bd9e168df4e39c8ab2f5302c2be71906c70ec4e2df2"
     },
     {
       "file": "voice-miffy-fail.mp3",
       "kind": "voice",
-      "seconds": 1.694,
-      "bytes": 24137,
-      "description": "ミフィ「ごめんなさい…」"
+      "seconds": 0.896,
+      "bytes": 15508,
+      "description": "ミフィ「ごめんなさい…」",
+      "source": "VOICEVOX",
+      "styleId": 2,
+      "credit": "VOICEVOX:四国めたん",
+      "text": "ごめんなさい。",
+      "speed": 1.04,
+      "modelSha256": "917e592cae92a02fb7668bd9e168df4e39c8ab2f5302c2be71906c70ec4e2df2"
     },
     {
       "file": "voice-miffy-order.mp3",
       "kind": "voice",
-      "seconds": 1.874,
-      "bytes": 26697,
-      "description": "ミフィ「ありがとうございます！」"
+      "seconds": 1.163,
+      "bytes": 19688,
+      "description": "ミフィ「ありがとうございます！」",
+      "source": "VOICEVOX",
+      "styleId": 2,
+      "credit": "VOICEVOX:四国めたん",
+      "text": "ありがとうございます！",
+      "speed": 1.2,
+      "modelSha256": "917e592cae92a02fb7668bd9e168df4e39c8ab2f5302c2be71906c70ec4e2df2"
     },
     {
       "file": "voice-miffy-levelup.mp3",
       "kind": "voice",
-      "seconds": 1.294,
-      "bytes": 18651,
-      "description": "ミフィ「レベルアップ！」"
+      "seconds": 0.757,
+      "bytes": 13000,
+      "description": "ミフィ「レベルアップ！」",
+      "source": "VOICEVOX",
+      "styleId": 2,
+      "credit": "VOICEVOX:四国めたん",
+      "text": "レベルアップ！",
+      "speed": 1.12,
+      "modelSha256": "917e592cae92a02fb7668bd9e168df4e39c8ab2f5302c2be71906c70ec4e2df2"
     },
     {
       "file": "voice-miru-hello.mp3",
       "kind": "voice",
-      "seconds": 1.469,
-      "bytes": 21211,
-      "description": "ミル「こんにちは！」"
+      "seconds": 0.885,
+      "bytes": 15090,
+      "description": "ミル「こんにちは！」",
+      "source": "VOICEVOX",
+      "styleId": 3,
+      "credit": "VOICEVOX:ずんだもん",
+      "text": "こんにちは！",
+      "speed": 1.12,
+      "modelSha256": "917e592cae92a02fb7668bd9e168df4e39c8ab2f5302c2be71906c70ec4e2df2"
     },
     {
       "file": "voice-miru-cheer.mp3",
       "kind": "voice",
-      "seconds": 1.293,
-      "bytes": 18651,
-      "description": "ミル「そのちょうし！」"
+      "seconds": 0.939,
+      "bytes": 15926,
+      "description": "ミル「そのちょうし！」",
+      "source": "VOICEVOX",
+      "styleId": 3,
+      "credit": "VOICEVOX:ずんだもん",
+      "text": "その調子！",
+      "speed": 1.08,
+      "modelSha256": "917e592cae92a02fb7668bd9e168df4e39c8ab2f5302c2be71906c70ec4e2df2"
     },
     {
       "file": "voice-miru-report.mp3",
       "kind": "voice",
-      "seconds": 1.623,
-      "bytes": 23405,
-      "description": "ミル「おつかれさま！」"
+      "seconds": 0.939,
+      "bytes": 15926,
+      "description": "ミル「おつかれさま！」",
+      "source": "VOICEVOX",
+      "styleId": 3,
+      "credit": "VOICEVOX:ずんだもん",
+      "text": "おつかれさま！",
+      "speed": 1.12,
+      "modelSha256": "917e592cae92a02fb7668bd9e168df4e39c8ab2f5302c2be71906c70ec4e2df2"
     }
   ]
 }
