@@ -4,20 +4,18 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-10-09 JST
-- 作業者: **Claude**（caking-game 開始スキルのセッション）
-- ブランチ / 改訂: `claude/dazzling-heisenberg-30tovi`（`main` = `3a243ed` から分岐）
-- 目的: `docs/world/` の世界観シート・キャラ設定を追加し、画像素材・ストーリー・UI文言の正とするルールを `AGENTS.md` に追記する。
-- 外部状態確認（**2026-10-09、`git fetch origin` と GitHub API で実測**）:
-  - 開いているPRは **2件**: #25（`codex/atelier-av-upgrade`、工房のグラフィックと製造工程音）、#26（`codex/japanese-voices`、VOICEVOX 日本語ボイス）。前回 handoff の「開いているPRは0件」は 2026-09-30 以降古くなった
-  - `docs/world/` は当初どのリモートブランチにも無かった（全ブランチの `git ls-tree` で確認）。同日、オーナーがチャットで2ファイルを渡し、本ブランチに追加した
-- 完了: `AGENTS.md` に「World and characters」節を追加（1行）。`docs/world/world.md`（70行）と `docs/world/characters.md`（80行）を、オーナーから受け取った内容のまま追加。
-- 進行中: なし。
+- Updated: 2026-10-10 JST
+- 作業者: **Codex**（resume-project / checkpoint-project 使用）
+- ブランチ: `codex/atelier-av-upgrade`。作業開始時の改訂 `59f9c8a` に最新main `12a4a1e` を統合。
+- 目的: PR #25・#26 の競合解消。既存の実装・世界観設定・過去の作業記録を保持する。
+- 外部状態: 2026-10-10、git fetchでmainのPR #28統合を確認。GitHub connectorでは #25・#26 ともopen、mergeable=false（修正前）。
+- 完了: PR #25の競合はWORKLOGの引き継ぎと末尾記録のみ。双方の履歴を保持して統合。グラフィック・工程音のソースと音源は変更なし。
+- 次の配送: 検証後このブランチをpushし、PR #26へ本修正を統合する。mainマージはオーナー判断。
 - ブロッカーとリスク:
   - 🟡 **既存の素材・文言は新しい設定とまだ合っていない。** 例: ミルは猫耳・しっぽ付き（設定では妖精らしい見た目に作り直す）、客12名の名前（さくら、ひろと等）は命名ルール外、港町の名前「マサリエ」が作中に出ているか未確認。設定シート自体が「既存のゲーム素材は作り直す」「後で付け直す」としており、今回は照合も修正もしていない
   - 🟡 実機確認の残り（下記）と、PRごとに自動で走るCIが無い点は前回から継続
 - 次のアクション:
-  1. PR #28（本ブランチ）のレビューとマージ判断（オーナー）
+  1. PR #25 → #26 の順にレビュー・マージ判断（オーナー）。PR #28はmainへ統合済み（2026-10-10 git fetchで確認）
   2. 既存の物語・UI文言・画像、および PR #25・#26 を世界観シートと照合し、食い違いの一覧を作る（修正はその後、オーナーの優先度に従う）
   3. **実機確認の残り（オーナー作業）**。オーナー報告（2026-09-29 チャット）で **D01〜D10 は合格**（記録は `docs/device-tests/2026-09-29-owner-report.md`。機種・コミットは未記入）。残りは次のとおり
      - D11〜D17
@@ -29,8 +27,8 @@ This file is the shared source of truth for cross-device and cross-agent handoff
      - 削除してよい4本（`git cherry` で全コミットが `main` と一致）。先端コミットを復元用に記録する: `agent/add-business-navigation`（`46a57ec`）、`agent/document-deployment-policy`（`2048402`）、`codex/atelier-quality`（`7a49100`）、`integrate/phase0-to-phase7`（`d02ee9d`）
      - **`codex/phase0-to-phase7`（`3e8a8e2`）は保留**。コード（`65f36ca` が追加したファイル）はすべて `main` にある。ただし `docs/branch-integration-plan.md`（2026-08-01 の統合計画、160行）が `main` に無い。移すか、そのまま消すかをオーナーが判断する
      - `claude/caking-weekly-improvements-bg3gnf` も削除してよい。コード（`78548b1`）は PR #22 で取り込み済み。WORKLOG にしか無かった 2026-09-05 (7)(8) の2件も、オーナーの指示で本WORKLOGの時系列の位置へ移した（2026-09-29）
-- ダッシュボードとの照合（2026-10-09、`project-dashboard` を `181ec4e`（2026-10-03）で読取）: CAKING の個別評価 `projects/04-caking-game.md` は 2026-08-25 調査のままで古い。最新週報 W39 は「CAKING の滞留ゼロ」としたが、その後 PR #25・#26 が開いている。ダッシュボードは編集していない。
-- 検証: 文書のみの変更のため、テスト・ビルドは実行していない。`git diff --check` のみ実行。
+- ダッシュボード照合: 2026-10-10にconnectorでREADME/CONTEXT/個別評価/W40を読取。優先度は次点。8/25個別評価は古い。10/4 W40のPR #26の差分量と旧ブランチ整理は継続課題。#25を先に取り込む順序を維持し、ダッシュボードは変更しない。
+- 検証: この競合修正の検証結果は末尾の2026-10-10記録を参照。
 
 ## Dated work reports
 ### 2026-09-29 — Claude
@@ -657,3 +655,30 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 決定: ルールの文面は英語（`AGENTS.md` 全体が英語のため）。置き場所は独立した節にし、既存の節の意味を変えないようにした。
 - ダッシュボードの未解決事項: 本作業では対応なし（未マージ旧ブランチの削除、実機確認は継続）。
 - 次のアクション: 上記 `Current handoff` を参照。
+
+### 2026-09-30 23:12 JST — Astra（Codex）— 工房のグラフィックと工程音
+
+- 目的: 開始スキルで現在地と改修範囲を確かめ、委任可能な美術/音の実装を進める。
+- 開始: WORKLOG全履歴・AGENTS・スキルとGit状態を確認。最新mainから独立ブランチを作成し、旧worktreeの変更を保全。ダッシュボードは上記日時に読取のみ。
+- 完了: 店内前景を独自SVGで追加し、ミニキャラの描写/動き、製造道具/完成光を更新。9工程の音を決定論的に合成。描画と音を工程切替に同期し、停止処理とStrictMode再実行を考慮。波形単体検証とブラウザ検証、音源台帳/改修説明を追加。
+- 影響: `src/components/AtelierScenery.jsx`・ShopDiorama/MiniCharacter/CraftResult、atelier.css、audio.js/craftSound.js、専用test/scriptと文書。ゲーム経済/セーブ形式/既存音源は変更なし。
+- 検証: 単体46/46、lint、build、専用AV検証、既存atelier/BGM検証合格。日本語フォントを検証時のみ注入して店内3幅と完成画面を確認。実機・聴感・ネイティブ検証は未実施。
+- うまくいかなかったこと:
+  - private dashboardのshell cloneは認証入力不可で失敗。接続済みGitHubの読取で必要資料を取得。
+  - 専用AV検証1回目はミュート設定を入れ子と誤認（実際は `seMuted`）。テストを実装の公開設定形式へ修正。
+  - 2回目はStrictModeで先頭whiskが二度開始。effectの再実行を越えて開始を遅延し、cleanupで予約も取り消して修正。3回目は全件合格。最後の描画調整後にも再実行。
+  - 最初の画面確認で既存ケーキ画像の白背景が四角く浮いたため乗算で調和。Linuxの明朝フォント不足による見出しの四角表示は検証用フォントの適用範囲を修正。
+- 判断: 写実素材の追加より既存の水彩背景とコード素材の統一を先行。BGM/声は試聴なしで高品質化を主張せず、今回は製造音を強化。音の台帳に外部素材未使用とフォールバック制限を記載。
+- 未解決/次: 上記Current handoffと `docs/av-upgrade.md`。既存のD01〜D10報告を今回版の合格と読み替えない。
+
+### 2026-10-10 JST — Codex — PR #25 の競合解消
+
+- 目的: オーナー依頼のPR #25・#26競合解消。resume-projectとcheckpoint-projectに従って実施。
+- 完了: 最新main `12a4a1e` をPR #25へ統合。競合したWORKLOGのCurrent handoffを更新し、9/30の演出改修・10/9の世界観追加の両報告を本文変更なしで保持。
+- 影響: WORKLOG、main由来のAGENTSと世界観2文書。`src`・`public`・`scripts`・`test`・依存定義は修正前のPR #25と差分なし。世界観2文書・AGENTSはmainと一致。
+- 検証: npm ci成功、npm test 46/46、npm run lint成功、npm run build成功、git diff --check。動作コードに変更がないためブラウザ・実機テストは再実行していない。
+- うまくいかなかったこと: dashboardのshell cloneは認証入力不可で1回失敗。接続済みGitHub connectorでREADME/CONTEXT/個別評価/最新W40を取得。mainの通常mergeは想定どおりWORKLOGの2箇所で競合し、片側採用をせず両方の履歴を統合した（1回）。
+- 外部確認: 2026-10-10 git fetchでmain `12a4a1e`、同日GitHub connectorで両PRがopenかつ競合あり（修正前）と確認。公開サイト・CIは今回未確認。
+- 判断: 既存PRの履歴を維持するmerge commitを使用し、force pushは不要。mainのマージ・公開・旧ブランチ削除は行わない。
+- 未解決: 世界観と既存素材の差、実機確認、W40の旧ブランチ整理は継続。#26は#25を含むため、#25を先にマージしてから差分を確認する。
+- 次: 本修正を既存PR #25へpushし、その先端を#26へ統合・検証・push。両PRのGitHub mergeableを再確認する。

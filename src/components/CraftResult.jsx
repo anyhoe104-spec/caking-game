@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { audioBus } from "../game/audio.js";
 import { Stars } from "./common.jsx";
 import MiniCharacter from "./MiniCharacter.jsx";
 import CraftStage from "./CraftStage.jsx";
@@ -19,6 +20,14 @@ function Production({ result, reduced, paused, onFinish, onReveal, cakeStyle }) 
     return ()=>timers.forEach(clearTimeout);
   },[reduced, paused]);
   const done = reduced || step === 3;
+  const kind = done ? null : presentation.steps[step].kind;
+  useEffect(() => {
+    if (paused || !kind) return;
+    let stop;
+    // Defer past effect replay: StrictMode must not strike the same prop twice.
+    const timer = setTimeout(() => { stop = audioBus.playCraft(kind); }, 0);
+    return () => { clearTimeout(timer); stop?.(); };
+  }, [kind, paused]);
   const revealed = useRef(false);
   const focus = useRef(null);
   useEffect(() => { if (!paused) focus.current?.focus(); }, [done, paused]);
@@ -29,7 +38,8 @@ function Production({ result, reduced, paused, onFinish, onReveal, cakeStyle }) 
   return <div className={`craftResult productionOverlay craftResult--${result.type}`} role="dialog" aria-modal="true" aria-label={`${result.recipe}の製造`}>
     <div className={`craftCard productionCard productionStep--${done ? 3 : step}`}>
       <span className="eyebrow">{done ? "BAKED WITH LOVE" : "IN THE ATELIER"}</span>
-      <div className="productionScene" aria-hidden="true">
+      <div className={`productionScene ${done ? "isFinished" : ""}`} aria-hidden="true">
+        <div className="productionHalo"/><div className="productionMotes"><i/><i/><i/><i/><i/></div>
         {done ? (cakeStyle?.top !== "berry" || cakeStyle?.band
           ? <CakeModel className="finishedRecipe" recipe={result.recipe} style={cakeStyle}/>
           : <img className="finishedRecipe" src={recipeImg(result.recipe)} alt=""/>)
