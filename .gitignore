@@ -26,3 +26,6 @@ dist-ssr
 # Python
 __pycache__/
 *.py[cod]
+
+# 画像素材の候補置き場（docs/art/asset-management.md）。採用したものだけ art/ に置く
+art/_inbox/
