@@ -1,12 +1,12 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { MIFFY_FALLBACK, MIFFY_IMG } from "../game/assets.js";
+import { MIFY_FALLBACK, MIFY_IMG } from "../game/assets.js";
 
 export function CharImg({ mood = "normal", className = "" }) {
   const [failed, setFailed] = useState(false);
-  if (failed) return <span className={`charFallback ${className}`}>{MIFFY_FALLBACK[mood] ?? "🐱"}</span>;
+  if (failed) return <span className={`charFallback ${className}`}>{MIFY_FALLBACK[mood] ?? "🐱"}</span>;
   return (
     <img
-      src={MIFFY_IMG[mood]}
+      src={MIFY_IMG[mood]}
       alt="ミフィ"
       className={`charImg ${className}`}
       data-mood={mood}

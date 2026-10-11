@@ -53,7 +53,7 @@ def copy_background(source: Path, destination: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--miffy", type=Path, required=True)
+    parser.add_argument("--mify", type=Path, required=True)
     parser.add_argument("--miru", type=Path, required=True)
     parser.add_argument("--customers", type=Path, required=True)
     parser.add_argument("--recipes", type=Path, required=True)
@@ -67,8 +67,8 @@ def main() -> None:
     recipe_dir = args.project / "public/images/recipes"
     background_dir = args.project / "public/images/backgrounds"
 
-    character_files = split_grid(args.miffy, 5, 1, [
-        "miffy-normal", "miffy-happy", "miffy-sad", "miffy-excited", "miffy-working"
+    character_files = split_grid(args.mify, 5, 1, [
+        "mify-normal", "mify-happy", "mify-sad", "mify-excited", "mify-working"
     ], character_dir, max_size=(512, 768))
     character_files += split_grid(args.miru, 3, 1, [
         "miru-normal", "miru-happy", "miru-thinking"

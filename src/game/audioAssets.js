@@ -28,12 +28,12 @@ export const SE_KEYS = [
 ];
 
 export const VOICE_KEYS = [
-  "voice-miffy-ready",
-  "voice-miffy-done",
-  "voice-miffy-great",
-  "voice-miffy-fail",
-  "voice-miffy-order",
-  "voice-miffy-levelup",
+  "voice-mify-ready",
+  "voice-mify-done",
+  "voice-mify-great",
+  "voice-mify-fail",
+  "voice-mify-order",
+  "voice-mify-levelup",
   "voice-miru-hello",
   "voice-miru-cheer",
   "voice-miru-report",

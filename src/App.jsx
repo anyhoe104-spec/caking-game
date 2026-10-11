@@ -53,7 +53,7 @@ const IDLE_MSGS = [
   "頑張って作ります！",
 ];
 
-function getMiffyMsg(state, lastResult, lastRecipe) {
+function getMifyMsg(state, lastResult, lastRecipe) {
   if (lastResult === "great") return "大成功でした！ありがとうございます！✨";
   if (lastResult === "fail") return "すみません、失敗しました…次は頑張ります！";
   if (lastResult === "success" && lastRecipe) return `${lastRecipe}、完成しました！`;
@@ -79,7 +79,7 @@ export default function App() {
   const [craftResult, setCraftResult] = useState(null);
   const craftLocked = useRef(false);
   const finishCraft = useCallback(() => { craftLocked.current = false; setCraftResult(null); }, []);
-  const [miffyMood, setMiffyMood] = useState("normal");
+  const [mifyMood, setMifyMood] = useState("normal");
   const [lastResult, setLastResult] = useState(null);
   const [lastRecipe, setLastRecipe] = useState("");
   const [storyChapter, setStoryChapter] = useState(null);
@@ -147,7 +147,7 @@ export default function App() {
 
   const triggerEffect = useCallback((name) => setEffect(name), []);
 
-  const setMood = useCallback((mood) => setMiffyMood(mood), []);
+  const setMood = useCallback((mood) => setMifyMood(mood), []);
 
   useEffect(() => {
     if (!toast) return;
@@ -164,10 +164,10 @@ export default function App() {
 
 
   useEffect(() => {
-    if (miffyMood === "normal") return;
-    const timer = setTimeout(() => setMiffyMood("normal"), 2400);
+    if (mifyMood === "normal") return;
+    const timer = setTimeout(() => setMifyMood("normal"), 2400);
     return () => clearTimeout(timer);
-  }, [miffyMood]);
+  }, [mifyMood]);
 
   useEffect(() => {
     if (!focusRecipe) return;
@@ -337,7 +337,7 @@ export default function App() {
   // ── Actions ────────────────────────────────────────────────
   const startBusiness = useCallback(() => {
     sfx("daystart");
-    voice("voice-miffy-ready", 420);
+    voice("voice-mify-ready", 420);
     const queue = generateCustomerQueue(state.level, state.dayNumber);
     const missions = state.missions.length > 0 ? state.missions : generateMissions(state.level, state.dayNumber);
     setState((current) => openBusiness({ ...current, missions }, queue));
@@ -349,7 +349,7 @@ export default function App() {
     sfx("tap");
     setState((current) => advanceDay(current, generateMissions(current.level, current.dayNumber + 1)));
     setLastResult(null);
-    setMiffyMood("normal");
+    setMifyMood("normal");
   }, [sfx]);
 
   const craft = useCallback((recipe) => {
@@ -385,11 +385,11 @@ export default function App() {
     else { sfx("error"); triggerEffect("smoke"); setMood("sad"); }
     if (fulfilled) sfx("order");
     if (levelUps > 0) { sfx("levelup"); triggerEffect("levelup"); showToast(`🎉 Lv${level} になりました！`, "gold"); }
-    if (levelUps > 0) voice("voice-miffy-levelup", 700);
-    else if (fulfilled) voice("voice-miffy-order", 380);
-    else if (result === "great") voice("voice-miffy-great", 300);
-    else if (result === "success") voice("voice-miffy-done", 300);
-    else voice("voice-miffy-fail", 300);
+    if (levelUps > 0) voice("voice-mify-levelup", 700);
+    else if (fulfilled) voice("voice-mify-order", 380);
+    else if (result === "great") voice("voice-mify-great", 300);
+    else if (result === "success") voice("voice-mify-done", 300);
+    else voice("voice-mify-fail", 300);
   }, [craftResult, sfx, triggerEffect, setMood, showToast, voice]);
 
   const buyMat = useCallback((key) => {
@@ -445,7 +445,7 @@ export default function App() {
     setSettingsOpen(false);
     setStoryChapter(null);
     setLastResult(null);
-    setMiffyMood("normal");
+    setMifyMood("normal");
   }, [audio, cancelVoice, finishCraft]);
 
   const restoreSave = useCallback((restored) => {
@@ -466,7 +466,7 @@ export default function App() {
     setHomeTabPick(null);
     setLastResult(null);
     setLastRecipe("");
-    setMiffyMood("normal");
+    setMifyMood("normal");
     setEffect("");
     setToast(null);
   }, [cancelVoice, finishCraft]);
@@ -510,7 +510,7 @@ export default function App() {
   }, [sfx]);
 
   // ── Scenes ─────────────────────────────────────────────────
-  const miffyMsg = getMiffyMsg(state, lastResult, lastRecipe);
+  const mifyMsg = getMifyMsg(state, lastResult, lastRecipe);
   const miruMsg = getMiruMessage(state);
   const miruMood = state.lastEvent?.type === "great" ? "happy" : state.lastEvent?.type === "fail" ? "thinking" : "normal";
 
@@ -578,8 +578,8 @@ export default function App() {
               state={state}
               homeTab={homeTab}
               onHomeTab={(tab) => { sfx("tap"); setHomeTabPick({ phase: state.dayPhase, tab }); }}
-              miffyMood={miffyMood}
-              miffyMsg={miffyMsg}
+              mifyMood={mifyMood}
+              mifyMsg={mifyMsg}
               recommended={recommended}
               expToNext={expToNext}
               onPickOrder={pickOrder}

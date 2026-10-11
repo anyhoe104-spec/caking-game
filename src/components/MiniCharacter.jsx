@@ -1,8 +1,8 @@
 import { useId } from "react";
 /** Original, code-native cutout rig. Limbs, face and ears animate independently. */
-export default function MiniCharacter({ variant = "miffy", action = "idle", className = "" }) {
+export default function MiniCharacter({ variant = "mify", action = "idle", className = "" }) {
   const id = useId();
-  const chef = variant === "miffy";
+  const chef = variant === "mify";
   const hair = chef ? "#865337" : variant === "rose" ? "#93728e" : "#46546b";
   const dress = chef ? "#e59aa6" : variant === "rose" ? "#ad82a5" : "#8ea99b";
   return <svg className={`miniRig miniRig--${action} ${className}`} viewBox="0 0 120 160" aria-hidden="true">

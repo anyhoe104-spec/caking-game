@@ -6,7 +6,7 @@ public/sounds/manifest.json — and the BGM loop points are read from it, so a
 stale value degrades looping silently. This script does that step for you.
 
     python3 scripts/import_audio.py ~/Downloads/track.mp3 --as shop-bgm
-    python3 scripts/import_audio.py ~/Downloads/voice.wav --as voice-miffy-done
+    python3 scripts/import_audio.py ~/Downloads/voice.wav --as voice-mify-done
     python3 scripts/import_audio.py ~/Downloads/track.mp3 --as shop-bgm --dry-run
 
 WAV input is encoded to MP3 at the project's bitrate (needs `pip install lameenc`).

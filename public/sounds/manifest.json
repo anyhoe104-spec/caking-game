@@ -145,7 +145,7 @@
       "description": "営業終了"
     },
     {
-      "file": "voice-miffy-ready.mp3",
+      "file": "voice-mify-ready.mp3",
       "kind": "voice",
       "seconds": 0.768,
       "bytes": 13418,
@@ -158,7 +158,7 @@
       "modelSha256": "917e592cae92a02fb7668bd9e168df4e39c8ab2f5302c2be71906c70ec4e2df2"
     },
     {
-      "file": "voice-miffy-done.mp3",
+      "file": "voice-mify-done.mp3",
       "kind": "voice",
       "seconds": 0.704,
       "bytes": 12164,
@@ -171,7 +171,7 @@
       "modelSha256": "917e592cae92a02fb7668bd9e168df4e39c8ab2f5302c2be71906c70ec4e2df2"
     },
     {
-      "file": "voice-miffy-great.mp3",
+      "file": "voice-mify-great.mp3",
       "kind": "voice",
       "seconds": 0.853,
       "bytes": 14672,
@@ -184,7 +184,7 @@
       "modelSha256": "917e592cae92a02fb7668bd9e168df4e39c8ab2f5302c2be71906c70ec4e2df2"
     },
     {
-      "file": "voice-miffy-fail.mp3",
+      "file": "voice-mify-fail.mp3",
       "kind": "voice",
       "seconds": 0.896,
       "bytes": 15508,
@@ -197,7 +197,7 @@
       "modelSha256": "917e592cae92a02fb7668bd9e168df4e39c8ab2f5302c2be71906c70ec4e2df2"
     },
     {
-      "file": "voice-miffy-order.mp3",
+      "file": "voice-mify-order.mp3",
       "kind": "voice",
       "seconds": 1.163,
       "bytes": 19688,
@@ -210,7 +210,7 @@
       "modelSha256": "917e592cae92a02fb7668bd9e168df4e39c8ab2f5302c2be71906c70ec4e2df2"
     },
     {
-      "file": "voice-miffy-levelup.mp3",
+      "file": "voice-mify-levelup.mp3",
       "kind": "voice",
       "seconds": 0.757,
       "bytes": 13000,

@@ -5,7 +5,7 @@
 
 ## 現在のボイス（2026-09-30）
 
-`voice-miffy-*.mp3` 6件: **VOICEVOX:四国めたん**。
+`voice-mify-*.mp3` 6件: **VOICEVOX:四国めたん**。
 `voice-miru-*.mp3` 3件: **VOICEVOX:ずんだもん**。
 CORE 0.16.3 / VVM 0.16.0、商用/非商用ともクレジットと規約遵守の条件で使用。
 出典・個別設定・再利用条件は [voice-production.md](voice-production.md) を参照。
