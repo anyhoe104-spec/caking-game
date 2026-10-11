@@ -66,8 +66,8 @@ export default function HomeView({
   state,
   homeTab,
   onHomeTab,
-  miffyMood,
-  miffyMsg,
+  mifyMood,
+  mifyMsg,
   recommended,
   expToNext,
   onPickOrder,
@@ -84,14 +84,14 @@ export default function HomeView({
     <div className="homeView">
       <ShopDiorama state={state} onRecipe={onOpenRecipe} onOrder={onPickOrder}/>
       {/* Character panel — always visible, never scrolled past. */}
-      <div className="miffyPanel">
-        <CharImg mood={miffyMood} className="miffyChar" />
-        <div className="miffyBubble">
-          <div className="miffyName">
+      <div className="mifyPanel">
+        <CharImg mood={mifyMood} className="mifyChar" />
+        <div className="mifyBubble">
+          <div className="mifyName">
             ミフィ
             {equipped && <span className="decoBadge" title={`装備中：${equipped.name}`}>{equipped.icon}</span>}
           </div>
-          <div className="miffyMsg">{miffyMsg}</div>
+          <div className="mifyMsg">{mifyMsg}</div>
         </div>
       </div>
 

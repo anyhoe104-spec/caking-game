@@ -4,18 +4,19 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-10-10 JST
-- 作業者: **Codex**（resume-project / checkpoint-project 使用）
-- ブランチ: `codex/final-product-goals`。基点は修正済みPR #26 `9b0ab21`。
-- 目的: 競合解消の配送を完了し、追加指示の最終目標・添付構想・世界観を計画へ統合。
-- 完了: #25 `8219371` / #26 `9b0ab21` は2026-10-10にGitHub connectorでmergeable=true、open・未マージを確認。mainは `12a4a1e`。新規docs/final-product-plan.mdで要件・方式・追加WBS・段階別公開を記録。
-- 今回の計画: 経営/成長/実在スイーツ/ランキング/協力/イベント/課金検討、および非公開Obsidianから生成・承認したTips/クイズ/職人ノートを最終目標に追加。日程・工数・件数は提案値。オンライン機能は未実装。
-- 配送: #26の先端から文書専用PRを作る。順序は #25 → #26 → 計画PR、全てbase=main。mainマージはオーナー判断。
+- Updated: 2026-10-11 JST
+- 作業者: **Claude**（caking-game セッション）
+- ブランチ: `claude/dazzling-heisenberg-30tovi`。PR #28 が `main` に入っていたため、`main` = `dc93b33`（PR #29 のマージ）へ早送りしてから作業した。
+- 目的: ミフィの英字表記を「Mify」に統一する（`miffy`/`Miffy`/`MIFFY` → `mify`/`Mify`/`MIFY`）。カタカナ「ミフィ」は変えない。
+- 完了: 画像5枚・ボイス6本を `git mv` で改名。コード・CSSクラス・`manifest.json`・テスト・生成スクリプト・docs・WORKLOG の英字表記89か所を置換。置換後の `miffy` は0件（この報告で旧名として挙げた箇所を除く）、「ミフィ」は置換前後とも74件。
+- 未完（添付待ち）: オーナー指示の「添付の `characters.md`・`world.md` で `docs/world/` を上書き、`asset-management.md`・`prompt-pack.md` を `docs/art/` に置く」は、**2026-10-11 のこのセッションに4ファイルが届いておらず未実施**（アップロード先には 2026-10-09 の旧2ファイルのみ）。
+- 外部状態確認（2026-10-11、`git fetch origin` で実測）: PR #25・#26・#28・#29 は `main` に統合済み。
 - ブロッカーとリスク:
   - 🟡 **既存の素材・文言は新しい設定とまだ合っていない。** 例: ミルは猫耳・しっぽ付き（設定では妖精らしい見た目に作り直す）、客12名の名前（さくら、ひろと等）は命名ルール外、港町の名前「マサリエ」が作中に出ているか未確認。設定シート自体が「既存のゲーム素材は作り直す」「後で付け直す」としており、今回は照合も修正もしていない
   - 🟡 実機確認の残り（下記）と、PRごとに自動で走るCIが無い点は前回から継続
 - 次のアクション:
-  1. PR #25 → #26 の順にレビュー・マージ判断（オーナー）。PR #28はmainへ統合済み（2026-10-10 git fetchで確認）
+  0. **オーナー作業**: 4ファイル（`characters.md`・`world.md`・`asset-management.md`・`prompt-pack.md`）を改めて添付する。届いたら `docs/world/` 上書きと `docs/art/` 追加を行う
+  1. （済み・2026-10-11 確認）PR #25 → #26 の順にレビュー・マージ判断（オーナー）。PR #28はmainへ統合済み（2026-10-10 git fetchで確認）
   2. 既存の物語・UI文言・画像、および PR #25・#26 を世界観シートと照合し、食い違いの一覧を作る（修正はその後、オーナーの優先度に従う）
   3. **実機確認の残り（オーナー作業）**。オーナー報告（2026-09-29 チャット）で **D01〜D10 は合格**（記録は `docs/device-tests/2026-09-29-owner-report.md`。機種・コミットは未記入）。残りは次のとおり
      - D11〜D17
@@ -408,7 +409,7 @@ This file is the shared source of truth for cross-device and cross-agent handoff
   - P2 measured in Chromium with `AudioContext` deleted to force the fallback path: playing -> paused on
     hide -> playing again on show.
   - P3 measured: crafting then immediately resetting plays no voice, while the same flow without a reset
-    does play `voice-miffy-done.mp3` — confirming the test is not vacuous.
+    does play `voice-mify-done.mp3` — confirming the test is not vacuous.
   - Offline relaunch re-verified after the service worker change; the shell still boots fully.
 - Replied on all three threads with the evidence and marked them resolved.
 - Unresolved issues: unchanged from the previous entry — PR #7 is still a draft, no physical-device check,
@@ -717,3 +718,18 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 外部確認: 2026-10-10 connectorで#25/#26の競合解消を確認。文書配送も認証済みconnectorを利用し、検証済みtreeと一致させる。公開・提携先への連絡・契約は行わない。
 - ダッシュボード: 優先度次点、旧ブランチ整理と実機課題は継続。ダッシュボード自体は変更なし。
 - 次: #25→#26→本計画PRの順にオーナーが判断。世界観対応差分とG0品質見本、公開可能な知識・実レシピ・写真の選定から再開する。
+
+### 2026-10-11 JST — Claude — ミフィの英字表記を Mify に統一
+
+- 目的: オーナー指示。ミフィの英字表記を「Mify」に統一する。カタカナ表示は変えない。
+- 完了した作業:
+  - `public/images/characters/miffy-{normal,happy,sad,excited,working}.png` → `mify-*`、`public/sounds/voice-miffy-{ready,done,great,fail,order,levelup}.mp3` → `voice-mify-*` を `git mv` で改名（中身は無変更、11ファイル）
+  - 英字表記の置換（19ファイル・89か所）。内訳は `MIFFY_IMG`/`MIFFY_FALLBACK` → `MIFY_*`、`getMiffyMsg`/`miffyMood`/`setMiffyMood`/`miffyMsg` → `Mify` 形、CSSクラス `.miffyPanel`/`.miffyChar`/`.miffyBubble`/`.miffyName`/`.miffyMsg` → `.mify*`、`MiniCharacter` の `variant` 既定値、`manifest.json` の6件、`audioAssets.js` の `VOICE_KEYS`、`test/voice-assets.test.js`、`scripts/audio/voice.py`・`scripts/generate_voices.py`・`scripts/import_audio.py`・`scripts/process_generated_assets.py`（CLI 引数 `--miffy` は `--mify` になった）、`docs/audio-generation.md`・`docs/audio-licenses.md`、WORKLOG の過去報告1行（オーナーの指示で過去の記載も置換）
+- **うまくいかなかったこと**:
+  - **今回の添付4ファイルが届いていなかった。** アップロード先に 2026-10-09 の `characters.md`・`world.md` しか無く、`asset-management.md`・`prompt-pack.md` はどこにも無い。古い2ファイルで上書きすると内容が戻るだけなので、`docs/world/`・`docs/art/` には触れていない
+  - 作業ブランチを `git checkout -B` で `main` に付け替えようとして、自動判定で拒否された。ブランチのコミットがすべて `main` に含まれていたので `git merge --ff-only origin/main` で同じ結果を得た
+  - 自前のプレイ確認では「営業スタート！」時の `voice-mify-ready` の取得が記録されなかった。改名の問題ではない（`verify-voices` が全9本を名前で再生して合格）が、原因は調べていない
+- 影響範囲: 上記の11ファイル改名と19ファイルの置換、`WORKLOG.md`。
+- 検証（2026-10-11、本ブランチ）: `npm ci` → `npm test` **47件 pass**、`npm run lint` 0件、`npm run build` 成功。`verify-voices`（9本のデコードと再生）・`verify-offline`（42画像のデコードと9ボイス）・`verify-story`（立ち絵を含む）が PASS。加えて Playwright で実際に操作し、ホームの立ち絵 `mify-normal.png`（305×768）の表示、`.mifyPanel` のCSS適用、製造後の `mify-excited.png` と `voice-mify-order.mp3` の 200 応答、4xx/5xx とページエラー0件を確認。
+- 決定: セーブデータに `miffy` を含む値は無かった（`src/game/storage.js` に該当なし）ため、移行処理は不要。旧URLの画像・音声は Service Worker のキャッシュ名がビルドごとに変わるので、残っても参照されない。
+- 次のアクション: 上記 `Current handoff` を参照。

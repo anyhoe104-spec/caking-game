@@ -10,8 +10,8 @@ test('all shipped voices retain Japanese transcript, attribution and valid asset
   for (const key of VOICE_KEYS) {
     const entry = voices.find(a => a.file === `${key}.mp3`);
     assert.equal(entry.source, 'VOICEVOX');
-    assert.equal(entry.styleId, key.includes('miffy') ? 2 : 3);
-    assert.equal(entry.credit, key.includes('miffy') ? 'VOICEVOX:四国めたん' : 'VOICEVOX:ずんだもん');
+    assert.equal(entry.styleId, key.includes('mify') ? 2 : 3);
+    assert.equal(entry.credit, key.includes('mify') ? 'VOICEVOX:四国めたん' : 'VOICEVOX:ずんだもん');
     assert.match(entry.text, /[ぁ-んァ-ン一-龯]/);
     assert.match(entry.modelSha256, /^[0-9a-f]{64}$/);
     assert.ok(entry.seconds > .3 && entry.seconds < 2.5);

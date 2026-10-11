@@ -356,12 +356,12 @@ def synth_line(kana: str, base_f0: float = 340.0, contour: str = "neutral", mora
 # ─────────────────────────────────────────────
 # (file key, speaker, kana, display text, contour, base f0, mora length)
 LINES = [
-    ("voice-miffy-ready",   "ミフィ", "がんばります",         "がんばります！",        "bright", 352, 0.130),
-    ("voice-miffy-done",    "ミフィ", "できました",           "できました！",          "bright", 348, 0.132),
-    ("voice-miffy-great",   "ミフィ", "だいせいこう",         "だいせいこう！",        "rise",   366, 0.138),
-    ("voice-miffy-fail",    "ミフィ", "ごめんなさい",         "ごめんなさい…",         "fall",   318, 0.150),
-    ("voice-miffy-order",   "ミフィ", "ありがとうございます", "ありがとうございます！", "bright", 344, 0.122),
-    ("voice-miffy-levelup", "ミフィ", "れべるあっぷ",         "レベルアップ！",        "rise",   358, 0.132),
+    ("voice-mify-ready",   "ミフィ", "がんばります",         "がんばります！",        "bright", 352, 0.130),
+    ("voice-mify-done",    "ミフィ", "できました",           "できました！",          "bright", 348, 0.132),
+    ("voice-mify-great",   "ミフィ", "だいせいこう",         "だいせいこう！",        "rise",   366, 0.138),
+    ("voice-mify-fail",    "ミフィ", "ごめんなさい",         "ごめんなさい…",         "fall",   318, 0.150),
+    ("voice-mify-order",   "ミフィ", "ありがとうございます", "ありがとうございます！", "bright", 344, 0.122),
+    ("voice-mify-levelup", "ミフィ", "れべるあっぷ",         "レベルアップ！",        "rise",   358, 0.132),
     ("voice-miru-hello",    "ミル",   "こんにちは",           "こんにちは！",          "bright", 402, 0.128),
     ("voice-miru-cheer",    "ミル",   "そのちょうし",         "そのちょうし！",        "rise",   410, 0.124),
     ("voice-miru-report",   "ミル",   "おつかれさま",         "おつかれさま！",        "neutral", 396, 0.130),

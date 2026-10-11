@@ -14,12 +14,12 @@ from voicevox_core.blocking import Onnxruntime, OpenJtalk, Synthesizer, VoiceMod
 
 ROOT = Path(__file__).resolve().parent.parent
 LINES = [
-    ('miffy-ready', 'がんばります！', 2, 1.12),
-    ('miffy-done', 'できました！', 2, 1.12),
-    ('miffy-great', '大成功！', 2, 1.08),
-    ('miffy-fail', 'ごめんなさい。', 2, 1.04),
-    ('miffy-order', 'ありがとうございます！', 2, 1.20),
-    ('miffy-levelup', 'レベルアップ！', 2, 1.12),
+    ('mify-ready', 'がんばります！', 2, 1.12),
+    ('mify-done', 'できました！', 2, 1.12),
+    ('mify-great', '大成功！', 2, 1.08),
+    ('mify-fail', 'ごめんなさい。', 2, 1.04),
+    ('mify-order', 'ありがとうございます！', 2, 1.20),
+    ('mify-levelup', 'レベルアップ！', 2, 1.12),
     ('miru-hello', 'こんにちは！', 3, 1.12),
     ('miru-cheer', 'その調子！', 3, 1.08),
     ('miru-report', 'おつかれさま！', 3, 1.12),

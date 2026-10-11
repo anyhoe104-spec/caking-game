@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Modal } from "./common.jsx";
-import { BASE, MIFFY_IMG, miruImg } from "../game/assets.js";
+import { BASE, MIFY_IMG, miruImg } from "../game/assets.js";
 import { chapterDialogue } from "../game/story.js";
 
 export default function StoryReader({ chapter, onClose, onFinish, returnFocusRef }) {
@@ -11,7 +11,7 @@ export default function StoryReader({ chapter, onClose, onFinish, returnFocusRef
   return <Modal title={chapter.title} onClose={onClose} returnFocusRef={returnFocusRef}>
     <div className="storyTheater" style={{ "--story-background": `url(${BASE}images/backgrounds/${chapter.level >= 8 ? "bg-ending" : "bg-shop"}.png)` }}>
       <span className="storyLocation">港町のケーキ工房 · Lv{chapter.level}</span>
-      <div className={`storyPortrait ${current.speaker === "ミフィ" ? "isSpeaking" : ""}`}><img src={MIFFY_IMG[page === 4 ? "happy" : "normal"]} alt="ミフィ" /><span>ミフィ</span></div>
+      <div className={`storyPortrait ${current.speaker === "ミフィ" ? "isSpeaking" : ""}`}><img src={MIFY_IMG[page === 4 ? "happy" : "normal"]} alt="ミフィ" /><span>ミフィ</span></div>
       <div className={`storyPortrait storyPortrait--miru ${current.speaker === "ミル" ? "isSpeaking" : ""}`}><img src={miruImg(page === 4 ? "happy" : "normal")} alt="ミル" /><span>ミル</span></div>
     </div>
     <div className="storyDialogue" aria-live="polite" aria-atomic="true"><strong>{current.speaker}</strong><p key={page}>{current.text}</p></div>

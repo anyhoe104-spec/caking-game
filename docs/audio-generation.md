@@ -78,12 +78,12 @@ manifestはゲーム側からも読み込まれ、BGMのループ点（`loopEnd`
 
 | ファイル | 話者 | セリフ | 再生タイミング |
 |---|---|---|---|
-| `voice-miffy-ready.mp3` | ミフィ | がんばります！ | 営業スタート |
-| `voice-miffy-done.mp3` | ミフィ | できました！ | ケーキ成功 |
-| `voice-miffy-great.mp3` | ミフィ | だいせいこう！ | ケーキ大成功 |
-| `voice-miffy-fail.mp3` | ミフィ | ごめんなさい… | ケーキ失敗 |
-| `voice-miffy-order.mp3` | ミフィ | ありがとうございます！ | 注文成立 |
-| `voice-miffy-levelup.mp3` | ミフィ | レベルアップ！ | レベルアップ |
+| `voice-mify-ready.mp3` | ミフィ | がんばります！ | 営業スタート |
+| `voice-mify-done.mp3` | ミフィ | できました！ | ケーキ成功 |
+| `voice-mify-great.mp3` | ミフィ | だいせいこう！ | ケーキ大成功 |
+| `voice-mify-fail.mp3` | ミフィ | ごめんなさい… | ケーキ失敗 |
+| `voice-mify-order.mp3` | ミフィ | ありがとうございます！ | 注文成立 |
+| `voice-mify-levelup.mp3` | ミフィ | レベルアップ！ | レベルアップ |
 | `voice-miru-hello.mp3` | ミル | こんにちは！ | オープニング終了 |
 | `voice-miru-cheer.mp3` | ミル | そのちょうし！ | ミッション達成 |
 | `voice-miru-report.mp3` | ミル | おつかれさま！ | 営業終了・日報 |
