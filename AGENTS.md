@@ -54,3 +54,15 @@ These instructions apply to every agent working in this repository, whether or n
 - In the pull request description, state what changed, which checks were run and their results, and what was deliberately left out.
 - Before committing, summarize the included files. Before pushing, confirm the expected remote and branch.
 - Never put secrets, credentials, or machine-specific absolute paths in tracked reports.
+
+## 転送作業の再試行・トークン浪費防止
+
+- 画像素材は `docs/art/asset-management.md` に従う。
+- 画像・ログの送信だけを依頼された場合、新規生成、ゲーム改修、全体テストへ作業を広げない。
+- 画像のBase64、data URI、バイナリ全文を会話やモデルに返す出力へ展開しない。ファイルを処理間で直接渡し、表示は名前・サイズ・SHA・成否のみ。
+- 外部サービスはMCP/APIコネクタを優先。ブラウザは代替手段がない・難しい場合だけ使用し、理由と所要時間を作業ログへ記録する。
+- 同じ原因で失敗した操作は最大2回。15分間進展がなければ再試行を止め、完了分・障害・次に必要な1操作を報告する。ブラウザのリトライが3時間を超える場合は自動停止して報告する。
+- 完了通知のタイムアウトだけで再送しない。実ファイル、SHA、リモートのブランチを先に確認する。
+- 引継ぎでは最新の短い作業ログと台帳を起点にし、既に読んだ長い履歴や画像データを再読・再出力しない。転送だけの再開は必要範囲の確認でよい。
+- 転送完了はリモートのcommit/treeと対象画像SHAで確認し、PRのURLと未完項目を報告して終了する。
+- 今回の回収結果は `docs/art/checkpoint-20261013.md`。旧WORKLOGの原本待ちは解消済み。

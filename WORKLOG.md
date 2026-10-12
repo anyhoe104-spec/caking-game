@@ -4,32 +4,17 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-10-11 JST
-- 作業者: **Claude**（caking-game セッション）
-- ブランチ: `claude/dazzling-heisenberg-30tovi`。PR #28 が `main` に入っていたため、`main` = `dc93b33`（PR #29 のマージ）へ早送りしてから作業した。
-- 目的: ミフィの英字表記を「Mify」に統一する（`miffy`/`Miffy`/`MIFFY` → `mify`/`Mify`/`MIFY`）。カタカナ「ミフィ」は変えない。
-- 完了: 画像5枚・ボイス6本を `git mv` で改名。コード・CSSクラス・`manifest.json`・テスト・生成スクリプト・docs・WORKLOG の英字表記89か所を置換。置換後の `miffy` は0件（この報告で旧名として挙げた箇所を除く）、「ミフィ」は置換前後とも74件。
-- 未完（添付待ち）: オーナー指示の「添付の `characters.md`・`world.md` で `docs/world/` を上書き、`asset-management.md`・`prompt-pack.md` を `docs/art/` に置く」は、**2026-10-11 のこのセッションに4ファイルが届いておらず未実施**（アップロード先には 2026-10-09 の旧2ファイルのみ）。
-- 外部状態確認（2026-10-11、`git fetch origin` で実測）: PR #25・#26・#28・#29 は `main` に統合済み。
-- ブロッカーとリスク:
-  - 🟡 **既存の素材・文言は新しい設定とまだ合っていない。** 例: ミルは猫耳・しっぽ付き（設定では妖精らしい見た目に作り直す）、客12名の名前（さくら、ひろと等）は命名ルール外、港町の名前「マサリエ」が作中に出ているか未確認。設定シート自体が「既存のゲーム素材は作り直す」「後で付け直す」としており、今回は照合も修正もしていない
-  - 🟡 実機確認の残り（下記）と、PRごとに自動で走るCIが無い点は前回から継続
-- 次のアクション:
-  0. **オーナー作業**: 4ファイル（`characters.md`・`world.md`・`asset-management.md`・`prompt-pack.md`）を改めて添付する。届いたら `docs/world/` 上書きと `docs/art/` 追加を行う
-  1. （済み・2026-10-11 確認）PR #25 → #26 の順にレビュー・マージ判断（オーナー）。PR #28はmainへ統合済み（2026-10-10 git fetchで確認）
-  2. 既存の物語・UI文言・画像、および PR #25・#26 を世界観シートと照合し、食い違いの一覧を作る（修正はその後、オーナーの優先度に従う）
-  3. **実機確認の残り（オーナー作業）**。オーナー報告（2026-09-29 チャット）で **D01〜D10 は合格**（記録は `docs/device-tests/2026-09-29-owner-report.md`。機種・コミットは未記入）。残りは次のとおり
-     - D11〜D17
-     - 起動直後のBGM／再開ダイアログ中の無音
-     - 既存セーブの飾りが全ケーキに残るか／レシピ別の飾り／店頭のケーキ
-     - バックアップのファイル保存がどの経路で働くか
-     - 報告したビルドが PR #22・#23 より前なら D07・D10 の再確認。どのビルドだったかをオーナーに記入してもらう
-  4. **行き止まりブランチの削除（オーナー作業。GitHub の Branches 画面から）**。このセッションからの削除は HTTP 403 で拒否された（2026-09-29 17:30 JST、`git push origin --delete`。セッションが書き込めるのは指定の作業ブランチだけ）
-     - 削除してよい4本（`git cherry` で全コミットが `main` と一致）。先端コミットを復元用に記録する: `agent/add-business-navigation`（`46a57ec`）、`agent/document-deployment-policy`（`2048402`）、`codex/atelier-quality`（`7a49100`）、`integrate/phase0-to-phase7`（`d02ee9d`）
-     - **`codex/phase0-to-phase7`（`3e8a8e2`）は保留**。コード（`65f36ca` が追加したファイル）はすべて `main` にある。ただし `docs/branch-integration-plan.md`（2026-08-01 の統合計画、160行）が `main` に無い。移すか、そのまま消すかをオーナーが判断する
-     - `claude/caking-weekly-improvements-bg3gnf` も削除してよい。コード（`78548b1`）は PR #22 で取り込み済み。WORKLOG にしか無かった 2026-09-05 (7)(8) の2件も、オーナーの指示で本WORKLOGの時系列の位置へ移した（2026-09-29）
-- ダッシュボード照合: 2026-10-10にconnectorでREADME/CONTEXT/個別評価/W40を読取。優先度は次点。8/25個別評価は古い。10/4 W40のPR #26の差分量と旧ブランチ整理は継続課題。#25を先に取り込む順序を維持し、ダッシュボードは変更しない。
-- 検証: この競合修正の検証結果は末尾の2026-10-10記録を参照。
+- Updated: 2026-10-12 JST
+- 作業者: Codex
+- 作業ブランチ: `codex/art-settings-inventory`。チェックポイント前の基点: `2a8c1d4`（2026-10-12にfetchしたorigin/main）。
+- 目的: プロンプトパックの未作成設定資料をCanvaで制作する。
+- 完了: 採用済みbranding 9枚と設定画像の未登録を照合。`docs/art/production-status.md`に制作状況と再開手順を整理。
+- 未完: 画像生成・採用。全バッチに必要な採用済みmify-ref原本が見つからず、保存場所をオーナーへ照会中。
+- 旧handoffの訂正: docs/world/2文書とdocs/art/管理ルール・プロンプトパックは現在存在する。4ファイルの添付待ちは解消済み。
+- 保全: 元のcheckoutはmainが67コミット遅れ、未コミット文書と画像削除があるため変更せず、最新origin/mainから別worktreeを作成した。
+- ダッシュボード: 2026-10-12 GitHub APIでREADME/CONTEXT/個別評価を読取。優先度は次点。8/25評価の音源未収録等は最新実装より古い。旧ブランチ整理と実機課題は今回未対応。
+- 次: mify-refを受領・確認してバッチ1-1から生成。候補を提示し、人の採用後に原本・台帳・プロンプトを登録する。
+- 検証: Git tree・採用台帳・Canva検索を照合。画像未生成のため品質検証なし。コード未変更のためゲームテスト未実行。
 
 ## Dated work reports
 ### 2026-09-29 — Claude
@@ -733,3 +718,15 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 検証（2026-10-11、本ブランチ）: `npm ci` → `npm test` **47件 pass**、`npm run lint` 0件、`npm run build` 成功。`verify-voices`（9本のデコードと再生）・`verify-offline`（42画像のデコードと9ボイス）・`verify-story`（立ち絵を含む）が PASS。加えて Playwright で実際に操作し、ホームの立ち絵 `mify-normal.png`（305×768）の表示、`.mifyPanel` のCSS適用、製造後の `mify-excited.png` と `voice-mify-order.mp3` の 200 応答、4xx/5xx とページエラー0件を確認。
 - 決定: セーブデータに `miffy` を含む値は無かった（`src/game/storage.js` に該当なし）ため、移行処理は不要。旧URLの画像・音声は Service Worker のキャッシュ名がビルドごとに変わるので、残っても参照されない。
 - 次のアクション: 上記 `Current handoff` を参照。
+
+### 2026-10-12 JST — Codex — 設定画像の制作前照合
+
+- 目的: 開始skillから未作成設定資料を制作し、完成後にコミット・pushする。
+- 完了: resume-projectでGitと記録を照合。最新mainの採用台帳、世界観、プロンプトパック、Canva既存デザインを確認。制作状況と再開手順を追加。
+- 影響: docs/art/production-status.md、WORKLOG.mdのみ。既存checkoutの変更は保持。
+- うまくいかなかったこと: appのworktree作成は作業ルートがGitでないため1回失敗。実リポジトリでgit worktreeを作成して解消。基準mify-refはGit tree・関連artブランチ・Canva3検索・ローカルファイル名検索で見つからず。代用品で生成する判断はしなかった。
+- 外部確認: 2026-10-12のgit fetchでorigin/main=2a8c1d4。Canva検索でCAKING関連6デザインを確認。公開サイト・CIは今回未確認。
+- 検証: 登録済み9原本と未登録の設定画像を照合。コード変更なし、ゲームテスト・画像品質検証は未実施。
+- 判断: 画像制作未完を完成扱いせず、採用台帳を変更しない。今回の確認記録を保存し、原本受領後に継続する。
+- 未解決: mify-ref原本不足。ミル新規デザインでは元漫画も必要。ダッシュボードの旧ブランチ整理・実機確認は継続。
+- 次: 基準画像受領→バッチ1候補生成→採用判断→正式登録→コミット・push・PR。
