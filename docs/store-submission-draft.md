@@ -59,6 +59,8 @@ CAKING！は、ケーキをつくり、お客様の注文に応えながら、�
 
 撮影手順: 候補コミットを記録→テスト用進行を準備→日本語表示/音/レイアウトを実機確認→OSのスクリーンショット機能で撮影→不要な通知を除外→必要サイズをストア指定に合わせて書き出す。撮影のための合成UIや未実装機能は加えない。
 
+撮った画面は `store/screenshots/raw/01.png`〜`06.png` に置き、`python scripts/compose_store_screenshots.py` で Canva の台紙（`art/branding/store-frame-0N-v1.png`）に合成する。出力は `store/screenshots/out/`（1080×1920、Google Play のスマートフォン用）。App Store 用のサイズは別に用意が要る。`store/screenshots/` は git に入れない。
+
 Appleの説明は[製品ページ](https://developer.apple.com/app-store/product-page/)、Googleの説明は[プレビュー素材](https://support.google.com/googleplay/android-developer/answer/9866151?hl=en)を参照。提出時に最新のサイズ・枚数・形式を再確認する。
 
 ## 3. 審査担当者向け説明案（現在のビルド用、提出前に更新）

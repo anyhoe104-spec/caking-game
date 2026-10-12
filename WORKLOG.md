@@ -4,32 +4,30 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-10-11 JST
-- 作業者: **Claude**（caking-game セッション）
-- ブランチ: `claude/dazzling-heisenberg-30tovi`。PR #28 が `main` に入っていたため、`main` = `dc93b33`（PR #29 のマージ）へ早送りしてから作業した。
-- 目的: ミフィの英字表記を「Mify」に統一する（`miffy`/`Miffy`/`MIFFY` → `mify`/`Mify`/`MIFY`）。カタカナ「ミフィ」は変えない。
-- 完了: 画像5枚・ボイス6本を `git mv` で改名。コード・CSSクラス・`manifest.json`・テスト・生成スクリプト・docs・WORKLOG の英字表記89か所を置換。置換後の `miffy` は0件（この報告で旧名として挙げた箇所を除く）、「ミフィ」は置換前後とも74件。
-- 未完（添付待ち）: オーナー指示の「添付の `characters.md`・`world.md` で `docs/world/` を上書き、`asset-management.md`・`prompt-pack.md` を `docs/art/` に置く」は、**2026-10-11 のこのセッションに4ファイルが届いておらず未実施**（アップロード先には 2026-10-09 の旧2ファイルのみ）。
-- 外部状態確認（2026-10-11、`git fetch origin` で実測）: PR #25・#26・#28・#29 は `main` に統合済み。
+- Updated: 2026-10-12 22:15 JST
+- 作業者: **Claude**（caking-anime と並行のセッション）
+- ブランチ: `claude/store-screenshots`。チェックポイント前の基点: `2a8c1d4`（2026-10-12 に fetch した `origin/main`）。
+- 目的: ストア用スクリーンショットの合成と、タイトルロゴの背景透過版を、`art/` から再生成できるスクリプトで作る。
+- 完了:
+  - `scripts/process_branding.py` → `art/branding/logo-v1-cutout.png`（ロゴの背景透過版）。台帳に1行追加
+  - `scripts/compose_store_screenshots.py`：撮影した画面6枚を Canva の台紙6枚に合成する（`store/screenshots/raw/` → `out/`、git管理外）
+  - 同じセッションで先に、チャットの引き継ぎ（`docs/world` の Mify 表記、`docs/art` の管理ルール・プロンプト集、Canva 素材9枚と台帳）を PR #31・#32・#33 で出し、**2026-10-12 00:40 JST にマージ済み**（2026-10-12 22:10 に `gh pr list` で確認）。前の handoff の「4ファイルの添付待ち」は解消済み
+- 進行中: なし。
+- 並行作業: Codex の PR #34（`codex/art-settings-inventory`、設定画像の制作状況）が open（2026-10-12 22:10 `gh pr list` で確認）。**同じく `WORKLOG.md` の Current handoff を書き換えているので、後からマージする方で衝突する**
 - ブロッカーとリスク:
-  - 🟡 **既存の素材・文言は新しい設定とまだ合っていない。** 例: ミルは猫耳・しっぽ付き（設定では妖精らしい見た目に作り直す）、客12名の名前（さくら、ひろと等）は命名ルール外、港町の名前「マサリエ」が作中に出ているか未確認。設定シート自体が「既存のゲーム素材は作り直す」「後で付け直す」としており、今回は照合も修正もしていない
-  - 🟡 実機確認の残り（下記）と、PRごとに自動で走るCIが無い点は前回から継続
+  - 🔴 **ミフィの基準3面図（`mify-ref`）の原本がリポジトリに無い**（PR #34 の記録）。チャットの引き継ぎでは「Codex で生成・採用済み」とされている。画像生成（`docs/art/prompt-pack.md` の全バッチ）はこれが前提
+  - 🟡 ストアに載せる本番の画面は、画像の描き直しが `public/images/` に反映された後に撮る。今回の合成は台紙と仕組みの確認まで
+  - 🟡 既存の素材・文言は新しい設定とまだ合っていない（ミルの猫耳・しっぽ、客12名の名前など）。照合も修正も未実施（前回から継続）
+  - 🟡 実機確認の残りと、PRごとに自動で走るCIが無い点は前回から継続（下記）
 - 次のアクション:
-  0. **オーナー作業**: 4ファイル（`characters.md`・`world.md`・`asset-management.md`・`prompt-pack.md`）を改めて添付する。届いたら `docs/world/` 上書きと `docs/art/` 追加を行う
-  1. （済み・2026-10-11 確認）PR #25 → #26 の順にレビュー・マージ判断（オーナー）。PR #28はmainへ統合済み（2026-10-10 git fetchで確認）
-  2. 既存の物語・UI文言・画像、および PR #25・#26 を世界観シートと照合し、食い違いの一覧を作る（修正はその後、オーナーの優先度に従う）
-  3. **実機確認の残り（オーナー作業）**。オーナー報告（2026-09-29 チャット）で **D01〜D10 は合格**（記録は `docs/device-tests/2026-09-29-owner-report.md`。機種・コミットは未記入）。残りは次のとおり
-     - D11〜D17
-     - 起動直後のBGM／再開ダイアログ中の無音
-     - 既存セーブの飾りが全ケーキに残るか／レシピ別の飾り／店頭のケーキ
-     - バックアップのファイル保存がどの経路で働くか
-     - 報告したビルドが PR #22・#23 より前なら D07・D10 の再確認。どのビルドだったかをオーナーに記入してもらう
-  4. **行き止まりブランチの削除（オーナー作業。GitHub の Branches 画面から）**。このセッションからの削除は HTTP 403 で拒否された（2026-09-29 17:30 JST、`git push origin --delete`。セッションが書き込めるのは指定の作業ブランチだけ）
-     - 削除してよい4本（`git cherry` で全コミットが `main` と一致）。先端コミットを復元用に記録する: `agent/add-business-navigation`（`46a57ec`）、`agent/document-deployment-policy`（`2048402`）、`codex/atelier-quality`（`7a49100`）、`integrate/phase0-to-phase7`（`d02ee9d`）
-     - **`codex/phase0-to-phase7`（`3e8a8e2`）は保留**。コード（`65f36ca` が追加したファイル）はすべて `main` にある。ただし `docs/branch-integration-plan.md`（2026-08-01 の統合計画、160行）が `main` に無い。移すか、そのまま消すかをオーナーが判断する
-     - `claude/caking-weekly-improvements-bg3gnf` も削除してよい。コード（`78548b1`）は PR #22 で取り込み済み。WORKLOG にしか無かった 2026-09-05 (7)(8) の2件も、オーナーの指示で本WORKLOGの時系列の位置へ移した（2026-09-29）
-- ダッシュボード照合: 2026-10-10にconnectorでREADME/CONTEXT/個別評価/W40を読取。優先度は次点。8/25個別評価は古い。10/4 W40のPR #26の差分量と旧ブランチ整理は継続課題。#25を先に取り込む順序を維持し、ダッシュボードは変更しない。
-- 検証: この競合修正の検証結果は末尾の2026-10-10記録を参照。
+  1. **オーナー作業**: `mify-ref` の原本の場所を確かめ、`art/characters/mify/` に登録する（PR #34 と同じ問い）
+  2. 画像素材の生成（`prompt-pack.md` バッチ1から、Codex）
+  3. 描き直しの反映後、`docs/store-submission-draft.md` §2 の6画面を撮影して `store/screenshots/raw/` に置き、`python scripts/compose_store_screenshots.py` で合成する。App Store 用のサイズは別に用意する
+  4. 既存の物語・UI文言・画像を世界観シートと照合し、食い違いの一覧を作る（前回から継続）
+  5. **実機確認の残り（オーナー作業。2026-10-11 の handoff から引き継ぎ、今回は再確認していない）**: D11〜D17／起動直後のBGM・再開ダイアログ中の無音／既存セーブの飾り・レシピ別の飾り・店頭のケーキ／バックアップのファイル保存の経路／報告ビルドが PR #22・#23 より前なら D07・D10 の再確認。D01〜D10 は合格（`docs/device-tests/2026-09-29-owner-report.md`）
+  6. **行き止まりブランチの削除（オーナー作業、Issue #27）**: 削除してよい `agent/add-business-navigation`（`46a57ec`）・`agent/document-deployment-policy`（`2048402`）・`codex/atelier-quality`（`7a49100`）・`integrate/phase0-to-phase7`（`d02ee9d`）・`claude/caking-weekly-improvements-bg3gnf`（`78548b1`）。`codex/phase0-to-phase7`（`3e8a8e2`）は `docs/branch-integration-plan.md` の扱いをオーナーが判断するまで保留
+- ダッシュボード照合: 2026-10-12 に `project-dashboard` を `git fetch` して `projects/04-caking-game.md`（2026-08-25 調査で古い）と W40 を読んだ。W40 の指摘のうち PR #26 の500行超は 2026-10-10 マージで解消。PR無し旧ブランチ（Issue #27、2026-10-12 22:10 `gh issue view` で OPEN）は未対応。このセッションはどちらも扱っていない。ダッシュボードは変更していない。
+- 検証: 末尾の 2026-10-12 の記録を参照。
 
 ## Dated work reports
 ### 2026-09-29 — Claude
@@ -732,4 +730,25 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 影響範囲: 上記の11ファイル改名と19ファイルの置換、`WORKLOG.md`。
 - 検証（2026-10-11、本ブランチ）: `npm ci` → `npm test` **47件 pass**、`npm run lint` 0件、`npm run build` 成功。`verify-voices`（9本のデコードと再生）・`verify-offline`（42画像のデコードと9ボイス）・`verify-story`（立ち絵を含む）が PASS。加えて Playwright で実際に操作し、ホームの立ち絵 `mify-normal.png`（305×768）の表示、`.mifyPanel` のCSS適用、製造後の `mify-excited.png` と `voice-mify-order.mp3` の 200 応答、4xx/5xx とページエラー0件を確認。
 - 決定: セーブデータに `miffy` を含む値は無かった（`src/game/storage.js` に該当なし）ため、移行処理は不要。旧URLの画像・音声は Service Worker のキャッシュ名がビルドごとに変わるので、残っても参照されない。
+- 次のアクション: 上記 `Current handoff` を参照。
+
+### 2026-10-12 22:15 JST — Claude — ストア用スクショの合成とロゴの透過版
+
+- 目的: チャットの引き継ぎの未完了タスク「スクショ合成スクリプト」と、Canva で透過にならなかったロゴの透過版を作る。
+- 完了した作業:
+  - `scripts/process_branding.py`：`art/branding/logo-v1.png` の外周につながった背景だけを透明にし、`art/branding/logo-v1-cutout.png`（1915×990）を書き出す。原本は変えない。台帳 `docs/art/asset-log.md` に1行追加
+  - `scripts/compose_store_screenshots.py`：`store/screenshots/raw/01〜06` を台紙 `art/branding/store-frame-0N-v1.png` の画面枠（x=90・y=320・幅900・高さ1380、角の半径約50）に合成し、1080×1920 で `store/screenshots/out/` に書き出す。既定は画面全体を見せる `contain`、`--fit cover` で枠いっぱい。`--placeholder` で未撮影の画面を灰色で埋めて確認できる。画面が足りないときは番号を挙げて止まる
+  - `.gitignore` に `store/screenshots/`、`docs/store-submission-draft.md` §2 に使い方を追記
+- **うまくいかなかったこと**:
+  - **ロゴの切り抜きの1回目は、中央のプレートまで透明になった。** プレートの内側も背景と同じクリーム色（#FEF7E5 付近）で、茶色の輪郭線に細い切れ目があり、外側からの塗りつぶしが中へもれた。輪郭線を4px太らせて切れ目をふさいでから塗り、太らせた分を戻す方式に変えて解消した（2回目で採用）
+  - 合成の確認用に、公開中のゲームを Remotion 同梱のヘッドレス Chrome で 1080×2340 で撮った。写ったのはオープニングの画面で、§2 の撮影指示の画面ではない。確認用にだけ使い、コミットしていない
+- 影響範囲: `scripts/process_branding.py`・`scripts/compose_store_screenshots.py`（新規）、`art/branding/logo-v1-cutout.png`（新規）、`docs/art/asset-log.md`、`docs/store-submission-draft.md`、`.gitignore`、`WORKLOG.md`。ゲームのコードと `public/` は変えていない。
+- 検証:
+  - 切り抜いたロゴを濃紺とピンクの背景に重ねて目で確認。プレート・猫耳・いちご・ケーキが残り、外側だけ透明
+  - 実際の撮影画面1枚＋仮の画面5枚で合成し、出力が 1080×1920 であること、`contain` と `cover` の見え方、画面が足りないときのエラーを確認
+  - ゲームのコードを変えていないので、`npm test`・lint・ビルドは実行していない
+- 決定:
+  - 透過版は `art/branding/` に置く。管理ルールで、スクリプトが作る切り出しパーツも `art/` に置くとしているのに合わせた
+  - 合成の既定は `contain`。縦長のスマホ画面を台紙の枠に収めると、`cover` では上下が大きく切れて画面の情報が欠けるため
+- 未解決の課題: 本番の撮影（描き直しの反映後）、App Store 用のサイズ、ロゴ透過版のゲームへの反映（`public/images/` の差し替えはオーナーの指示があるときだけ）。
 - 次のアクション: 上記 `Current handoff` を参照。

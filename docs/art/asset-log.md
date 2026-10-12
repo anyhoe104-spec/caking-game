@@ -5,6 +5,7 @@
 | ファイル | 日付 | 生成元 | プロンプト | 状態 | メモ |
 |---|---|---|---|---|---|
 | art/branding/logo-v1.png | 2026-10-12 | Canva（デザイン `DAHXn7xgNhM`「CAKING! タイトルロゴ」） | — | 採用 | 2000×2000。**背景透過で書き出したが、クリーム色（#FEF7E5）の背景が画像に含まれていて透過にならなかった。** 透過版はスクリプトで作る |
+| art/branding/logo-v1-cutout.png | 2026-10-12 | スクリプト（`scripts/process_branding.py` で logo-v1.png の外側の背景を透明化） | — | 採用 | 1915×990。背景透過版。プレート内側のクリーム色は残している。logo-v1.png を差し替えたら再実行する |
 | art/branding/endcard-v1.png | 2026-10-12 | Canva（デザイン `DAHXn5t8w_U`） | — | 採用 | 1920×1080。ティザー第1話 C8 の背景。キャッチコピー・案内・URL・VOICEVOX のクレジットが入っている |
 | art/branding/play-feature-v1.png | 2026-10-12 | Canva（デザイン `DAHXrsYAZto`） | — | 採用 | 1024×500。Google Play のフィーチャーグラフィック |
 | art/branding/store-frame-01-v1.png | 2026-10-12 | Canva（デザイン `DAHXr4myAuI` 1ページ目） | — | 採用 | 1080×1920。ストア用スクショ台紙「海風と、焼きたて。」。画面枠は x=90・y=320・幅900・高さ1380 |
