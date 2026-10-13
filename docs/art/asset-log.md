@@ -17,3 +17,22 @@
 
 - Canva の4デザインは、claude.ai のチャット（2026-10-09〜10-11）で作成した。デザインの中で Canva の AI 生成を使った要素があるかは、この台帳の作成時には確認していない。公開時に AI 生成物を人の手描きとして発表しないこと
 - Canva Pro は 2026-11-08 に終了予定。上の画像はそれより前に PNG（ロスレス）で書き出した
+
+
+## 回収した採用原本
+
+| ファイル | 日付 | 生成元 | プロンプト | 状態 | メモ |
+|---|---|---|---|---|---|
+| art/characters/mify/mify-ref-v1.png | 2026-10-11 | ChatGPT画像生成 | [mify-ref-v1.md](prompts/mify-ref-v1.md) | 採用 | 後ろ姿のリボン位置を要修正 |
+| art/characters/mify/mify-ref-v2.png | 2026-10-11 | ChatGPT画像生成 | [mify-ref-v2.md](prompts/mify-ref-v2.md) | 採用・現行基準 | 後ろ姿の頭リボンを本人左側の1個に修正 |
+
+## 未採用の制作状況
+
+オーナーの生成画像保存指示により、今回の2候補は通常の候補除外ルールの例外として保管する。正式採用・ゲーム組み込みを意味しない。
+
+| 候補 | プロンプト | 状態 |
+|---|---|---|
+| [16コマ表情候補](../../art/review-candidates/mify/expressions-16-c1.png) | [生成指示](prompts/mify-expressions-c1.md) | 未採用。髪・輪郭・頭部サイズに微差あり |
+| [前半8コマ候補](../../art/review-candidates/mify/expressions-a-c1.png) | [生成指示](prompts/mify-expressions-a-c1.md) | 未採用。髪・肩・輪郭に微差あり |
+
+完全固定のアニメ素材としては未完成。次回は前半の固定化・採否を確認してから感情8コマへ進む。今回回収した原本は上記の保存先に保持する。
