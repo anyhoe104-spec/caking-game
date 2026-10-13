@@ -36,3 +36,13 @@
 | [前半8コマ候補](../../art/review-candidates/mify/expressions-a-c1.png) | [生成指示](prompts/mify-expressions-a-c1.md) | 未採用。髪・肩・輪郭に微差あり |
 
 完全固定のアニメ素材としては未完成。次回は前半の固定化・採否を確認してから感情8コマへ進む。今回回収した原本は上記の保存先に保持する。
+
+
+## バッチ2 — 2026-10-13 オーナー承認
+
+| ファイル | 生成元 | プロンプト | 状態 |
+|---|---|---|---|
+| art/characters/mify/mify-pose-offer-cake-v1.png | 組み込みimage_gen | [生成記録](prompts/mify-pose-offer-cake-v1.md) | 採用 |
+| art/characters/mify/mify-pose-wiping-v1.png | 組み込みimage_gen | [生成記録](prompts/mify-pose-wiping-v1.md) | 採用 |
+| art/props/prop-shortcake-v1.png | 組み込みimage_gen | [生成記録](prompts/prop-shortcake-v1.md) | 採用 |
+| art/props/prop-old-key-v1.png | 組み込みimage_gen | [生成記録](prompts/prop-old-key-v1.md) | 採用 |
