@@ -29,3 +29,6 @@ __pycache__/
 
 # 画像素材の候補置き場（docs/art/asset-management.md）。採用したものだけ art/ に置く
 art/_inbox/
+
+# ストア用スクリーンショットの撮影画面と合成結果（scripts/compose_store_screenshots.py）
+store/screenshots/
