@@ -4,6 +4,10 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
+- 2026-10-14 Codex追記（画像登録のみ）: バッチ2承認済み4点に加え、ミル右案の三面図・表情2点を共通原本へ登録。PR #37、未マージ。GitHub MCPで確認。
+- 未作成バッチ4〜9・感情Bの計21点はcaking-anime PR #1 commit 4fd680eへ候補保存、SHA照合済み。ユーザーは後日一括レビュー予定。従来の「他バッチ未着手」は解消。ゲーム本番反映、固定パーツ化、実機確認は未実施。
+- 次: caking-animeの一括一覧から修正・採用判断。以下のClaude作業は別件の引継ぎとして維持。
+
 - Updated: 2026-10-13 13:50 JST
 - 作業者: **Claude**
 - ブランチ: `claude/store-screenshots`（PR #35）。チェックポイント前の基点: `e9e4ac6`（PR #34 マージ後の `origin/main`。2026-10-13 に取り込み済み）。
@@ -765,3 +769,10 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 未解決の課題: 本番の撮影（描き直しの反映後）、App Store 用のサイズ、ロゴ透過版のゲームへの反映（`public/images/` の差し替えはオーナーの指示があるときだけ）。
 - 追記（2026-10-13）: PR #34 のマージ後に `origin/main`（`e9e4ac6`）をこのブランチへ取り込み、`docs/art/asset-log.md` と `WORKLOG.md` の衝突を解消した（オーナーの指示）。台帳は main の版に透過版の1行を足し直し、WORKLOG は両方の記録を残して Current handoff をまとめ直した
 - 次のアクション: 上記 `Current handoff` を参照。
+
+### 2026-10-14 — Codex: 承認済みMiru原本登録と一括候補引継ぎ
+
+- ミル右案三面図・8表情の明示承認を反映。画像2点、プロンプト2点、台帳・制作状況を更新。
+- 元PNGとGitHub blobのSHA一致。再生成なし。GitHub MCP使用、ブラウザ不使用。既存のローカル変更には触れていない。
+- 新規21候補はanime PR #1でまとめて確認可能。Miru宙返り・Pepper犬耳・chef帽子余白などは要修正確認。生成シートの切り出し・透過・固定化・ゲーム本番反映は未完。
+- コード変更なし、アプリテスト対象外。mainへのマージは未実施。実機確認等の従来課題は今回対象外。

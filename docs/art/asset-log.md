@@ -46,3 +46,12 @@
 | art/characters/mify/mify-pose-wiping-v1.png | 組み込みimage_gen | [生成記録](prompts/mify-pose-wiping-v1.md) | 採用 |
 | art/props/prop-shortcake-v1.png | 組み込みimage_gen | [生成記録](prompts/prop-shortcake-v1.md) | 採用 |
 | art/props/prop-old-key-v1.png | 組み込みimage_gen | [生成記録](prompts/prop-old-key-v1.md) | 採用 |
+
+## ミル右案 — 承認済み原本登録（2026-10-14）
+
+| ファイル | 日付 | 生成元 | プロンプト | 状態 | メモ |
+|---|---|---|---|---|---|
+| art/characters/miru/miru-ref-v1.png | 2026-10-14 | image_gen | [生成記録](prompts/miru-ref-v1.md) | 採用 | 右案・長髪と帽子。三面図 |
+| art/characters/miru/miru-expressions-v1.png | 2026-10-14 | image_gen | [生成記録](prompts/miru-expressions-v1.md) | 採用 | 8コマ。固定パーツ化は別作業 |
+
+バッチ4〜9とミフィ感情Bの21点はcaking-anime PR #1の候補。一括確認待ちであり未採用。以前の「未着手」「感情シートに進めない」は現状を表さない。
