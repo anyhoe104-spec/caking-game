@@ -1,3 +1,7 @@
+> 2026-10-14更新: Mify v2・バッチ2の4点・Miru右案の三面図と表情2点は採用済み。今回Miru原本2点をPR #37へ登録。バッチ4〜9の20点とMify感情B1点はcaking-anime PR #1へ候補保存。全バッチに画像あり、未採用・修正候補あり。本番未組込み。GitHub MCPで2026-10-14確認。
+>
+> [新規21点レビュー一覧](https://github.com/anyhoe104-spec/caking-anime/blob/codex/art-batch2/docs/art/review-batches-4-9.md)。以下は過去の棚卸し履歴。
+
 > 2026-10-13更新: 既存画像4枚を回収。三面図v2は登録済み、表情2枚は未採用候補。以下は10月12日時点の棚卸し記録であり、再生成の指示ではない。最新状況は [作業ログ](checkpoint-20261013.md) と [台帳](asset-log.md) を参照。
 
 # プロンプトパック制作状況
