@@ -4,34 +4,14 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- 2026-10-14 Codex追記（画像登録のみ）: バッチ2承認済み4点に加え、ミル右案の三面図・表情2点を共通原本へ登録。PR #37、未マージ。GitHub MCPで確認。
-- 未作成バッチ4〜9・感情Bの計21点はcaking-anime PR #1 commit 4fd680eへ候補保存、SHA照合済み。ユーザーは後日一括レビュー予定。従来の「他バッチ未着手」は解消。ゲーム本番反映、固定パーツ化、実機確認は未実施。
-- 次: caking-animeの一括一覧から修正・採用判断。以下のClaude作業は別件の引継ぎとして維持。
-
-- Updated: 2026-10-13 13:50 JST
-- 作業者: **Claude**
-- ブランチ: `claude/store-screenshots`（PR #35）。チェックポイント前の基点: `e9e4ac6`（PR #34 マージ後の `origin/main`。2026-10-13 に取り込み済み）。
-- 目的: ストア用スクリーンショットの合成と、タイトルロゴの背景透過版を、`art/` から再生成できるスクリプトで作る。
-- 完了:
-  - `scripts/process_branding.py` → `art/branding/logo-v1-cutout.png`（ロゴの背景透過版）。台帳に1行追加
-  - `scripts/compose_store_screenshots.py`：撮影した画面6枚を Canva の台紙6枚に合成する（`store/screenshots/raw/` → `out/`、git管理外）
-  - チャットの引き継ぎ（`docs/world` の Mify 表記、`docs/art` の管理ルール・プロンプト集、Canva 素材9枚と台帳）は PR #31・#32・#33 で 2026-10-12 00:40 JST にマージ済み。4ファイルの添付待ちは解消済み
-  - Codex の PR #34 が 2026-10-13 08:53 JST にマージ済み（2026-10-13 13:42 に `gh pr view` で確認）。ミフィの基準3面図 `art/characters/mify/mify-ref-v1.png`・`mify-ref-v2.png`（**v2 が現行基準**）を回収・登録し、表情シートの候補2枚を未採用として `art/review-candidates/mify/` に保管した。詳細は `docs/art/checkpoint-20261013.md`・`docs/art/production-status.md`・台帳。前の handoff の「mify-ref 原本待ち」は解消済み
-- 進行中: なし。
-- ブロッカーとリスク:
-  - 🟡 **ミフィの表情シートは未採用。** 候補2枚は髪・輪郭・頭部サイズに微差があり、アニメのパーツ用には固定化が必要（`docs/art/checkpoint-20261013.md`）。ポーズ・背景・ミルの新デザインなど、ほかのバッチは未着手
-  - 🟡 ストアに載せる本番の画面は、画像の描き直しが `public/images/` に反映された後に撮る。今回の合成は台紙と仕組みの確認まで
-  - 🟡 既存の素材・文言は新しい設定とまだ合っていない（ミルの猫耳・しっぽ、客12名の名前など）。照合も修正も未実施
-  - 🟡 実機確認の残りと、PRごとに自動で走るCIが無い点は継続（下記）
-  - 🟢 OneDrive 配下の古いクローンには未コミットの変更と画像の削除が残っている（Codex の 2026-10-12 の記録）。どちらのセッションも変更していない
-- 次のアクション:
-  1. 画像素材の生成: 表情シート前半の固定化と採否から（`docs/art/production-status.md` の再開手順、Codex）。採用はオーナーの判断
-  2. 描き直しの反映後、`docs/store-submission-draft.md` §2 の6画面を撮影して `store/screenshots/raw/` に置き、`python scripts/compose_store_screenshots.py` で合成する。App Store 用のサイズは別に用意する
-  3. 既存の物語・UI文言・画像を世界観シートと照合し、食い違いの一覧を作る
-  4. **実機確認の残り（オーナー作業。2026-10-11 の handoff から引き継ぎ、今回は再確認していない）**: D11〜D17／起動直後のBGM・再開ダイアログ中の無音／既存セーブの飾り・レシピ別の飾り・店頭のケーキ／バックアップのファイル保存の経路／報告ビルドが PR #22・#23 より前なら D07・D10 の再確認。D01〜D10 は合格（`docs/device-tests/2026-09-29-owner-report.md`）
-  5. **行き止まりブランチの削除（オーナー作業、Issue #27）**: 削除してよい `agent/add-business-navigation`（`46a57ec`）・`agent/document-deployment-policy`（`2048402`）・`codex/atelier-quality`（`7a49100`）・`integrate/phase0-to-phase7`（`d02ee9d`）・`claude/caking-weekly-improvements-bg3gnf`（`78548b1`）。`codex/phase0-to-phase7`（`3e8a8e2`）は `docs/branch-integration-plan.md` の扱いをオーナーが判断するまで保留
-- ダッシュボード照合: 2026-10-12 に `project-dashboard` を `git fetch` して `projects/04-caking-game.md`（2026-08-25 調査で古い）と W40 を読んだ。W40 の指摘のうち PR #26 の500行超は 2026-10-10 マージで解消。PR無し旧ブランチ（Issue #27、2026-10-12 22:10 `gh issue view` で OPEN）は未対応。ダッシュボードは変更していない。
-- 検証: 末尾の 2026-10-12 22:15 の記録を参照。
+- 更新: 2026-10-15 JST / Codex。基点main a11fba5、ブランチcodex/adopt-reviewed-art-20261015。
+- 完了: オーナー承認17点を無加工でart/原本登録し、台帳・プロンプト・制作状況を更新。
+- PR #37はマージ済み（2026-10-15 GitHub MCP確認）。今回の17点は別PRで登録し、mainマージは未実施。
+- 修正4点はcaking-anime/art/_inbox/20261015/のc2。犬耳・巻き尾、いちごのみタルト、シェフ帽子余白、独立ケース背景。承認待ち・Git対象外。
+- caking-anime PR #1の既存候補PNGを別保管場所へ移すかはマージ前にオーナー確認。現時点で削除・移動しない。
+- 次: 修正4点の承認とPR #1候補の保存方針。public/images/への反映、透過・切り出し・固定パーツ化は別作業。
+- 継続課題: 本番画像反映後のストア撮影、既存UIと世界設定の照合、D11〜D17等の実機確認、旧ブランチ整理。今回対象外。
+- Dashboard: 2026-10-15 MCPでREADME/CONTEXT/プロジェクト/W41を確認。8月時点の素材・音源状態は古い。W41旧ブランチ整理課題は未対応。Dashboardは編集していない。
 
 ## Dated work reports
 ### 2026-09-29 — Claude
@@ -776,3 +756,11 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 元PNGとGitHub blobのSHA一致。再生成なし。GitHub MCP使用、ブラウザ不使用。既存のローカル変更には触れていない。
 - 新規21候補はanime PR #1でまとめて確認可能。Miru宙返り・Pepper犬耳・chef帽子余白などは要修正確認。生成シートの切り出し・透過・固定化・ゲーム本番反映は未完。
 - コード変更なし、アプリテスト対象外。mainへのマージは未実施。実機確認等の従来課題は今回対象外。
+
+### 2026-10-15 — Codex: 一括レビュー17点の原本登録
+
+- オーナーの明示承認17点をc1と同一bytesでart/へ登録。画像17、対応プロンプト17、台帳・制作状況・本ログを更新。
+- 他4点はimage_genで各1回修正し、animeのart/_inbox/へ保存。修正後の承認は未取得。今後の候補Git除外を厳守。
+- 古いローカルcaking-gameには現行管理資料がなく、リモートmainをMCPで読んで作業。古いcheckoutの既存変更は未操作。
+- 検証: 承認元のGit blob SHA一致、GitHub転送SHA一致。画像・記録のみでアプリテスト対象外。ブラウザ不使用。
+- 残件: 修正候補4点の確認、PR #1候補PNGの保管判断、各PRマージ、本番への素材組込み。実機等の従来課題は未着手。

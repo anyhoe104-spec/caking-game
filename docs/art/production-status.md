@@ -1,3 +1,40 @@
+# プロンプトパック制作状況 — 2026-10-15
+
+- バッチ2とMiru2点のPR #37はマージ済み（GitHub MCPで2026-10-15確認）。
+- caking-anime PR #1の21点のうち17点をオーナーが承認。今回art/原本へ登録。下表参照。
+- 残り4点は指定どおり修正c2を作成し、caking-anime/art/_inbox/20261015/へ保存。Git未登録・承認待ち。
+- 今後の候補PNGはart/_inbox/に置きGitへ入れない。PR #1の既存PNGは移動先と除外をオーナーに確認するまで保持。マージ未実施。
+- public/images/・ゲーム・動画への組込みは今回対象外。表情A・16コマ旧候補の採用は未決定。
+
+| 原本 | 状態 |
+|---|---|
+| art/backgrounds/bg-shop-before-v1.png | 承認済み・原本登録 |
+| art/backgrounds/bg-shop-after-v1.png | 承認済み・原本登録 |
+| art/backgrounds/bg-harbor-window-v1.png | 承認済み・原本登録 |
+| art/backgrounds/bg-door-key-v1.png | 承認済み・原本登録 |
+| art/characters/mify/mify-game-a-v1.png | 承認済み・原本登録 |
+| art/characters/mify/mify-game-b-v1.png | 承認済み・原本登録 |
+| art/characters/miru/miru-game-v1.png | 承認済み・原本登録 |
+| art/characters/anis/anis-ref-v1.png | 承認済み・原本登録 |
+| art/characters/cumin/cumin-ref-v1.png | 承認済み・原本登録 |
+| art/characters/cinnamon/cinnamon-ref-v1.png | 承認済み・原本登録 |
+| art/characters/laurel/laurel-ref-v1.png | 承認済み・原本登録 |
+| art/characters/customers/customers-a-v1.png | 承認済み・原本登録 |
+| art/backgrounds/bg-shop-v1.png | 承認済み・原本登録 |
+| art/backgrounds/bg-kitchen-v1.png | 承認済み・原本登録 |
+| art/props/recipes-b-v1.png | 承認済み・原本登録 |
+| art/props/ingredients-v1.png | 承認済み・原本登録 |
+| art/characters/mify/mify-expressions-b-v1.png | 承認済み・原本登録 |
+
+| 修正候補 | 修正内容 | 状態 |
+|---|---|---|
+| pepper-ref-c2 | 犬の垂れ耳と巻き尾 | 承認待ち |
+| recipes-a-c2 | 右端タルトをいちごのみへ | 承認待ち |
+| customers-b-c2 | シェフ帽子全体が収まる余白 | 承認待ち |
+| bg-ending-c2 | 独立ガラスケースと上部中央の文字余白、夕焼け港町維持 | 承認待ち |
+
+<details><summary>過去の棚卸し履歴（現在の作業指示ではない）</summary>
+
 > 2026-10-14更新: Mify v2・バッチ2の4点・Miru右案の三面図と表情2点は採用済み。今回Miru原本2点をPR #37へ登録。バッチ4〜9の20点とMify感情B1点はcaking-anime PR #1へ候補保存。全バッチに画像あり、未採用・修正候補あり。本番未組込み。GitHub MCPで2026-10-14確認。
 >
 > [新規21点レビュー一覧](https://github.com/anyhoe104-spec/caking-anime/blob/codex/art-batch2/docs/art/review-batches-4-9.md)。以下は過去の棚卸し履歴。
@@ -60,3 +97,5 @@
 | 9-1 | `recipes-a-v1.png` | 未登録・基準画像待ち |
 | 9-2 | `recipes-b-v1.png` | 未登録・基準画像待ち |
 | 9-3 | `ingredients-v1.png` | 未登録・基準画像待ち |
+
+</details>
