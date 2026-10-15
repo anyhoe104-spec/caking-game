@@ -55,3 +55,40 @@
 | art/characters/miru/miru-expressions-v1.png | 2026-10-14 | image_gen | [生成記録](prompts/miru-expressions-v1.md) | 採用 | 8コマ。固定パーツ化は別作業 |
 
 バッチ4〜9とミフィ感情Bの21点はcaking-anime PR #1の候補。一括確認待ちであり未採用。以前の「未着手」「感情シートに進めない」は現状を表さない。
+
+## 2026-10-15 — 一括レビュー承認17点
+
+オーナーがcaking-anime PR #1のc1画像を個別指定で承認。再生成・加工なしで原本登録。miru-gameの跳躍ポーズ、mify-game-bの効果、mify-expressions-bも今回承認された。アニメ用固定パーツ化の完了とは別。
+
+| ファイル | 日付 | 生成元 | プロンプト | 状態 |
+|---|---|---|---|---|
+| art/backgrounds/bg-shop-before-v1.png | 2026-10-15 | image_gen | [生成記録](prompts/bg-shop-before-v1.md) | 採用 |
+| art/backgrounds/bg-shop-after-v1.png | 2026-10-15 | image_gen | [生成記録](prompts/bg-shop-after-v1.md) | 採用 |
+| art/backgrounds/bg-harbor-window-v1.png | 2026-10-15 | image_gen | [生成記録](prompts/bg-harbor-window-v1.md) | 採用 |
+| art/backgrounds/bg-door-key-v1.png | 2026-10-15 | image_gen | [生成記録](prompts/bg-door-key-v1.md) | 採用 |
+| art/characters/mify/mify-game-a-v1.png | 2026-10-15 | image_gen | [生成記録](prompts/mify-game-a-v1.md) | 採用 |
+| art/characters/mify/mify-game-b-v1.png | 2026-10-15 | image_gen | [生成記録](prompts/mify-game-b-v1.md) | 採用 |
+| art/characters/miru/miru-game-v1.png | 2026-10-15 | image_gen | [生成記録](prompts/miru-game-v1.md) | 採用 |
+| art/characters/anis/anis-ref-v1.png | 2026-10-15 | image_gen | [生成記録](prompts/anis-ref-v1.md) | 採用 |
+| art/characters/cumin/cumin-ref-v1.png | 2026-10-15 | image_gen | [生成記録](prompts/cumin-ref-v1.md) | 採用 |
+| art/characters/cinnamon/cinnamon-ref-v1.png | 2026-10-15 | image_gen | [生成記録](prompts/cinnamon-ref-v1.md) | 採用 |
+| art/characters/laurel/laurel-ref-v1.png | 2026-10-15 | image_gen | [生成記録](prompts/laurel-ref-v1.md) | 採用 |
+| art/characters/customers/customers-a-v1.png | 2026-10-15 | image_gen | [生成記録](prompts/customers-a-v1.md) | 採用 |
+| art/backgrounds/bg-shop-v1.png | 2026-10-15 | image_gen | [生成記録](prompts/bg-shop-v1.md) | 採用 |
+| art/backgrounds/bg-kitchen-v1.png | 2026-10-15 | image_gen | [生成記録](prompts/bg-kitchen-v1.md) | 採用 |
+| art/props/recipes-b-v1.png | 2026-10-15 | image_gen | [生成記録](prompts/recipes-b-v1.md) | 採用 |
+| art/props/ingredients-v1.png | 2026-10-15 | image_gen | [生成記録](prompts/ingredients-v1.md) | 採用 |
+| art/characters/mify/mify-expressions-b-v1.png | 2026-10-15 | image_gen | [生成記録](prompts/mify-expressions-b-v1.md) | 採用 |
+
+未採用: pepper-ref / recipes-a / customers-b / bg-endingの修正c2。修正候補はcaking-animeのart/_inbox/20261015/にローカル保存、Git対象外。既存PR #1候補PNGの別保管・除外はマージ前にオーナー確認する。
+
+## 2026-10-16 — 修正4点も承認・原本登録
+
+オーナーの「画像類も承認でプッシュ」により修正c2の4点を採用。先行17点と合わせ21点すべて承認済み。過去記録の承認待ちは解消。本番組込み・マージは別作業。
+
+| ファイル | 日付 | 生成元 | プロンプト | 状態 |
+|---|---|---|---|---|
+| art/characters/pepper/pepper-ref-v1.png | 2026-10-16 | image_gen | [生成記録](prompts/pepper-ref-v1.md) | 採用 |
+| art/props/recipes-a-v1.png | 2026-10-16 | image_gen | [生成記録](prompts/recipes-a-v1.md) | 採用 |
+| art/characters/customers/customers-b-v1.png | 2026-10-16 | image_gen | [生成記録](prompts/customers-b-v1.md) | 採用 |
+| art/backgrounds/bg-ending-v1.png | 2026-10-16 | image_gen | [生成記録](prompts/bg-ending-v1.md) | 採用 |
