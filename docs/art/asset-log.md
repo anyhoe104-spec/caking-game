@@ -81,3 +81,14 @@
 | art/characters/mify/mify-expressions-b-v1.png | 2026-10-15 | image_gen | [生成記録](prompts/mify-expressions-b-v1.md) | 採用 |
 
 未採用: pepper-ref / recipes-a / customers-b / bg-endingの修正c2。修正候補はcaking-animeのart/_inbox/20261015/にローカル保存、Git対象外。既存PR #1候補PNGの別保管・除外はマージ前にオーナー確認する。
+
+## 2026-10-16 — 修正4点も承認・原本登録
+
+オーナーの「画像類も承認でプッシュ」により修正c2の4点を採用。先行17点と合わせ21点すべて承認済み。過去記録の承認待ちは解消。本番組込み・マージは別作業。
+
+| ファイル | 日付 | 生成元 | プロンプト | 状態 |
+|---|---|---|---|---|
+| art/characters/pepper/pepper-ref-v1.png | 2026-10-16 | image_gen | [生成記録](prompts/pepper-ref-v1.md) | 採用 |
+| art/props/recipes-a-v1.png | 2026-10-16 | image_gen | [生成記録](prompts/recipes-a-v1.md) | 採用 |
+| art/characters/customers/customers-b-v1.png | 2026-10-16 | image_gen | [生成記録](prompts/customers-b-v1.md) | 採用 |
+| art/backgrounds/bg-ending-v1.png | 2026-10-16 | image_gen | [生成記録](prompts/bg-ending-v1.md) | 採用 |

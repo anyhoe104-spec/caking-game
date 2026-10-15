@@ -1,3 +1,16 @@
+
+## 2026-10-16 — 修正4点も承認・原本登録
+
+オーナーの「画像類も承認でプッシュ」により修正c2の4点を採用。先行17点と合わせ21点すべて承認済み。過去記録の承認待ちは解消。本番組込み・マージは別作業。
+
+- art/characters/pepper/pepper-ref-v1.png
+- art/props/recipes-a-v1.png
+- art/characters/customers/customers-b-v1.png
+- art/backgrounds/bg-ending-v1.png
+
+PR #1候補28PNGはオーナー承認のGit外保管先review-archive/caking-anime-pr1/へSHA照合して保存。PR先端から除外、過去履歴は維持。
+
+---
 # プロンプトパック制作状況 — 2026-10-15
 
 - バッチ2とMiru2点のPR #37はマージ済み（GitHub MCPで2026-10-15確認）。

@@ -4,14 +4,10 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- 更新: 2026-10-15 JST / Codex。基点main a11fba5、ブランチcodex/adopt-reviewed-art-20261015。
-- 完了: オーナー承認17点を無加工でart/原本登録し、台帳・プロンプト・制作状況を更新。
-- PR #37はマージ済み（2026-10-15 GitHub MCP確認）。今回の17点は別PRで登録し、mainマージは未実施。
-- 修正4点はcaking-anime/art/_inbox/20261015/のc2。犬耳・巻き尾、いちごのみタルト、シェフ帽子余白、独立ケース背景。承認待ち・Git対象外。
-- caking-anime PR #1の既存候補PNGを別保管場所へ移すかはマージ前にオーナー確認。現時点で削除・移動しない。
-- 次: 修正4点の承認とPR #1候補の保存方針。public/images/への反映、透過・切り出し・固定パーツ化は別作業。
-- 継続課題: 本番画像反映後のストア撮影、既存UIと世界設定の照合、D11〜D17等の実機確認、旧ブランチ整理。今回対象外。
-- Dashboard: 2026-10-15 MCPでREADME/CONTEXT/プロジェクト/W41を確認。8月時点の素材・音源状態は古い。W41旧ブランチ整理課題は未対応。Dashboardは編集していない。
+- 更新: 2026-10-16 JST / Codex。PR #38に承認原本21点（先行17＋修正4）を登録。
+- 修正4点は犬耳・巻き尾、いちごのみタルト、帽子余白、独立ガラスケース。承認c2を無加工登録。
+- PR #1候補28PNGはオーナー承認のreview-archive/caking-anime-pr1/へコピー・SHA照合後にPR先端から除外。過去履歴は維持。
+- 次: PRマージ判断。本番組込み、透過・固定パーツ化、実機確認・UI照合・旧ブランチ整理は別作業。
 
 ## Dated work reports
 ### 2026-09-29 — Claude
@@ -764,3 +760,10 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 古いローカルcaking-gameには現行管理資料がなく、リモートmainをMCPで読んで作業。古いcheckoutの既存変更は未操作。
 - 検証: 承認元のGit blob SHA一致、GitHub転送SHA一致。画像・記録のみでアプリテスト対象外。ブラウザ不使用。
 - 残件: 修正候補4点の確認、PR #1候補PNGの保管判断、各PRマージ、本番への素材組込み。実機等の従来課題は未着手。
+
+### 2026-10-16 — Codex: 修正4点の採用と保管整理
+
+- 承認c2の4原本、生成指示、台帳を追加。21点すべて承認済み。
+- 転送SHA一致確認。候補28PNGを別保管し元Git blob SHAと照合。GitHub MCP使用、ブラウザ不使用。
+- 会話再開時に処理内変数が消えたため保存済み台帳から復元。画像の重複送信はしていない。
+- コード変更なし、アプリテスト対象外。PRマージ・本番反映未実施。
