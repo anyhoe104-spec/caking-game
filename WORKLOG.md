@@ -6,28 +6,29 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 - Updated: 2026-10-18 JST
 - 作業者: **Claude**
-- ブランチ: `claude/nifty-cori-cbmgi6`。**PR #39 のブランチ（`claude/dazzling-heisenberg-30tovi`、`4a7bb92`）の上に積んでいる**。PRのbaseは `main`
-- 目的: (1) PR #39 の衝突解消、(2) スタッフを設定のキャラ3名（アニス・クミン・シナモン）に切り替え。いずれもオーナーの指示。
-- 外部状態確認（**2026-10-18、`git fetch origin '+refs/heads/*:refs/remotes/origin/*'` と GitHub API で実測**）:
-  - PR #40（絵の置き換え26点）は **2026-10-18 10:47 JST にマージ済み**
-  - PR #39（制作計画）: `main` を取り込み、衝突を解消して push 済み（`4a7bb92`）。`main` に衝突なくマージできることを `git merge-tree` で確認。未マージ
+- ブランチ: `claude/nifty-cori-cbmgi6`。基点 `5ae926b`（PR #41 マージ後の `main`）
+- 目的: 客12名の名前とドット絵化の方針を決め、Codex への制作依頼書を用意する。ゲーム本体は変えない。
+- 外部状態確認（**2026-10-18、`git fetch origin '+refs/heads/*:refs/remotes/origin/*'` で実測**）: PR #39（制作計画）・#41（スタッフ3名）はマージ済み。PR #40 も前回マージ済み。
+- オーナーの決定（2026-10-18、チャット）:
+  - 命名ルール: 獣人は香辛料・ハーブ、人間はそれ以外の食材。ローレルは例外。呼び方は名前だけ
+  - 客12名の名前: 全員、提案の第1案（スリーズ／ノワ／マダム・フィグ／セージ／オリーヴ／トマ／シェフ・ブール／ペッシュ／ミント／メリッサ／アプリコ／カルダモン）
+  - ドット絵: 注文一覧のアイコンは 48×48・顔と肩まで・16色。店先はちびキャラ。ケーキ製造のアニメーションもドット絵にする
+  - **名前と絵は同時に切り替える**（ゲームの名前はドット絵がそろうまで変えない）
 - 完了:
-  - PR #39: WORKLOG.md の衝突を解消（main の handoff を採用、PR #39 の 10-16 の記録を日付順に挿入、削除行なし）。計画書に 2026-10-18 時点の進捗の注記を追加
-  - スタッフ3名を切り替えた（名前・説明・立ち絵）。効果・価格・ID は維持
+  - `docs/world/world.md` の命名ルールを更新
+  - `docs/world/characters.md` に新しい12名の表を追加（英字・ファイル名・種族・旧名）。ゲーム未反映と明記
+  - `docs/art/pixel-art-brief.md`（Codex 向け依頼書）を新規作成。内容は、共通パレット、アイコン12点、ちびキャラ（ミフィ・客12名）、製造の9工程×4コマ、試作の手順、受け入れ確認項目
 - 進行中: なし。
 - ブロッカーとリスク:
-  - 🟡 **マージ順: PR #39 → 本作業のPR。** 逆順でも内容は入るが、本PRが #39 の内容も一緒に持ち込む
-  - 🟡 客12名は旧絵のまま（名前の決定待ち、production-plan 1-5）
-  - 🟡 コードで描いたミニキャラ（店先・工房）は旧いまま（production-plan §3）
-  - 🟡 BGM の方向性はオーナーの回答待ち
-  - 🟡 実機確認の残りと、PRごとに自動で走る CI が無い点は継続
+  - 🟡 ドット絵の制作は Codex 待ち。まず試作（パレット、cerise・sage のアイコン、ミフィのちびキャラ、whisk）でオーナーが方向性を確認する
+  - 🟡 英字表記・ファイル名（cerise、fig、aprico など）と、種族名「兎耳族」は提案のまま。オーナーが変えてよい
+  - 🟡 BGM の方向性はオーナーの回答待ち。実機確認の残りと、PRごとに自動で走る CI が無い点も継続
 - 次のアクション:
-  1. オーナーが PR #39 → 本作業のPR の順にマージ
-  2. 客12名の名前が決まったら、customers-a/b を加工スクリプトに追加し、名前と画像を一緒に置き換える
-  3. BGM: イメージを受け取ったら、営業中の曲から書き換えて試す
-  4. 実機確認の残り（オーナー作業）。新しい絵とスタッフ画面も実機で見てもらう
-  5. 旧ブランチの削除（オーナー作業、Issue #27）
-- 検証（2026-10-18、本ブランチ）: lint 0件、`npm test` 47件 pass、build 成功。`verify-offline`（45画像をオフラインでデコード）・`verify-story`・`verify-atelier`・`verify-save`・`verify-bgm`・`verify-playthrough` すべて PASS。スタッフ画面を撮影して確認した。
+  1. オーナーが本PRをマージ → Codex に `docs/art/pixel-art-brief.md` の §3「進め方」の 1（試作）を依頼
+  2. 試作の採用後、Codex が残りを制作して原本登録
+  3. 原本登録の後、Claude が `scripts/process_game_art.py` に仕上げ処理（格子スナップ・色数検査・透過・位置合わせ）を足し、名前の変更（`src/game/customers.js`）と絵の差し替えを1つのPRで行う。製造アニメは `CraftStage` をドット絵のスプライトに置き換え、ケーキ本体はゲーム側で重ねる
+  4. 実機確認の残り（オーナー作業）、旧ブランチの削除（Issue #27）
+- 検証: 文書のみの変更。`npm test` 47件 pass（2026-10-18、本ブランチ）。
 
 ## Dated work reports
 ### 2026-09-29 — Claude
@@ -843,4 +844,23 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 影響範囲: PR #39 のブランチ（`WORKLOG.md`、`docs/art/production-plan.md`）。本ブランチでは `src/game/shop.js`、`src/game/assets.js`、`src/components/UpgradeView.jsx`、`src/App.css`、`src/App.jsx`（コメント1行）、`scripts/process_game_art.py`、`public/images/characters/staff-*.png`（新規3点）、`docs/art/production-status.md`、`WORKLOG.md`。
 - 検証: 上記 `Current handoff` の「検証」を参照。
 - 決定: スタッフの効果は、キャラの役割に合うものを割り当てた。数値は変えていない。
+- 次のアクション: 上記 `Current handoff` を参照。
+
+### 2026-10-18 (3) — Claude — 客12名の名前とドット絵の依頼書
+
+- 目的: オーナーとの相談で、客の名前と、ゲーム内アイコンをドット絵にする方針を決め、Codex が作業を始められる状態にする。
+- 完了した作業:
+  - 客12名について、今の絵・新しい設定画・名前・好きなケーキを並べた一覧画像を作ってオーナーに見せた（シートを3×2に等分しただけの仮の切り出し）
+  - 命名ルールの案と、1人2案の名前を提示した。オーナーは「第1案・ローレル例外・名前だけ」と回答
+  - ドット化を Codex に任せるべきかという質問に対し、自動変換のサンプル（32・48ドット、ゲーム内の実寸42px付き）を作って見せた。目や口がつぶれてモザイクになるため、「描き起こしは Codex、仕上げと組み込みは Claude」を提案し、オーナーが大きさ・範囲・色数・使う場所を決めた
+  - world.md・characters.md・pixel-art-brief.md を書いた（上記 handoff）
+- **うまくいかなかったこと**:
+  - 一覧画像を作るとき、最初は `scripts/process_game_art.py` の切り出しを使おうとした。しかし客のシートは隣の人と肩が触れていて、「items touch each other; seam splitting supports single-row sheets only」で止まった。継ぎ目で切り分ける処理が1行のシートにしか対応していないため。一覧は等分の切り出しに切り替え、端に隣の人が写り込むことをオーナーに伝えた。ゲームに入れるのはドット絵になったので、この切り出しは今後も使わない
+  - オーナーの回答「1でaで名前だけ」の「1」は、ルール採用の質問とも「第1案」とも読めた。前後関係から「名前は第1案」と解釈し、そのことをオーナーに明示した
+  - 依頼書に、製造の各工程が「約0.9秒」と最初に書いた。コードを確認すると 0.75秒・0.75秒・0.9秒だったので直した
+- 影響範囲: `docs/world/world.md`、`docs/world/characters.md`、`docs/art/pixel-art-brief.md`（新規）、`WORKLOG.md`。コードの変更なし。
+- 検証: 文書のみ。`npm test` 47件 pass。
+- 決定:
+  - 製造アニメのドット絵にはケーキ本体を描かず、台の上を空けてもらう。レシピごとに形が違う（8種）ため、9工程×8レシピの組み合わせを描かずに済む
+  - 試作を1回はさんでから全体を作る。全体の点数が多く（アイコン12、ちびキャラ13×2コマ、製造9×4コマ）、方向違いの手戻りが大きいため
 - 次のアクション: 上記 `Current handoff` を参照。
