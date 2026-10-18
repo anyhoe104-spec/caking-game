@@ -17,6 +17,8 @@ export const miruImg = (mood = "normal") => `${BASE}images/characters/miru-${moo
 export const customerImg = (avatarPath) => `${BASE}${avatarPath}`;
 
 const RECIPE_FILES = { "ショートケーキ": "shortcake", "プリン": "pudding", "イチゴタルト": "tart", "チョコケーキ": "choco-cake", "ミルフィーユ": "millefeuille", "フルーツパイ": "fruit-pie", "デコレーションケーキ": "decoration-cake", "王様のケーキ": "royal-cake" };
+export const staffImg = portrait => `${BASE}images/characters/staff-${portrait}.png`;
+
 export const ingredientImg = key => `${BASE}images/ingredients/${key}.png`;
 
 export const recipeImg = name => `${BASE}images/recipes/${RECIPE_FILES[name] ?? "shortcake"}.png`;

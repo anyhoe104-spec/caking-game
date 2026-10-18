@@ -1,4 +1,5 @@
 import { DECORATIONS, STAFF } from "../game/shop.js";
+import { staffImg } from "../game/assets.js";
 
 const DECO_NOTE = {
   "rose-table": "客席の雰囲気が華やかになります",
@@ -38,9 +39,12 @@ export default function UpgradeView({ kind, state, onBuyDecoration, onEquipDecor
               className={`upgradeCard card stagger ${owned ? "owned" : ""} ${equipped ? "equipped" : ""}`}
               style={{ "--i": index }}
             >
-              <span className="upIcon" aria-hidden="true">{deco ? item.icon : "👤"}</span>
+              {deco
+                ? <span className="upIcon" aria-hidden="true">{item.icon}</span>
+                : <img className="upIcon upIcon--portrait" src={staffImg(item.portrait)} alt="" loading="lazy" />}
               <strong className="upName">{item.name}</strong>
               <p className="upEffect">{deco ? DECO_NOTE[item.id] ?? "お店の装飾" : item.effect}</p>
+              {!deco && item.note && <p className="upNote">{item.note}</p>}
               <span className={`upPrice ${!owned && !affordable ? "upPrice--poor" : ""}`}>
                 {owned ? (equipped ? "装備中" : "購入済み") : `${item.price.toLocaleString()}P`}
               </span>

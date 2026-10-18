@@ -5,9 +5,11 @@ export const DECORATIONS = [
 ];
 
 export const STAFF = [
-  { id: "baker", name: "見習いパティシエ", price: 3000, effect: "獲得ポイント +10%", pointsMultiplier: 1.1 },
-  { id: "buyer", name: "仕入れ上手のリコ", price: 4000, effect: "素材の自然回復 +1", regenBonus: 1 },
-  { id: "seller", name: "販売名人ソラ", price: 6000, effect: "売上 +10%", salesMultiplier: 1.1 },
+  // The ids predate the current cast and stay as they are so saved hires carry over.
+  // Names and roles follow docs/world/characters.md (the merchant house's staff).
+  { id: "baker", name: "商会メイドのアニス", portrait: "anis", price: 3000, effect: "獲得ポイント +10%", note: "明るい接客で、お客様の満足度が上がります", pointsMultiplier: 1.1 },
+  { id: "buyer", name: "侍従長のクミン", portrait: "cumin", price: 4000, effect: "素材の自然回復 +1", note: "商会の貯蔵庫を切り盛りし、素材をこまめに補います", regenBonus: 1 },
+  { id: "seller", name: "経理のシナモン", portrait: "cinnamon", price: 6000, effect: "売上 +10%", note: "帳簿に強く、値付けと売り方を整えます", salesMultiplier: 1.1 },
 ];
 
 export function buyDecoration(state, decoration) {

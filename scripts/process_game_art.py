@@ -54,6 +54,13 @@ PROP_SHEETS = [
     ("props/recipes-b-v1.png", (4, 1), ["millefeuille", "fruit-pie", "decoration-cake", "royal-cake"], "recipes", 640),
     ("props/ingredients-v1.png", (4, 2), ["flour", "sugar", "egg", "butter", "milk", "cream", "strawberry", None], "ingredients", 512),
 ]
+# Staff portraits: the front view (left figure) of each three-view sheet, head and shoulders.
+STAFF_PORTRAITS = [
+    ("characters/anis/anis-ref-v1.png", "staff-anis"),
+    ("characters/cumin/cumin-ref-v1.png", "staff-cumin"),
+    ("characters/cinnamon/cinnamon-ref-v1.png", "staff-cinnamon"),
+]
+PORTRAIT_SIZE = 256
 BACKGROUNDS = [
     ("backgrounds/bg-shop-v1.png", "bg-shop"),
     ("backgrounds/bg-kitchen-v1.png", "bg-kitchen"),
@@ -189,6 +196,19 @@ def crop_items(sheet: Path, grid: tuple[int, int], names: list[str | None], pad:
     return items
 
 
+def bust(figure: Image.Image, size: int, share: float = 0.34) -> Image.Image:
+    """A square head-and-shoulders crop from a full-length figure, centred on the head."""
+    alpha = np.asarray(figure)[..., 3] > 0
+    side = round(figure.height * share)
+    head = alpha[: round(figure.height * 0.15)]
+    cx = int(np.nonzero(head)[1].mean()) if head.any() else figure.width // 2
+    left = min(max(0, cx - side // 2), max(0, figure.width - side))
+    square = Image.new("RGBA", (side, side), (0, 0, 0, 0))
+    part = figure.crop((left, 0, left + side, side))
+    square.paste(part, (0, 0), part)
+    return square.resize((size, size), Image.Resampling.LANCZOS)
+
+
 def fit_square(item: Image.Image, size: int, margin: float = 0.04) -> Image.Image:
     inner = round(size * (1 - 2 * margin))
     scale = inner / max(item.size)
@@ -217,6 +237,10 @@ def build(check: bool) -> list[tuple[Path, Image.Image]]:
     for sheet, grid, names, folder, size in PROP_SHEETS:
         for name, im in crop_items(ART / sheet, grid, names).items():
             outputs.append((OUT / folder / f"{name}.png", fit_square(im, size)))
+
+    for sheet, name in STAFF_PORTRAITS:
+        front = crop_items(ART / sheet, (3, 1), [name, "side", "back"])[name]
+        outputs.append((OUT / "characters" / f"{name}.png", bust(front, PORTRAIT_SIZE)))
 
     for sheet, name in BACKGROUNDS:
         im = Image.open(ART / sheet).convert("RGB")

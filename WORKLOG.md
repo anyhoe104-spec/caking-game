@@ -5,31 +5,29 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 ## Current handoff
 
 - Updated: 2026-10-18 JST
-- 作業者: **Claude**（開始スキルから再開）
-- ブランチ: `claude/nifty-cori-cbmgi6`。基点 `951b89e`（PR #38 マージ後の `main`）
-- 目的: 承認済みの原本（art/）で、ゲームの旧い絵を置き換える。
-- 画像の次期制作計画は `docs/art/production-plan.md`（PR #39 で追加、2026-10-16 作成）。§1 の加工スクリプトと表示用画像は、客12名を除き PR #40 で完了（2026-10-18 マージ）。
+- 作業者: **Claude**
+- ブランチ: `claude/nifty-cori-cbmgi6`。**PR #39 のブランチ（`claude/dazzling-heisenberg-30tovi`、`4a7bb92`）の上に積んでいる**。PRのbaseは `main`
+- 目的: (1) PR #39 の衝突解消、(2) スタッフを設定のキャラ3名（アニス・クミン・シナモン）に切り替え。いずれもオーナーの指示。
 - 外部状態確認（**2026-10-18、`git fetch origin '+refs/heads/*:refs/remotes/origin/*'` と GitHub API で実測**）:
-  - PR #38（設定資料21点の原本登録）は **2026-10-18 08:22 JST にマージ済み**
-  - PR #39（画像の次期制作計画 `docs/art/production-plan.md`）は OPEN。本作業はその計画の 1-3・1-4 のうち客以外にあたる
-  - ダッシュボード: W41（2026-10-13）で CAKING の未解決は旧ブランチ6件の削除のみ（Issue #27）。個別評価は 2026-08-25 のままで古い
+  - PR #40（絵の置き換え26点）は **2026-10-18 10:47 JST にマージ済み**
+  - PR #39（制作計画）: `main` を取り込み、衝突を解消して push 済み（`4a7bb92`）。`main` に衝突なくマージできることを `git merge-tree` で確認。未マージ
 - 完了:
-  - `scripts/process_game_art.py` を追加。原本シートから、切り出し・背景透過・縮小をして `public/images/` の画像を作る（原本は無加工）
-  - 画像26点を置き換えた（ミフィ5・ミル3・ケーキ8・素材7・背景3）。ファイル名は既存のまま。合計 22.4MB → 15.3MB
-  - 食材タブを、絵文字から新しい素材の絵に変更（素材の絵はこれまで未使用だった）
-- 進行中: なし。PR のレビュー・マージ待ち。
+  - PR #39: WORKLOG.md の衝突を解消（main の handoff を採用、PR #39 の 10-16 の記録を日付順に挿入、削除行なし）。計画書に 2026-10-18 時点の進捗の注記を追加
+  - スタッフ3名を切り替えた（名前・説明・立ち絵）。効果・価格・ID は維持
+- 進行中: なし。
 - ブロッカーとリスク:
-  - 🟡 **客12名は旧絵のまま。** 新しい客の絵は別人のため、名前の決定（production-plan 1-5）が必要。オーナー判断
-  - 🟡 コードで描いたミニキャラ（店先・工房のミフィ）、スタッフのアイコンは旧いまま。production-plan §3 の対象
-  - 🟡 BGM の方向性はオーナーの回答待ち（2026-10-16 に仕組みと選択肢を説明済み）
-  - 🟡 実機確認の残りと、PRごとに自動で走る CI が無い点は継続（下記）
+  - 🟡 **マージ順: PR #39 → 本作業のPR。** 逆順でも内容は入るが、本PRが #39 の内容も一緒に持ち込む
+  - 🟡 客12名は旧絵のまま（名前の決定待ち、production-plan 1-5）
+  - 🟡 コードで描いたミニキャラ（店先・工房）は旧いまま（production-plan §3）
+  - 🟡 BGM の方向性はオーナーの回答待ち
+  - 🟡 実機確認の残りと、PRごとに自動で走る CI が無い点は継続
 - 次のアクション:
-  1. オーナーが本作業の PR を確認・マージする（マージで GitHub Pages に即時公開される）
-  2. 客12名の新しい名前をオーナーが決めたら、`scripts/process_game_art.py` に customers-a/b を追加し、`src/game/customers.js` の名前・画像パスと一緒に置き換える
-  3. BGM: オーナーのイメージを受け取ったら、まず営業中の曲（`scripts/audio/music.py` の `shop_bgm`）を書き換えて試す
-  4. 実機確認の残り（オーナー作業）: D11〜D17／起動直後のBGM・再開ダイアログ中の無音／飾りのレシピ別保持／バックアップのファイル保存。今回の絵の差し替えも実機で見てもらう
+  1. オーナーが PR #39 → 本作業のPR の順にマージ
+  2. 客12名の名前が決まったら、customers-a/b を加工スクリプトに追加し、名前と画像を一緒に置き換える
+  3. BGM: イメージを受け取ったら、営業中の曲から書き換えて試す
+  4. 実機確認の残り（オーナー作業）。新しい絵とスタッフ画面も実機で見てもらう
   5. 旧ブランチの削除（オーナー作業、Issue #27）
-- 検証（2026-10-18、本ブランチ）: lint 0件、`npm test` 47件 pass、build 成功。`verify-offline`（42画像をオフラインでデコード）・`verify-story`・`verify-atelier`・`verify-save`・`verify-bgm`・`verify-playthrough` すべて PASS。主要11画面を差し替え前後で撮影して比較した。
+- 検証（2026-10-18、本ブランチ）: lint 0件、`npm test` 47件 pass、build 成功。`verify-offline`（45画像をオフラインでデコード）・`verify-story`・`verify-atelier`・`verify-save`・`verify-bgm`・`verify-playthrough` すべて PASS。スタッフ画面を撮影して確認した。
 
 ## Dated work reports
 ### 2026-09-29 — Claude
@@ -825,4 +823,24 @@ This file is the shared source of truth for cross-device and cross-agent handoff
   - 背景はPNGのまま、ファイル名も変えなかった（参照箇所のコードを変えないため）
   - 加工には scipy を使った。ゲームの依存ではなく、スクリプトを手元で実行するときだけ必要
 - ダッシュボードの未解決事項: Issue #27（旧ブランチ）は未対応（オーナー作業）。
+- 次のアクション: 上記 `Current handoff` を参照。
+
+### 2026-10-18 (2) — Claude — PR #39 の衝突解消とスタッフ3名の切り替え
+
+- 目的: オーナーの指示「40マージした。39の衝突解消して。スタッフは設定があるアニスなどの三名に切り替え」。
+- 完了した作業:
+  - **PR #39**: `main` を `claude/dazzling-heisenberg-30tovi` にマージした（rebase ではなくマージ。他セッションのブランチの履歴を書き換えないため）
+    - 衝突は WORKLOG.md の handoff 冒頭だけ。main の handoff（PR #40 で更新された新しい方）を採用し、PR #39 の追記は現状に合わせて1行に書き直した。PR #39 の 2026-10-16 の作業記録は、10-16 Codex と 10-18 の間に日付順で入れた
+    - main との差分が追加行のみ（削除0）であることを確認した
+    - 計画書 `docs/art/production-plan.md` には、§1 の一部が PR #40 で済んだことを注記した。「38点そろってから1つのPRで」とあったが、客以外の26点を先に出したため
+  - **スタッフ**: 「アニスなどの三名」を、設定で商会に属するアニス（メイド）・クミン（侍従長）・シナモン（経理）と解釈した。ローレル（商会長）とペッパー（新聞配達）は対象外
+    - 役割と効果の対応: アニス＝接客で獲得ポイント+10%、クミン＝貯蔵庫の切り盛りで素材回復+1、シナモン＝帳簿に強く売上+10%。価格順（3,000/4,000/6,000P）も同じ
+    - 内部ID（baker / buyer / seller）は変えず、雇用済みのセーブを引き継げるようにした
+    - 立ち絵は三面図の正面から頭と肩を切り出した（加工スクリプトに `STAFF_PORTRAITS` と `bust()` を追加）。スクリプトを再実行しても、既存の26点はバイト単位で同一だった
+- **うまくいかなかったこと**:
+  - 衝突解消後、最初は本作業を `main` から作業ブランチに載せた。しかし本作業でも WORKLOG の handoff を書き換えるため、PR #39 のマージ後に同じ行でまた衝突すると気づいた。そこで PR #39 のブランチの上に載せ直した（コミット前に stash で移動したので、やり直しの痕跡は残っていない）
+  - PR #39 のブランチへの push は、拒否されるかもしれないと考えていた（9/29 にはブランチ削除が 403 で拒否された）。実際には通った
+- 影響範囲: PR #39 のブランチ（`WORKLOG.md`、`docs/art/production-plan.md`）。本ブランチでは `src/game/shop.js`、`src/game/assets.js`、`src/components/UpgradeView.jsx`、`src/App.css`、`src/App.jsx`（コメント1行）、`scripts/process_game_art.py`、`public/images/characters/staff-*.png`（新規3点）、`docs/art/production-status.md`、`WORKLOG.md`。
+- 検証: 上記 `Current handoff` の「検証」を参照。
+- 決定: スタッフの効果は、キャラの役割に合うものを割り当てた。数値は変えていない。
 - 次のアクション: 上記 `Current handoff` を参照。
