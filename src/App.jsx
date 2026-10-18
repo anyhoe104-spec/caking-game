@@ -263,7 +263,7 @@ export default function App() {
     return () => document.documentElement.classList.remove("gamePaused");
   }, [paused]);
 
-  // ── Material regen (respects リコ's hiring bonus) ────────────
+  // ── Material regen (respects クミン's hiring bonus) ──────────
   useEffect(() => {
     if (paused || settingsOpen || storyChapter) return;
     const timer = setInterval(() => {
