@@ -843,6 +843,13 @@ body {
 .mIcon {
   font-size: 28px;
 }
+.mIcon--art {
+  display: block;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto;
+  object-fit: contain;
+}
 .mName {
   font-size: 12px;
   font-weight: 700;
