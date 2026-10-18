@@ -1,3 +1,76 @@
+
+## 2026-10-18 — ゲーム表示用の画像26点を原本から作成（Claude）
+
+`scripts/process_game_art.py` で、`art/` の承認済みシートから `public/images/` の表示用画像を作り、旧絵を置き換えた。原本は無加工。ファイル名は既存と同じなので、画像の置き換えだけで画面に反映される。
+
+| 置き換え | 点数 | 元のシート |
+|---|---|---|
+| ミフィ立ち絵（normal / happy / sad / excited / working） | 5 | mify-game-a・mify-game-b |
+| ミル立ち絵（normal / happy / thinking） | 3 | miru-game |
+| ケーキ | 8 | recipes-a・recipes-b |
+| 素材 | 7 | ingredients |
+| 背景（店・厨房・エンディング） | 3 | bg-shop・bg-kitchen・bg-ending |
+
+- 加工内容
+  - シート上で一体ずつつながった形として切り出す。ミルのシートは3体が羽や光の粒でつながっているため、インクの少ない経路で切り分けた
+  - 外周につながる紙の白だけを透過する。エプロンや皿など、内側の白は残す
+  - 輪郭は半透明にし、白のにじみを抜く
+  - キャラはポーズ間の大きさをそろえ、足元を一致させる
+- 素材の絵はこれまでどこにも表示されていなかった（食材タブは絵文字だった）。食材タブで新しい絵を表示するようにした
+- **客12名は対象外。** 新しい客の絵は現行の12名と別人のため、名前の決定（[production-plan](production-plan.md) の 1-5、オーナー判断）を待つ
+- 再生成: `python3 -m pip install pillow numpy scipy` のあと `python3 scripts/process_game_art.py`
+
+---
+
+## 2026-10-16 — 修正4点も承認・原本登録
+
+オーナーの「画像類も承認でプッシュ」により修正c2の4点を採用。先行17点と合わせ21点すべて承認済み。過去記録の承認待ちは解消。本番組込み・マージは別作業。
+
+- art/characters/pepper/pepper-ref-v1.png
+- art/props/recipes-a-v1.png
+- art/characters/customers/customers-b-v1.png
+- art/backgrounds/bg-ending-v1.png
+
+PR #1候補28PNGはオーナー承認のGit外保管先review-archive/caking-anime-pr1/へSHA照合して保存。PR先端から除外、過去履歴は維持。
+
+---
+# プロンプトパック制作状況 — 2026-10-15
+
+- バッチ2とMiru2点のPR #37はマージ済み（GitHub MCPで2026-10-15確認）。
+- caking-anime PR #1の21点のうち17点をオーナーが承認。今回art/原本へ登録。下表参照。
+- 残り4点は指定どおり修正c2を作成し、caking-anime/art/_inbox/20261015/へ保存。Git未登録・承認待ち。
+- 今後の候補PNGはart/_inbox/に置きGitへ入れない。PR #1の既存PNGは移動先と除外をオーナーに確認するまで保持。マージ未実施。
+- public/images/・ゲーム・動画への組込みは今回対象外。表情A・16コマ旧候補の採用は未決定。
+
+| 原本 | 状態 |
+|---|---|
+| art/backgrounds/bg-shop-before-v1.png | 承認済み・原本登録 |
+| art/backgrounds/bg-shop-after-v1.png | 承認済み・原本登録 |
+| art/backgrounds/bg-harbor-window-v1.png | 承認済み・原本登録 |
+| art/backgrounds/bg-door-key-v1.png | 承認済み・原本登録 |
+| art/characters/mify/mify-game-a-v1.png | 承認済み・原本登録 |
+| art/characters/mify/mify-game-b-v1.png | 承認済み・原本登録 |
+| art/characters/miru/miru-game-v1.png | 承認済み・原本登録 |
+| art/characters/anis/anis-ref-v1.png | 承認済み・原本登録 |
+| art/characters/cumin/cumin-ref-v1.png | 承認済み・原本登録 |
+| art/characters/cinnamon/cinnamon-ref-v1.png | 承認済み・原本登録 |
+| art/characters/laurel/laurel-ref-v1.png | 承認済み・原本登録 |
+| art/characters/customers/customers-a-v1.png | 承認済み・原本登録 |
+| art/backgrounds/bg-shop-v1.png | 承認済み・原本登録 |
+| art/backgrounds/bg-kitchen-v1.png | 承認済み・原本登録 |
+| art/props/recipes-b-v1.png | 承認済み・原本登録 |
+| art/props/ingredients-v1.png | 承認済み・原本登録 |
+| art/characters/mify/mify-expressions-b-v1.png | 承認済み・原本登録 |
+
+| 修正候補 | 修正内容 | 状態 |
+|---|---|---|
+| pepper-ref-c2 | 犬の垂れ耳と巻き尾 | 承認待ち |
+| recipes-a-c2 | 右端タルトをいちごのみへ | 承認待ち |
+| customers-b-c2 | シェフ帽子全体が収まる余白 | 承認待ち |
+| bg-ending-c2 | 独立ガラスケースと上部中央の文字余白、夕焼け港町維持 | 承認待ち |
+
+<details><summary>過去の棚卸し履歴（現在の作業指示ではない）</summary>
+
 > 2026-10-14更新: Mify v2・バッチ2の4点・Miru右案の三面図と表情2点は採用済み。今回Miru原本2点をPR #37へ登録。バッチ4〜9の20点とMify感情B1点はcaking-anime PR #1へ候補保存。全バッチに画像あり、未採用・修正候補あり。本番未組込み。GitHub MCPで2026-10-14確認。
 >
 > [新規21点レビュー一覧](https://github.com/anyhoe104-spec/caking-anime/blob/codex/art-batch2/docs/art/review-batches-4-9.md)。以下は過去の棚卸し履歴。
@@ -60,3 +133,5 @@
 | 9-1 | `recipes-a-v1.png` | 未登録・基準画像待ち |
 | 9-2 | `recipes-b-v1.png` | 未登録・基準画像待ち |
 | 9-3 | `ingredients-v1.png` | 未登録・基準画像待ち |
+
+</details>
