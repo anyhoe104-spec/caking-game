@@ -4,15 +4,15 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-10-20 JST / Codex。
-- Objective: 指定された無加工の初回生成PNG5点を art-inbox の inbox/20261020/ へ配送する。
-- Branch: art-inbox。基点 8db3690f987ec285dfce27e4065821f2d690d366。
-- Completed: palette-c1、cerise-icon-c1、sage-icon-c1、mify-idle-c1、craft-whisk-c1 を元画像からバイト単位でコピー。5点のSHA256一致・PNG検証に合格。
-- Provenance: cerise-icon-c1.png はローカルの cerise-icon-c1-superseded.png（初回生成）。c2は含めない。縮小・減色・切り抜き・再生成なし。
-- Delivery: このコミットを origin/art-inbox へpushしリモートcommit/treeを照合する。候補ブランチのためPR・mainへのマージなし。
-- Next: Claudeが候補画像を取得して確認。正式登録・ゲーム反映・残り制作は本配送に含まない。
-- External: 同日GitHub MCPでmainのasset-management改定を確認。Gitでart-inbox先端確認。ブラウザ不使用。
-- Other issues: dashboardの旧ブランチ削除判断・BGM・実機・CI課題は対象外。前ターンに読んだW42は今回の候補転送より古い。
+- Updated: 2026-10-20 JST / Codex — アイコン2点のc2描き直し。
+- Branch: art-inbox。基点597262531f63ee673831e1b244e2d4c4466616e1。
+- Completed: cerise-icon-c2.png / sage-icon-c2.png を inbox/20261020/ に無加工保存。横48ドット相当を指示し、髪の大きな色面・太い輪郭・省略した装飾を目視確認。
+- Generation: built-in image_gen、cerise 1回、sage 2回（初回が細かく再修正）。参照customers-a-v1、blob 02aaa9c962411322679d422b23c8998d11ae945d。
+- Evidence: icon-c2-prompts.json / sage-c2-revision-prompt.txt / icon-c2-integrity.json。PNG検証・生成出力とのSHA256一致2/2。
+- Limits: 厳密な48格子や16色を保証しない。原画像は加工・旧checker実行なし。Claudeの変換・実寸評価、オーナー採否は未実施。
+- External: 同日GitHub MCPでmain依頼書とPR #46を確認。#46は確認時open、head 05968425e336f6afcd8535d280ec0e720e6845e2の目安とユーザー指示を適用。ブラウザ不使用。
+- Next: origin/art-inboxへpushしcommit/treeを検証。Claudeが2点を変換して見た目評価。正式登録・残り制作は別途。
+- Other issues: dashboardの旧ブランチ整理・BGM・実機・CI課題は対象外。
 ## Dated work reports
 ### 2026-09-29 — Claude
 
@@ -884,3 +884,13 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - うまくいかなかったこと: sandbox内のgit接続が名前解決で1回失敗。承認済みのsandbox外実行で接続・clone成功。既存のdirty checkoutを避け、専用checkoutを使用。画像バイナリは会話に出力しないため転送はgitを使用。ブラウザ不使用。
 - 検証: 無加工SHA256一致5/5、PNG検証5/5。ゲーム変更がないためアプリtest/lint/buildは対象外。
 - 次: push後のremote commit/treeと元画像blob SHAを照合して配送完了を報告。Claudeによる見た目確認・正式登録・残りの制作は別工程。
+
+### 2026-10-20 JST — Codex — cerise/sageを粗いドットのc2へ描き直し
+
+- 目的: 横48ドット相当、髪3〜4色のかたまり、細線と小飾りを省略して候補ブランチへ送る。
+- 完了: built-in image_genでcerise 1回、sage 2回生成。最終2点は1254×1254で無加工コピー。目視で大きな輪郭段差・髪の色面化を確認。PNG検証と元生成ファイルSHA256一致2/2。
+- うまくいかなかったこと: sage初回は眼鏡と髪の輪郭が約80〜100段相当で細かい。1回の追加指示でマスを約2倍にし、ブローチ・指・細い線を省略した。生成画像の格子や色数の厳密適合は主張しない。
+- 記録: inbox/20261020/のc2画像2点、全プロンプト、SHA256記録、本WORKLOG。既存c1は保持。別checkoutにある旧cerise-c2とは別の今回生成画像。
+- 外部状態: 同日MCPでmain依頼書とPR #46（open、head 05968425e336f6afcd8535d280ec0e720e6845e2）を読取。ユーザーが直接示した改定目安を適用。git pull --ff-only origin art-inbox はAlready up to date。ブラウザ不使用。
+- 判断: 無加工候補に旧受け入れcheckerを実行しない。縮小・減色・切り抜きなし。採用・正式登録・ゲーム反映なし。art-inboxはPRもmainマージも行わない。
+- 次: pushのremote commit/treeを照合後、Claudeの変換と実寸評価へ。パレット・mify・whiskの合格見込みはユーザー提供情報で、今回再検査せず。残り制作は未着手。
