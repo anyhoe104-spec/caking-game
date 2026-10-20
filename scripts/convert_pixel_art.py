@@ -8,7 +8,8 @@ makes the real thing from such an original, which stays unmodified in art/:
 
 1. paper connected to the border, and large enclosed gaps of pure white (between
    the legs), become transparent
-2. every pixel snaps to the nearest colour of the shared palette
+2. every pixel snaps to the nearest palette colour as the eye sees it (Lab, with
+   lightness weighted double so pale faces stay pale)
 3. each target dot takes the palette colour covering most of its area, which keeps
    dots crisp whatever grid the source was drawn on
 4. the most-used 16 colours are kept; rarer ones merge into their nearest kept colour
@@ -41,6 +42,8 @@ COLOUR_LIMIT = 16
 PAPER = 243        # darkest channel at or above this, touching the border: background
 GAP_WHITE = 250    # enclosed regions this white and this large are gaps, not highlights
 GAP_MIN_AREA = 400
+LIGHTNESS_WEIGHT = 2.0  # Lab L counts this much more than hue, so faces keep their brightness
+
 
 
 def palette_from_sheet(path: Path, cols: int = 8, rows: int = 4) -> np.ndarray:
@@ -73,9 +76,25 @@ def background(a: np.ndarray) -> np.ndarray:
     return clear
 
 
+def to_lab(rgb: np.ndarray) -> np.ndarray:
+    """sRGB (0-255) to CIE Lab, so "nearest colour" means nearest to the eye."""
+    c = rgb.astype(np.float32) / 255
+    c = np.where(c > 0.04045, ((c + 0.055) / 1.055) ** 2.4, c / 12.92)
+    xyz = c @ np.array([[0.4124, 0.2126, 0.0193], [0.3576, 0.7152, 0.1192], [0.1805, 0.0722, 0.9505]], np.float32)
+    xyz /= np.array([0.9505, 1.0, 1.089], np.float32)
+    f = np.where(xyz > 0.008856, np.cbrt(xyz), 7.787 * xyz + 16 / 116)
+    return np.stack([116 * f[..., 1] - 16, 500 * (f[..., 0] - f[..., 1]), 200 * (f[..., 1] - f[..., 2])], axis=-1)
+
+
 def snap(a: np.ndarray, pal: np.ndarray) -> np.ndarray:
-    d = ((a[:, :, None, :].astype(np.int32) - pal[None, None].astype(np.int32)) ** 2).sum(axis=3)
-    return d.argmin(axis=2)
+    # Plain RGB distance sent pale beard greys to the palette's olive (2026-10-20, sage c2).
+    weight = np.array([LIGHTNESS_WEIGHT, 1.0, 1.0], np.float32)
+    lab, plab = to_lab(a) * weight, to_lab(pal) * weight
+    out = np.empty(a.shape[:2], np.int32)
+    for y in range(0, a.shape[0], 128):  # in bands, to keep memory small
+        d = ((lab[y:y + 128, :, None, :] - plab[None, None]) ** 2).sum(axis=3)
+        out[y:y + 128] = d.argmin(axis=2)
+    return out
 
 
 def fit_box(mask: np.ndarray, aspect: float, pad: float = 0.02) -> tuple[int, int, int, int]:
@@ -118,7 +137,7 @@ def cap_colours(lab: np.ndarray, pal: np.ndarray, limit: int = COLOUR_LIMIT) -> 
         keep = used[np.argsort(freq)[::-1][:limit]]
         for u in used:
             if u not in keep:
-                lab[lab == u] = keep[np.argmin(((pal[keep].astype(int) - pal[u].astype(int)) ** 2).sum(axis=1))]
+                lab[lab == u] = keep[np.argmin(((to_lab(pal[keep]) - to_lab(pal[u])) ** 2).sum(axis=1))]
     return lab
 
 

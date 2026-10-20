@@ -6,6 +6,7 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 - 2026-10-20 Claude追記（試作の変換）: Codex が試作5点を `art-inbox` の `inbox/20261020/` に push（`5972625`、2026-10-20 に `git fetch` で確認）。`scripts/convert_pixel_art.py` で本番のドット数に変換し、5点とも `check_pixel_art.py` に PASS した。見た目では、パレット・ミフィ待機・whisk は良好。cerise・sage のアイコンは、約100ドットの細かさで描かれていたため48ドットではまだらになる。**アイコンは48ドットの粗さで描き直しが必要**。原本登録はまだ。
 - 2026-10-20 Claude追記（採用）: オーナーが **パレット・ミフィ待機・whisk の3点を採用**（2026-10-20 チャット）。原本登録はルールどおり Codex が行う（`inbox/20261020/` の c1 を無加工で `art/pixel/palette-v1.png`・`art/pixel/chibi/mify-idle-v1.png`・`art/pixel/craft/craft-whisk-v1.png` へ、台帳とプロンプトも）。アイコン2点は描き直し待ち。
+- 2026-10-21 Claude追記（アイコン c2）: Codex が cerise・sage の c2 を `art-inbox` に push（2026-10-20 21:15 JST の commit、2026-10-21 に `git fetch` で確認）。SHA-256 は Codex の `icon-c2-integrity.json` と一致した。変換後は2点とも PASS で、48ドットでも髪・顔・眼鏡が読める。オーナーの採否待ち。変換の色の寄せ方を Lab（明るさ2倍の重み）に変えた。
 
 - 2026-10-20 Claude追記（画像の受け渡し方法の変更）: オーナーの決定で、**画像の候補は専用ブランチ `art-inbox` の `inbox/<日付>/` に無加工で push する**ことにした（main にはマージしない）。ブランチは作成済み（`6514c3a`、2026-10-20 に `git ls-remote` で確認）。ドット絵は生成サイズのまま原本とし、ドット数への変換は Claude のスクリプトが行う。`check_pixel_art.py` は変換後の画像に使う。試作5点は Codex の手元で検査し、全点 FAIL（生成サイズ・ぼかしのため。描き手の問題ではない）。次は Codex が試作5点の元画像を `art-inbox` に push → Claude が変換スクリプトを作って検査・実寸確認。
 - 2026-10-20 Claude追記（同日）: オーナーの指示で、`art-inbox` を**ドット絵に限らず、設定資料・ブランディング・アニメ用を含むすべての画像の試作・候補の一時置き場**と明記した。caking-anime の PR や Google Drive など別の場所には置かない（`docs/art/asset-management.md`、`art-inbox` の `inbox/README.md`、`8db3690`）。
@@ -940,3 +941,22 @@ This file is the shared source of truth for cross-device and cross-agent handoff
   - 引数なしで実行すると `art/pixel/` 以下（無加工の原本）を検査して、全部 FAIL になる → ファイルの指定を必須にした
   - 原本の色見本シート（1万色以上）を、そのままパレットとして読んでしまう → 変換スクリプトと同じ方法で、色見本の32色を読むようにした
   - 修正後、色見本シートをパレットに使って、変換後のミフィ・whisk が PASS し、合成テスト画像の判定も変わらないことを確認した
+
+### 2026-10-21 — Claude — アイコン c2 の評価と色の寄せ方の改善
+
+- 目的: Codex が描き直したアイコン c2（cerise・sage）を評価する。
+- 確認: `inbox/20261020/` に cerise-icon-c2・sage-icon-c2（各1254×1254）、プロンプトの記録、整合性の JSON が届いた。SHA-256 は JSON と一致した。採用済み3点（パレット・ミフィ待機・whisk）の原本登録は、まだ main に無い（2026-10-21 確認）
+- 評価: c2 は48ドットの粗さで描かれていて、変換すると髪がかたまりになり、顔・眼鏡・羊の耳が42pxでも読める。c1 の「まだら」は解消した
+- 改善: sage の c2 を変換すると、ひげの口元に緑の点が出た。原因は描き手ではなく、色を RGB の距離でパレットに寄せていたため（淡い灰色がパレットのオリーブに寄った）
+  - Lab（人の目に近い色の距離）に変えると緑は消えたが、sage の顔が日焼けしたように暗くなった
+  - 明るさの重みを2倍・3倍で比べ、2倍に決めた。顔は淡いまま、緑の点も出ない
+  - cerise・ミフィ待機・whisk も2倍で変換し直し、4点とも PASS。見た目もほぼ変わらないことを確認した
+- **うまくいかなかったこと**:
+  - Lab に変えた最初の版では、sage の顔が暗くなった（上記）。重みを足して解決した
+  - 重みを比べるループで、`sed` が2周目に定数の行ごと消してしまい、変換が `NameError` で止まった。定数を戻し、値だけを書き換えるようにした
+- 影響範囲: `scripts/convert_pixel_art.py`（色の寄せ方）、`docs/art/pixel-art-brief.md`（試作の状況）、`WORKLOG.md`。ゲームのコードは変更なし。
+- 検証: 4点の変換結果が PASS、合成テスト画像の判定も変わらないことを確認した。
+- 次のアクション:
+  1. オーナーが cerise・sage の c2 を採用するか決める
+  2. Codex が採用分を原本登録する（パレット・ミフィ待機・whisk の3点も未登録）
+  3. 残りを Codex が作る: 客アイコン10点、ちびキャラ（ミフィ以外の客12名）、製造アニメ8工程。そろったら、Claude が名前の切り替えと一緒にゲームへ組み込む
