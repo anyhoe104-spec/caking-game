@@ -1,0 +1,52 @@
+[
+  {
+    "source": "inbox/20261020/palette-c1.png",
+    "target": "art/pixel/palette-v1.png",
+    "sha256": "82f0bdef26f9384f53d7c84db668ed0b90b18a1c8ba86c70afabf4369c44bf96",
+    "git_blob": "85b6103c0e2187aba646683c8583c6ce5aeb876c",
+    "size": [
+      1774,
+      887
+    ]
+  },
+  {
+    "source": "inbox/20261020/mify-idle-c1.png",
+    "target": "art/pixel/chibi/mify-idle-v1.png",
+    "sha256": "3ca53ffd89e5ee5b91032c85ea8df954fda614b9ffc0db1f0ef7f80cbb189bbb",
+    "git_blob": "8a3945d5e10a92d40e12d041221b0087bb97e718",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "source": "inbox/20261020/craft-whisk-c1.png",
+    "target": "art/pixel/craft/craft-whisk-v1.png",
+    "sha256": "afb3d701fa466dd7d08c4067aa30752520a42b18d36a9c6fa745e8b5ed1e6374",
+    "git_blob": "b1d1a55fb36099db9f049a92590b88f1d77ddf1f",
+    "size": [
+      1774,
+      887
+    ]
+  },
+  {
+    "source": "inbox/20261020/cerise-icon-c2.png",
+    "target": "art/pixel/customers/cerise-icon-v1.png",
+    "sha256": "c85e6d8ea73072401f2c84e305cf89bed802900c1ca4f0af35c71e14c9f09246",
+    "git_blob": "94c1345a1c34090907a7b3385fd011622fd98c36",
+    "size": [
+      1254,
+      1254
+    ]
+  },
+  {
+    "source": "inbox/20261020/sage-icon-c2.png",
+    "target": "art/pixel/customers/sage-icon-v1.png",
+    "sha256": "8b1092049abb76c1497dc229091f50d8d613f85461bd096c020a60927497b64d",
+    "git_blob": "37540a16f0a59961a0f97002a0b265f76ba661fe",
+    "size": [
+      1254,
+      1254
+    ]
+  }
+]

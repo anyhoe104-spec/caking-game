@@ -1,0 +1,16 @@
+# cerise-icon-v1 — 採用原本の生成記録
+
+- 採用日: 2026-10-20、オーナーのチャット承認。
+- 生成: built-in image_gen。
+- 候補: `art-inbox` commit `d99b2d954cd04cd758c031332cea8ca572dc59a1` の `inbox/20261020/cerise-icon-c2.png`。
+- 正式原本: `art/pixel/customers/cerise-icon-v1.png`。
+- 参照: art/characters/customers/customers-a-v1.png。
+- 保存: 無加工コピー。縮小・減色・切り抜きなし。
+- サイズ: 1254×1254。
+- SHA256: `c85e6d8ea73072401f2c84e305cf89bed802900c1ca4f0af35c71e14c9f09246`。
+- Git blob: `94c1345a1c34090907a7b3385fd011622fd98c36`。
+- 仕様検査: 原本へcheckerは実行しない。変換後にClaudeが検査する。
+
+## プロンプト
+
+Use case: stylized-concept. Generate a single extremely coarse 48-by-48 logical-pixel game bust portrait on pure white. Reference image is IDENTITY ONLY: Cerise, the chestnut-haired young woman at UPPER LEFT. Do not imitate its watercolor rendering. Redraw from scratch as an enlarged tiny 48x48 sprite. The entire square canvas has ONLY 48 pixel columns and 48 rows; each visible pixel is a huge square about 1/48 canvas width (26 screen pixels on a 1254px canvas). Absolutely no subpixel details, tiny steps, thin lines, dithering or texture. Face centered, head and shoulders, almost frontal, friendly open smile, large simple brown eyes each only 3x4 logical squares. Chestnut curly hair formed from 4 broad solid color masses: dark brown outline, brown shadow, medium chestnut base, light chestnut highlight. Only 4 or 5 large stepped curl lobes; NO internal strands, no fine curl lines, no speckling. Simplify cherry hair ornament at viewer left into two 3x3 red blocks and one green leaf block; omit small flowers and tiny ribbons. Simple pink blouse and cream collar, broad pink neck bow with no jewelry detail. Thick one-logical-pixel dark brown silhouette outline. All smallest steps must be the SAME LARGE square size, including eyes, hair, ornaments and clothing. Use at most 16 flat colors: #3B292C #65433B #936044 #C18C61 #E4B783 #FFF1D6 #FFDDBB #EFB494 #A64F65 #D97987 #F3A5AA #FFFFFF #CE5B5A #6C7850 #A5AF70 #DBB357. Keep hair entirely within square with modest white margin. No text, no grid lines, no border. Prioritize the very low resolution 48-cell design over ornament and polish.
