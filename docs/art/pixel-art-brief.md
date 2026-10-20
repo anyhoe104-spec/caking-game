@@ -82,7 +82,7 @@
 
 ## 3. 進め方
 
-1. **試作（先に1回だけ）**：共通パレット、A のうち2名（cerise・sage）、B のミフィ、C の whisk。オーナーが方向性を確認する（2026-10-20 に方針承認。変換後の結果は、パレット・ミフィ待機・whisk が合格見込み、アイコン2点は描き直し。詳細は WORKLOG の 2026-10-20 (3)）。候補は `art-inbox` ブランチの `inbox/<日付>/` に無加工で push する（[asset-management.md](asset-management.md)「候補の置き場所」）
+1. **試作（先に1回だけ）**：共通パレット、A のうち2名（cerise・sage）、B のミフィ、C の whisk。オーナーが方向性を確認する（2026-10-20 に方針承認。**パレット・ミフィ待機・whisk はオーナーが採用**（同日）、アイコン2点は描き直し。詳細は WORKLOG の 2026-10-20 (3)）。候補は `art-inbox` ブランチの `inbox/<日付>/` に無加工で push する（[asset-management.md](asset-management.md)「候補の置き場所」）
 2. 試作が通ったら残りを作る。A・B・C の順でよい
 3. 各段階でオーナーの採用を受けてから原本登録する（`docs/art/asset-log.md` に1行ずつ、プロンプトは `docs/art/prompts/`）
 4. **客の名前と絵は同時に切り替える**（オーナー決定）。A と B の客12名がそろうまで、ゲームの名前は変えない
@@ -95,10 +95,9 @@
 ```
 python3 -m pip install pillow numpy
 python3 scripts/check_pixel_art.py <変換後の画像> --kind icon                       # 採用前の候補を変換したもの
-python3 scripts/check_pixel_art.py                                                  # art/pixel/ 以下すべて
 ```
 
-種類（icon / chibi / craft / palette）は `art/pixel/` 以下のフォルダ名で決まる。採用前の候補は `--kind` で指定する。結果は1ファイル1行の PASS / FAIL と理由だけで、画像の中身は出力しない。
+種類（icon / chibi / craft / palette）は `--kind` で指定する（フォルダ名からも判定する）。`art/pixel/` の原本は無加工なので検査しない。共通パレットには原本の色見本シート（`art/pixel/palette-v1.png`）をそのまま使える。結果は1ファイル1行の PASS / FAIL と理由だけで、画像の中身は出力しない。
 
 - 指定のドット数ちょうど（または均一な整数倍）
 - 色数が16色以内で、共通パレットの色だけを使っている

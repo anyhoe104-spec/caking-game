@@ -4,7 +4,8 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- 2026-10-20 Claude追記（試作の変換）: Codex が試作5点を `art-inbox` の `inbox/20261020/` に push（`5972625`、2026-10-20 に `git fetch` で確認）。`scripts/convert_pixel_art.py` で本番のドット数に変換し、5点とも `check_pixel_art.py` に PASS した。見た目では、パレット・ミフィ待機・whisk は良好。cerise・sage のアイコンは、約100ドットの細かさで描かれていたため48ドットではまだらになる。**アイコンは48ドットの粗さで描き直しが必要**。原本登録はまだ（オーナーの採否待ち）。
+- 2026-10-20 Claude追記（試作の変換）: Codex が試作5点を `art-inbox` の `inbox/20261020/` に push（`5972625`、2026-10-20 に `git fetch` で確認）。`scripts/convert_pixel_art.py` で本番のドット数に変換し、5点とも `check_pixel_art.py` に PASS した。見た目では、パレット・ミフィ待機・whisk は良好。cerise・sage のアイコンは、約100ドットの細かさで描かれていたため48ドットではまだらになる。**アイコンは48ドットの粗さで描き直しが必要**。原本登録はまだ。
+- 2026-10-20 Claude追記（採用）: オーナーが **パレット・ミフィ待機・whisk の3点を採用**（2026-10-20 チャット）。原本登録はルールどおり Codex が行う（`inbox/20261020/` の c1 を無加工で `art/pixel/palette-v1.png`・`art/pixel/chibi/mify-idle-v1.png`・`art/pixel/craft/craft-whisk-v1.png` へ、台帳とプロンプトも）。アイコン2点は描き直し待ち。
 
 - 2026-10-20 Claude追記（画像の受け渡し方法の変更）: オーナーの決定で、**画像の候補は専用ブランチ `art-inbox` の `inbox/<日付>/` に無加工で push する**ことにした（main にはマージしない）。ブランチは作成済み（`6514c3a`、2026-10-20 に `git ls-remote` で確認）。ドット絵は生成サイズのまま原本とし、ドット数への変換は Claude のスクリプトが行う。`check_pixel_art.py` は変換後の画像に使う。試作5点は Codex の手元で検査し、全点 FAIL（生成サイズ・ぼかしのため。描き手の問題ではない）。次は Codex が試作5点の元画像を `art-inbox` に push → Claude が変換スクリプトを作って検査・実寸確認。
 - 2026-10-20 Claude追記（同日）: オーナーの指示で、`art-inbox` を**ドット絵に限らず、設定資料・ブランディング・アニメ用を含むすべての画像の試作・候補の一時置き場**と明記した。caking-anime の PR や Google Drive など別の場所には置かない（`docs/art/asset-management.md`、`art-inbox` の `inbox/README.md`、`8db3690`）。
@@ -935,3 +936,7 @@ This file is the shared source of truth for cross-device and cross-agent handoff
   1. オーナーが、パレット・ミフィ待機・whisk の採否を決める
   2. Codex がアイコン2点を48ドットの粗さで描き直し、`art-inbox` に c2 として push する
   3. 採用分を Codex が原本登録する（`art/pixel/...`、台帳・プロンプト）。そのあと残りの素材を作る
+- 追記（同日）: オーナーがパレット・ミフィ待機・whisk の3点を採用した。原本を `art/pixel/` に置くと、`check_pixel_art.py` に2つの問題が出るとわかり、直した
+  - 引数なしで実行すると `art/pixel/` 以下（無加工の原本）を検査して、全部 FAIL になる → ファイルの指定を必須にした
+  - 原本の色見本シート（1万色以上）を、そのままパレットとして読んでしまう → 変換スクリプトと同じ方法で、色見本の32色を読むようにした
+  - 修正後、色見本シートをパレットに使って、変換後のミフィ・whisk が PASS し、合成テスト画像の判定も変わらないことを確認した

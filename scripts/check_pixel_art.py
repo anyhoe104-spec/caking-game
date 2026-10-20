@@ -4,15 +4,16 @@
 Run it before registering or pushing pixel art, so problems are caught where the
 art was made rather than after a round trip:
 
-    python3 -m pip install pillow numpy
-    python3 scripts/check_pixel_art.py                       # everything under art/pixel/
-    python3 scripts/check_pixel_art.py art/_inbox/20261020/*.png --kind icon
-    python3 scripts/check_pixel_art.py --palette art/pixel/palette-v1.png FILE...
+    python3 -m pip install pillow numpy scipy
+    python3 scripts/check_pixel_art.py CONVERTED.png --kind icon
+    python3 scripts/check_pixel_art.py --palette art/pixel/palette-v1.png FILE... --kind chibi
 
-The kind of each file (icon / chibi / craft / palette) comes from its folder under
-art/pixel/, or from --kind for candidates that are not filed yet. Output is one
-line per file with PASS or FAIL and the reasons; nothing about the image itself
-is printed. Exit status is 1 if any file fails.
+Check the output of scripts/convert_pixel_art.py, not the originals in art/pixel/:
+those are the generator's unmodified images and fail by nature (2026-10-20 rule).
+The shared palette may be the original swatch sheet; its swatch colours are read
+the same way the converter reads them. Output is one line per file with PASS or
+FAIL and the reasons; nothing about the image itself is printed. Exit status is 1
+if any file fails.
 """
 
 from __future__ import annotations
@@ -124,17 +125,18 @@ def check(path: Path, kind: str, palette: set[tuple[int, int, int]] | None) -> l
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("files", nargs="*", type=Path, help="default: every PNG under art/pixel/")
-    parser.add_argument("--kind", choices=sorted(KINDS), help="kind for files outside art/pixel/<folder>/")
+    parser.add_argument("files", nargs="+", type=Path, help="converted images (not the originals in art/pixel/)")
+    parser.add_argument("--kind", choices=sorted(KINDS), help="icon / chibi / craft / palette (default: from the folder name)")
     parser.add_argument("--palette", type=Path, help="default: art/pixel/palette-v1.png when it exists")
     args = parser.parse_args()
 
-    files = args.files or sorted((ROOT / "art" / "pixel").rglob("*.png"))
-    if not files:
-        print("no files to check")
-        return 0
+    files = args.files
     palette_path = args.palette or ROOT / "art" / "pixel" / "palette-v1.png"
-    palette = colours(white_to_clear(np.asarray(Image.open(palette_path).convert("RGBA")))) if palette_path.exists() else None
+    palette = None
+    if palette_path.exists():
+        sys.path.insert(0, str(ROOT / "scripts"))
+        from convert_pixel_art import palette_from_sheet  # same swatch reading as the converter
+        palette = {tuple(int(v) for v in c) for c in palette_from_sheet(palette_path)}
     if palette is None:
         print("note: no shared palette found; palette membership not checked")
 
