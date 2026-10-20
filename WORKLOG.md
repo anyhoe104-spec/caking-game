@@ -5,6 +5,7 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 ## Current handoff
 
 - 2026-10-20 Claude追記（画像の受け渡し方法の変更）: オーナーの決定で、**画像の候補は専用ブランチ `art-inbox` の `inbox/<日付>/` に無加工で push する**ことにした（main にはマージしない）。ブランチは作成済み（`6514c3a`、2026-10-20 に `git ls-remote` で確認）。ドット絵は生成サイズのまま原本とし、ドット数への変換は Claude のスクリプトが行う。`check_pixel_art.py` は変換後の画像に使う。試作5点は Codex の手元で検査し、全点 FAIL（生成サイズ・ぼかしのため。描き手の問題ではない）。次は Codex が試作5点の元画像を `art-inbox` に push → Claude が変換スクリプトを作って検査・実寸確認。
+- 2026-10-20 Claude追記（同日）: オーナーの指示で、`art-inbox` を**ドット絵に限らず、設定資料・ブランディング・アニメ用を含むすべての画像の試作・候補の一時置き場**と明記した。caking-anime の PR や Google Drive など別の場所には置かない（`docs/art/asset-management.md`、`art-inbox` の `inbox/README.md`、`8db3690`）。
 
 - 2026-10-20 Claude追記: オーナーがローカル Codex の試作（パレット・cerise/sage アイコン・ミフィ待機・whisk）を見て「方針は良い」と判断（2026-10-20 チャット）。試作画像は未登録で、Claude からは見えていない（2026-10-20 に `git fetch` で `art/pixel/` が無いことを確認）。依頼書 §4 の検査を `scripts/check_pixel_art.py` として追加した。次は Codex が試作5点を検査・原本登録して push → Claude も同じ検査 → 残りの制作へ。
 
@@ -903,3 +904,4 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 影響範囲: 上記3文書、`WORKLOG.md`、`art-inbox` ブランチ。ゲームのコードは変更なし。
 - 検証: 文書のみ。`art-inbox` の作成は `git ls-remote` で確認した。
 - 次のアクション: Codex（PC）が試作5点の元画像を `art-inbox` の `inbox/20261020/` に push → Claude が変換スクリプト（`scripts/process_game_art.py` にドット絵の処理を追加）を作り、`check_pixel_art.py` で検査し、ゲーム内の実寸で見え方を確認してオーナーに見せる。
+- 追記（同日）: オーナーから「art-inbox は今回のドット絵だけでなく、設定資料の試作も全部入れるルールか」と確認があった。元の文面は「人に見せる候補」としか書いておらず、種類が明示されていなかった。そのため、対象（設定資料・ドット絵・ブランディング・アニメ用）と「別の場所に置かない」ことを書き足し、`art-inbox` の README も合わせた。
