@@ -4,21 +4,15 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- 2026-10-20 Claude追記: オーナーがローカル Codex の試作（パレット・cerise/sage アイコン・ミフィ待機・whisk）を見て「方針は良い」と判断（2026-10-20 チャット）。試作画像は未登録で、Claude からは見えていない（2026-10-20 に `git fetch` で `art/pixel/` が無いことを確認）。依頼書 §4 の検査を `scripts/check_pixel_art.py` として追加した。次は Codex が試作5点を検査・原本登録して push → Claude も同じ検査 → 残りの制作へ。
-
-- Updated: 2026-10-19 JST / 作業者: Codex（ChatGPT Work Mode）
-- 目的: ドット絵試作をローカルCodexへ引き継ぐ。オーナーが資料のcommit・pushを明示依頼。
-- 作業ブランチ: `codex/pixel-art-local-handoff-20261019`
-- 更新前の基点: `2dfde794ec20e869b6c16fae1b0f717a32b2a062`。2026-10-19 GitHubコネクタでmainとPR #42のマージを確認。
-- 詳細: [ローカル引き継ぎ](docs/art/pixel-art-handoff-20261019.md)。
-- 完了: 依頼書・設定・台帳・原本の所在と識別情報を確認。試作5点の仕様・失敗記録・再開手順を整理。
-- 未完: パレット、cerise・sageアイコン、ミフィ待機2コマ、whisk4コマはすべて未生成。画像生成呼び出しは参照画像不足で開始前に失敗。採用・原本登録・組込みなし。
-- ブロッカー: この環境の画像取得経路が失敗。原本不足ではない。ローカルcheckoutのmify-ref-v2とcustomers-a-v1を直接開く。ユーザーへの再添付依頼を繰り返さない。
-- 次: resume-project → 本引き継ぎ → 原本目視 → 画像生成機能確認 → 5候補制作・検査 → オーナー採否。
-- 方針維持: 描き起こしCodex、採否オーナー、仕上げ・ゲーム組込みClaude。候補はart/_inbox/、採用前はGit除外。客12名の名前と絵は同時切替。
-- 他課題: 2026-10-19にdashboard README/CONTEXT/個別/W42を読取。次点優先、W42はPR #42以前、個別レポートは古い。旧ブランチ削除判断（W42はIssue #36）、BGM方針・実機残・PR単位CIは今回未対応・未検証。
-- 検証: 文書の仕様照合。ゲームtest/lint/build・画像品質検査は未実行。前回の47件passを今回実行済みと扱わない。
-
+- Updated: 2026-10-20 JST / Codex。
+- Objective: 指定された無加工の初回生成PNG5点を art-inbox の inbox/20261020/ へ配送する。
+- Branch: art-inbox。基点 8db3690f987ec285dfce27e4065821f2d690d366。
+- Completed: palette-c1、cerise-icon-c1、sage-icon-c1、mify-idle-c1、craft-whisk-c1 を元画像からバイト単位でコピー。5点のSHA256一致・PNG検証に合格。
+- Provenance: cerise-icon-c1.png はローカルの cerise-icon-c1-superseded.png（初回生成）。c2は含めない。縮小・減色・切り抜き・再生成なし。
+- Delivery: このコミットを origin/art-inbox へpushしリモートcommit/treeを照合する。候補ブランチのためPR・mainへのマージなし。
+- Next: Claudeが候補画像を取得して確認。正式登録・ゲーム反映・残り制作は本配送に含まない。
+- External: 同日GitHub MCPでmainのasset-management改定を確認。Gitでart-inbox先端確認。ブラウザ不使用。
+- Other issues: dashboardの旧ブランチ削除判断・BGM・実機・CI課題は対象外。前ターンに読んだW42は今回の候補転送より古い。
 ## Dated work reports
 ### 2026-09-29 — Claude
 
@@ -880,3 +874,13 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - うまくいかなかったこと: なし（1回目で想定どおりの結果）。
 - 影響範囲: `scripts/check_pixel_art.py`（新規）、`docs/art/pixel-art-brief.md`（§4 に使い方を追記）、`WORKLOG.md`。ゲームのコードは変更なし。
 - 次のアクション: Codex に、試作5点の検査・原本登録・push を依頼する。push 後、Claude が同じ検査を実行し、ゲームの実寸（42px の丸枠・店先・製造画面）で見え方を確認してから残りの制作へ進む。
+
+### 2026-10-20 JST — Codex — 無加工の試作5点を候補ブランチへ配送
+
+- 目的: オーナー指定の5PNGを art-inbox / inbox/20261020/ へpushする。
+- 完了: 原画像のバイト列を保持して5点コピー、SHA256照合とPNG検証が全点成功。ceriseは初回生成c1を指定名へ変更して収録。
+- 影響: inbox/20261020/ の5PNGと本WORKLOG。正式台帳・public/images・ゲームコードは変更なし。
+- 判断: mainのdocs/art/asset-management.md「候補の置き場所」を同日MCP確認。候補専用ブランチなのでPR作成・mainマージは行わない。前回の受け入れ検査FAILは候補配送の阻害条件にしない。
+- うまくいかなかったこと: sandbox内のgit接続が名前解決で1回失敗。承認済みのsandbox外実行で接続・clone成功。既存のdirty checkoutを避け、専用checkoutを使用。画像バイナリは会話に出力しないため転送はgitを使用。ブラウザ不使用。
+- 検証: 無加工SHA256一致5/5、PNG検証5/5。ゲーム変更がないためアプリtest/lint/buildは対象外。
+- 次: push後のremote commit/treeと元画像blob SHAを照合して配送完了を報告。Claudeによる見た目確認・正式登録・残りの制作は別工程。
