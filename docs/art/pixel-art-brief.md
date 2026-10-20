@@ -87,6 +87,16 @@
 
 ## 4. 受け入れの確認項目（Claude がスクリプトで検査する）
 
+`scripts/check_pixel_art.py` で自動検査できる。**登録・push の前に制作側でも実行する**と、やり直しの往復が減る。
+
+```
+python3 -m pip install pillow numpy
+python3 scripts/check_pixel_art.py art/_inbox/<日付>/cerise-icon.png --kind icon   # 採用前の候補
+python3 scripts/check_pixel_art.py                                                  # art/pixel/ 以下すべて
+```
+
+種類（icon / chibi / craft / palette）は `art/pixel/` 以下のフォルダ名で決まる。採用前の候補は `--kind` で指定する。結果は1ファイル1行の PASS / FAIL と理由だけで、画像の中身は出力しない。
+
 - 指定のドット数ちょうど（または均一な整数倍）
 - 色数が16色以内で、共通パレットの色だけを使っている
 - 半透明のドットがない

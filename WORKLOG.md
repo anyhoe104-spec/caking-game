@@ -4,6 +4,8 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
+- 2026-10-20 Claude追記: オーナーがローカル Codex の試作（パレット・cerise/sage アイコン・ミフィ待機・whisk）を見て「方針は良い」と判断（2026-10-20 チャット）。試作画像は未登録で、Claude からは見えていない（2026-10-20 に `git fetch` で `art/pixel/` が無いことを確認）。依頼書 §4 の検査を `scripts/check_pixel_art.py` として追加した。次は Codex が試作5点を検査・原本登録して push → Claude も同じ検査 → 残りの制作へ。
+
 - Updated: 2026-10-19 JST / 作業者: Codex（ChatGPT Work Mode）
 - 目的: ドット絵試作をローカルCodexへ引き継ぐ。オーナーが資料のcommit・pushを明示依頼。
 - 作業ブランチ: `codex/pixel-art-local-handoff-20261019`
@@ -864,3 +866,17 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 決定: ローカルCodexで原本を直接参照。今回の文書保存許可を、画像候補の正式採用やmainへのマージ許可と解釈しない。
 - 未解決: 試作5点すべて。dashboardの旧ブランチ削除判断と、既存BGM・実機・CI課題は対象外で残す。
 - 次: 詳細引き継ぎを読み、原本を目視して5候補を制作し、検査状況とともにオーナーへ提示する。
+
+### 2026-10-20 — Claude — ドット絵の受け入れ検査スクリプト
+
+- 目的: オーナーが試作の方針を承認。Codex が残り（客12名のアイコンとちびキャラ、製造8工程）を量産する前に、依頼書 §4 の確認項目を機械で検査できるようにする。
+- 外部状態確認（2026-10-20、`git fetch origin '+refs/heads/*:refs/remotes/origin/*'`）: main は `86ce664`（PR #43、Codex の引き継ぎ文書、2026-10-19 マージ）。`art/pixel/` は存在せず、試作は未登録。
+- 完了した作業: `scripts/check_pixel_art.py` を追加。依頼書 §4 にその使い方を追記した。検査項目は次のとおり
+  - ドット数がちょうどか、均一な整数倍か（倍率書き出しは格子が均一か調べてから1倍に戻す）
+  - 半透明のドットがないか、色数（16色、パレットは32色）、共通パレット外の色がないか
+  - コマごとの足元の行がそろっているか、アイコンが中央付近にあるか
+  - 純白の背景は外周につながる部分を透明とみなす（依頼書で許可しているため）
+- 検証: 合成した画像10枚で確認した。正しい3枚（等倍・8倍書き出し・白背景）は PASS。不正な7枚はそれぞれ正しい理由で FAIL（ぼかしのある8倍・半透明・中心ずれ・パレット外の色・サイズ違い・足元のずれ）。`art/pixel/` が無い状態では「no files to check」と表示して終了する。
+- うまくいかなかったこと: なし（1回目で想定どおりの結果）。
+- 影響範囲: `scripts/check_pixel_art.py`（新規）、`docs/art/pixel-art-brief.md`（§4 に使い方を追記）、`WORKLOG.md`。ゲームのコードは変更なし。
+- 次のアクション: Codex に、試作5点の検査・原本登録・push を依頼する。push 後、Claude が同じ検査を実行し、ゲームの実寸（42px の丸枠・店先・製造画面）で見え方を確認してから残りの制作へ進む。
