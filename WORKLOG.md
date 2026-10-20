@@ -4,6 +4,9 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
+- 2026-10-20 Claude追記（画像の受け渡し方法の変更）: オーナーの決定で、**画像の候補は専用ブランチ `art-inbox` の `inbox/<日付>/` に無加工で push する**ことにした（main にはマージしない）。ブランチは作成済み（`6514c3a`、2026-10-20 に `git ls-remote` で確認）。ドット絵は生成サイズのまま原本とし、ドット数への変換は Claude のスクリプトが行う。`check_pixel_art.py` は変換後の画像に使う。試作5点は Codex の手元で検査し、全点 FAIL（生成サイズ・ぼかしのため。描き手の問題ではない）。次は Codex が試作5点の元画像を `art-inbox` に push → Claude が変換スクリプトを作って検査・実寸確認。
+- 2026-10-20 Claude追記（同日）: オーナーの指示で、`art-inbox` を**ドット絵に限らず、設定資料・ブランディング・アニメ用を含むすべての画像の試作・候補の一時置き場**と明記した。caking-anime の PR や Google Drive など別の場所には置かない（`docs/art/asset-management.md`、`art-inbox` の `inbox/README.md`、`8db3690`）。
+
 - 2026-10-20 Claude追記: オーナーがローカル Codex の試作（パレット・cerise/sage アイコン・ミフィ待機・whisk）を見て「方針は良い」と判断（2026-10-20 チャット）。試作画像は未登録で、Claude からは見えていない（2026-10-20 に `git fetch` で `art/pixel/` が無いことを確認）。依頼書 §4 の検査を `scripts/check_pixel_art.py` として追加した。次は Codex が試作5点を検査・原本登録して push → Claude も同じ検査 → 残りの制作へ。
 
 - Updated: 2026-10-19 JST / 作業者: Codex（ChatGPT Work Mode）
@@ -880,3 +883,25 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - うまくいかなかったこと: なし（1回目で想定どおりの結果）。
 - 影響範囲: `scripts/check_pixel_art.py`（新規）、`docs/art/pixel-art-brief.md`（§4 に使い方を追記）、`WORKLOG.md`。ゲームのコードは変更なし。
 - 次のアクション: Codex に、試作5点の検査・原本登録・push を依頼する。push 後、Claude が同じ検査を実行し、ゲームの実寸（42px の丸枠・店先・製造画面）で見え方を確認してから残りの制作へ進む。
+
+### 2026-10-20 (2) — Claude — 画像候補の受け渡しを art-inbox ブランチに変更
+
+- 目的: Codex の試作5点の元画像が Claude に届かない問題を、毎回の手作業なしで解決する。
+- 経緯:
+  - Codex（PCで実行）が `check_pixel_art.py` で試作5点を検査し、全点 FAIL と報告した。パレットは11,968色、アイコンは1254×1254、ミフィ待機は16倍だが格子が不均一、whisk は1774×887
+  - 原因は描き手ではなく、生成ツールの性質（本物のドット格子を出せない）。依頼書が無加工の生成物に「ちょうどのサイズか、均一な整数倍」を求めていたのは、Claude の見込み違いだった
+  - 画像を Claude に渡す方法をオーナーと検討した
+- **確かめた受け渡し経路**（2026-10-20、この環境で実測）:
+  - Google Drive コネクタ: 中身を Base64 の文字列で返す仕組み。2MB の画像で約270万文字になり、扱えない。AGENTS.md でも禁止。あなたの Drive で最小の 375KB の画像でも約50万文字になるため、試行もしなかった
+  - Drive の直接ダウンロード: `drive.google.com`・`drive.usercontent.google.com` には接続できなかった（この環境のネットワーク設定）
+  - GitHub: 接続でき、git で画像をそのまま扱える
+- 完了した作業（オーナーが「1」を選択）:
+  - `docs/art/asset-management.md`: 候補の置き場所を `art-inbox` ブランチの `inbox/<日付>/` に変更。ChatGPT のクラウド環境は画像の受け渡しに使わない、と明記
+  - `docs/art/pixel-art-brief.md`: 出力サイズの決まりを改定（生成サイズのまま原本とし、変換は Claude）。§4 の検査は変換後の画像に使うと明記
+  - `docs/art/pixel-art-handoff-20261019.md`: 改定の注記を追加
+  - `art-inbox` ブランチを作成し、使い方の `inbox/README.md` を置いた
+- うまくいかなかったこと: 依頼書の「出力サイズ」の決まりが、生成ツールでは守れないものだった。Codex の検査でそれがわかった（上記）。
+- 影響範囲: 上記3文書、`WORKLOG.md`、`art-inbox` ブランチ。ゲームのコードは変更なし。
+- 検証: 文書のみ。`art-inbox` の作成は `git ls-remote` で確認した。
+- 次のアクション: Codex（PC）が試作5点の元画像を `art-inbox` の `inbox/20261020/` に push → Claude が変換スクリプト（`scripts/process_game_art.py` にドット絵の処理を追加）を作り、`check_pixel_art.py` で検査し、ゲーム内の実寸で見え方を確認してオーナーに見せる。
+- 追記（同日）: オーナーから「art-inbox は今回のドット絵だけでなく、設定資料の試作も全部入れるルールか」と確認があった。元の文面は「人に見せる候補」としか書いておらず、種類が明示されていなかった。そのため、対象（設定資料・ドット絵・ブランディング・アニメ用）と「別の場所に置かない」ことを書き足し、`art-inbox` の README も合わせた。
