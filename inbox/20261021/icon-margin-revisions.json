@@ -1,0 +1,12 @@
+[
+  {
+    "name": "beurre-icon-c2",
+    "prompt": "Use case: precise-object-edit. Redraw this same coarse pixel portrait, preserving identity, colors and 48-cell-wide coarse pixel style. Change only composition: fit the ENTIRE tall chef hat inside canvas with at least FOUR large logical pixel cells of pure white margin above and on both sides. No part of hat, ears or hair touches edge. Portrait should occupy about 80 percent of square width and height. Keep face centered. Coarse large flat blocks; no thin lines or added detail. Pure white background. Do not clip the subject.",
+    "reference": "beurre-icon-c1.png"
+  },
+  {
+    "name": "melissa-icon-c2",
+    "prompt": "Use case: precise-object-edit. Redraw this same coarse pixel portrait, preserving identity, colors and 48-cell-wide coarse pixel style. Change only composition: fit the ENTIRE both rabbit ears inside canvas with at least FOUR large logical pixel cells of pure white margin above and on both sides. No part of hat, ears or hair touches edge. Portrait should occupy about 80 percent of square width and height. Keep face centered. Coarse large flat blocks; no thin lines or added detail. Pure white background. Do not clip the subject.",
+    "reference": "melissa-icon-c1.png"
+  }
+]

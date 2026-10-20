@@ -1,0 +1,382 @@
+{
+  "date": "2026-10-21",
+  "tool": "built-in image_gen",
+  "expected": 30,
+  "delivered": 30,
+  "missing": [],
+  "files": [
+    {
+      "file": "noix-icon-c1.png",
+      "kind": "icon",
+      "sha256": "a7cb9898c5e1e5cd94812b6712550eba22e050872a99ee20d1a9946b3fc35192",
+      "size": [
+        1254,
+        1254
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "fig-icon-c1.png",
+      "kind": "icon",
+      "sha256": "ffce6aea2b7a98feb73f5b4d31c4de8777370344003c448594eb07e3bfb21a76",
+      "size": [
+        1254,
+        1254
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "olive-icon-c1.png",
+      "kind": "icon",
+      "sha256": "5e9945e2caae411b279c5ebcbd16e51c076a50ef71f98419c72ef26bf4f33e32",
+      "size": [
+        1254,
+        1254
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "toma-icon-c1.png",
+      "kind": "icon",
+      "sha256": "29f1fdcf110c0c4b707e7b8f4b1cc742b718c9585465389381d4d25fff57de3d",
+      "size": [
+        1254,
+        1254
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "beurre-icon-c1.png",
+      "kind": "icon",
+      "sha256": "2f0849108303d38c0f2e5f1b02f6f6f99b06eac10e1c1b6d1b3a201db3598968",
+      "size": [
+        1254,
+        1254
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "peche-icon-c1.png",
+      "kind": "icon",
+      "sha256": "a48e7151ca3a2d613bdbd6994125cf7d5363bc30beed64e3cc3753459a8568c7",
+      "size": [
+        1254,
+        1254
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "mint-icon-c1.png",
+      "kind": "icon",
+      "sha256": "75ada513648989219f47a93a05b0fb10a5911c0de5d429ab358e77a2345afd52",
+      "size": [
+        1254,
+        1254
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "melissa-icon-c1.png",
+      "kind": "icon",
+      "sha256": "fd723cdce725753de3b3b8224f792d688adf64cc90b5c0a3b8609f68e4b08de6",
+      "size": [
+        1254,
+        1254
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "aprico-icon-c1.png",
+      "kind": "icon",
+      "sha256": "2a1a8e8c5fc8eb8a3fc118b873ceb3ca3c732f0ad6507ab66225ccec5615d40e",
+      "size": [
+        1254,
+        1254
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "cardamom-icon-c1.png",
+      "kind": "icon",
+      "sha256": "5c845689b23e839802f24b844e60bdac873c3a793bd53560e156828c6c73733a",
+      "size": [
+        1254,
+        1254
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "cerise-idle-c1.png",
+      "kind": "chibi",
+      "sha256": "a4424698bae682ca554fb1fbcb611d216baca26d94ed4048202e457db805cdb3",
+      "size": [
+        1536,
+        1024
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "noix-idle-c1.png",
+      "kind": "chibi",
+      "sha256": "250e789a63a7bf6089925505b87e4eefc53c0ba03489a81a095dfc1c03cb8d6a",
+      "size": [
+        1536,
+        1024
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "fig-idle-c1.png",
+      "kind": "chibi",
+      "sha256": "aba394a894122d8579310f156dee07f7734eda559253d2ad2dbe5e2c5249f55e",
+      "size": [
+        1536,
+        1024
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "sage-idle-c1.png",
+      "kind": "chibi",
+      "sha256": "a9adf06f879487cfd738a3b814fae45e7d623ea6b54046fab0f7f14eae71d049",
+      "size": [
+        1536,
+        1024
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "olive-idle-c1.png",
+      "kind": "chibi",
+      "sha256": "b5b03531c4c7ad3a8fc209cc57ea81c753d7bb38bc0ace33e3827406af25820d",
+      "size": [
+        1536,
+        1024
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "toma-idle-c1.png",
+      "kind": "chibi",
+      "sha256": "47e5d0cf98c2546f2c810a27eca84d52853d5ec187b58bf74076c4a0e5b754c8",
+      "size": [
+        1536,
+        1024
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "beurre-idle-c1.png",
+      "kind": "chibi",
+      "sha256": "643b2391d9e531e4c13375bcfe2899ed31c6c90095a8fdf72a98fd1259c021aa",
+      "size": [
+        1536,
+        1024
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "peche-idle-c1.png",
+      "kind": "chibi",
+      "sha256": "1d5029b4ee21c4af04630ddf19bdbb17d98b4301f9cff70ea286837e9a191247",
+      "size": [
+        1536,
+        1024
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "mint-idle-c1.png",
+      "kind": "chibi",
+      "sha256": "154a53a4879a734043e899d78295de41bfc05443c49170ad8ad1b65d045e0422",
+      "size": [
+        1536,
+        1024
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "melissa-idle-c1.png",
+      "kind": "chibi",
+      "sha256": "030e741be881293ab35ecfde2643cb5d893bb16f39a9eaf23c77970452a06012",
+      "size": [
+        1536,
+        1024
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "aprico-idle-c1.png",
+      "kind": "chibi",
+      "sha256": "2248467950f166f73e4607b36491687f17126e37152e9ad21c9d87b1eb96eafd",
+      "size": [
+        1536,
+        1024
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "cardamom-idle-c1.png",
+      "kind": "chibi",
+      "sha256": "66c08674bfff010e7c47f3f200c5bf94981f52fa573b9332f2df5f6031de6899",
+      "size": [
+        1536,
+        1024
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "craft-oven-c1.png",
+      "kind": "craft",
+      "sha256": "8d0b6d75190d2ef7014c9ee353582203d21d8d9415f224d806ce45016673d067",
+      "size": [
+        1774,
+        887
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "craft-layer-c1.png",
+      "kind": "craft",
+      "sha256": "1c802d8628a27ab7f25f6504c22f8ff16e6970fe27c5f16396a06ca5cc6c640d",
+      "size": [
+        1774,
+        887
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "craft-decorate-c1.png",
+      "kind": "craft",
+      "sha256": "00e2df322ed32fa5c9006cc6e025d3194122eee3d82d20479f5368117294f23f",
+      "size": [
+        1774,
+        887
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "craft-glaze-c1.png",
+      "kind": "craft",
+      "sha256": "5bb82f9d2d02746e0595ee8b3430749938b19b9c4d2a409406362dcdd733960b",
+      "size": [
+        1774,
+        887
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "craft-roll-c1.png",
+      "kind": "craft",
+      "sha256": "27776fe995725dde71c4ac3087714547582a79b189242875a5724cfed2fbb0f3",
+      "size": [
+        1774,
+        887
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "craft-fold-c1.png",
+      "kind": "craft",
+      "sha256": "15e69833e5c91a14678931d8a0ab89fa59f99919ab5adf8af109026929a8572a",
+      "size": [
+        1774,
+        887
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "craft-steam-c1.png",
+      "kind": "craft",
+      "sha256": "908094ca3c4235877ab3baa0e427ce703e324d044349ae2bec872cf544b7571e",
+      "size": [
+        1774,
+        887
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "craft-cool-c1.png",
+      "kind": "craft",
+      "sha256": "28657fb4ea91e4e71afb53912f8048bf3c0b6d2226c07a00db9c901069714713",
+      "size": [
+        2048,
+        768
+      ],
+      "unchanged": true,
+      "png_valid": true
+    }
+  ],
+  "status": "unapproved candidates; conversion and in-game validation pending",
+  "additional_revisions": [
+    {
+      "file": "beurre-icon-c2.png",
+      "sha256": "86c7dea9785cf4844609792899ccf123d5a4cc0c692b76daaf781e5cad42ddc1",
+      "size": [
+        1254,
+        1254
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "craft-layer-c2.png",
+      "sha256": "2412c15f966d35a28929045ae318526623563e083518455defdffb6240d6567e",
+      "size": [
+        1774,
+        887
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "craft-oven-c2.png",
+      "sha256": "89a36987bb75a03fcd3155db960f646c344af0e265845be5ea9402975aba3c7b",
+      "size": [
+        1774,
+        887
+      ],
+      "unchanged": true,
+      "png_valid": true
+    },
+    {
+      "file": "melissa-icon-c2.png",
+      "sha256": "01bfa7f4ab783116b424aa10954d941e2dcabc29342f2f1578f8c2e859ba7375",
+      "size": [
+        1254,
+        1254
+      ],
+      "unchanged": true,
+      "png_valid": true
+    }
+  ]
+}

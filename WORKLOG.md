@@ -4,15 +4,16 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-10-20 JST / Codex — アイコン2点のc2描き直し。
-- Branch: art-inbox。基点597262531f63ee673831e1b244e2d4c4466616e1。
-- Completed: cerise-icon-c2.png / sage-icon-c2.png を inbox/20261020/ に無加工保存。横48ドット相当を指示し、髪の大きな色面・太い輪郭・省略した装飾を目視確認。
-- Generation: built-in image_gen、cerise 1回、sage 2回（初回が細かく再修正）。参照customers-a-v1、blob 02aaa9c962411322679d422b23c8998d11ae945d。
-- Evidence: icon-c2-prompts.json / sage-c2-revision-prompt.txt / icon-c2-integrity.json。PNG検証・生成出力とのSHA256一致2/2。
-- Limits: 厳密な48格子や16色を保証しない。原画像は加工・旧checker実行なし。Claudeの変換・実寸評価、オーナー採否は未実施。
-- External: 同日GitHub MCPでmain依頼書とPR #46を確認。#46は確認時open、head 05968425e336f6afcd8535d280ec0e720e6845e2の目安とユーザー指示を適用。ブラウザ不使用。
-- Next: origin/art-inboxへpushしcommit/treeを検証。Claudeが2点を変換して見た目評価。正式登録・残り制作は別途。
-- Other issues: dashboardの旧ブランチ整理・BGM・実機・CI課題は対象外。
+- Updated: 2026-10-21 JST / Codex — 追加ドット絵30素材を制作。
+- Branch: art-inbox。開始時HEAD d99b2d954cd04cd758c031332cea8ca572dc59a1。
+- Completed: inbox/20261021/ にアイコン10人、客12人の待機2コマ、製造8工程の各4コマ。修正版4点を含む34PNG。
+- Approved originals: 試作5点を無加工登録したPR #48。head c1105f5661182e7c8b32030e19eafa10898bb1a1、2026-10-21 08:39 JSTまでにGitHub MCPでopen/mergeableを再確認。
+- Evidence: 候補README、production-prompts.json、追加修正プロンプト、delivery-integrity.json。生成元とのSHA256一致・PNG検証。原本には変換後用checkerを実行しない。
+- Limits: 今回の30素材は未採用。48格子・色数などの厳密な実装規格、変換後の実寸表示・コマ合わせは未検証。
+- Next: Claudeによる変換・実寸確認、オーナー採否。特に工程間の縮尺とケーキ重ね合わせ領域を確認する。PR #48のマージはオーナー側。
+- External: GitHub MCPでPR確認・作成、画像バイナリはGitで配送。ブラウザ不使用。
+- Other issues: 既存のcaking-game checkoutは変更しない。dashboard W42の旧ブランチ削除判断、BGM・実機・CI課題は対象外。10/18のopen PR 0件という記録は現在のPR #48より古い。
+
 ## Dated work reports
 ### 2026-09-29 — Claude
 
@@ -894,3 +895,15 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 外部状態: 同日MCPでmain依頼書とPR #46（open、head 05968425e336f6afcd8535d280ec0e720e6845e2）を読取。ユーザーが直接示した改定目安を適用。git pull --ff-only origin art-inbox はAlready up to date。ブラウザ不使用。
 - 判断: 無加工候補に旧受け入れcheckerを実行しない。縮小・減色・切り抜きなし。採用・正式登録・ゲーム反映なし。art-inboxはPRもmainマージも行わない。
 - 次: pushのremote commit/treeを照合後、Claudeの変換と実寸評価へ。パレット・mify・whiskの合格見込みはユーザー提供情報で、今回再検査せず。残り制作は未着手。
+
+### 2026-10-21 — Codex / 追加ドット絵候補30素材
+
+- 目的: 採用済み試作5点の原本登録PRを先に作り、残りの客アイコン・店先待機・製造アニメを候補配送する。
+- 完了: PR #48で試作5点・台帳・個別プロンプト・原本照合記録を追加。その後、追加アイコン10点、客待機12点（各2コマ）、製造8点（各4コマ）を生成。候補の修正版4点を含む計34PNGを inbox/20261021/ に無加工保存。
+- 検証: 各PNGをデコード検証し、生成ツール出力とのSHA256一致をdelivery-integrity.jsonに記録。git diff --check。ゲームコード変更がないためアプリのビルド・テストは対象外。
+- うまくいかなかったこと: beurreの帽子・melissaの耳の余白不足をc2で修正。oven初回は窯が右側を塞いだため左へ移動。layer初回は混ぜる動作になったため空の手による積み重ねに再生成。失敗候補も上書きせず保存。
+- 決定: 生成原本に縮小・減色・切り抜きを加えない。候補はmainへ入れずart-inboxのみ。採用済み原本登録と今回の候補採否を区別。
+- 外部接続: GitHub MCPを使用し、画像の配送はGitを使用。ブラウザ操作なし。
+- 残作業: Claudeの変換・実寸評価、オーナー採否、採用後の原本登録。今回はpublic/images・ゲーム実装へ反映していない。
+- 再開時の確認（2026-10-21 08:39 JSTまで）: 最後のcool-c1・oven-c2・layer-c2は前回の生成出力に存在したが候補フォルダへ未保存だった。実画像を確認して無加工回収、新規生成は0回。GitHub MCPでPR #48の未マージと最新素材管理ルール、dashboard README/CONTEXT/個別/W42を確認。art-inboxはPR不要という最新の個別ルールを適用する。旧ブランチ整理は未対応。
+- 再開時の障害: thread読取APIは1ターンでもサイズ上限で失敗したため、指定IDのローカル履歴で依頼を復元。PythonのWindowsAppsエイリアスは起動失敗し、同梱Pythonで検証成功。Gitのsandbox内接続は1回名前解決失敗、承認後のls-remoteで開始時HEADとremote一致を確認。ブラウザ不使用。
