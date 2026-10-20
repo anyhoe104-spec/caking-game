@@ -4,26 +4,13 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- 2026-10-20 Claude追記（試作の変換）: Codex が試作5点を `art-inbox` の `inbox/20261020/` に push（`5972625`、2026-10-20 に `git fetch` で確認）。`scripts/convert_pixel_art.py` で本番のドット数に変換し、5点とも `check_pixel_art.py` に PASS した。見た目では、パレット・ミフィ待機・whisk は良好。cerise・sage のアイコンは、約100ドットの細かさで描かれていたため48ドットではまだらになる。**アイコンは48ドットの粗さで描き直しが必要**。原本登録はまだ。
-- 2026-10-20 Claude追記（採用）: オーナーが **パレット・ミフィ待機・whisk の3点を採用**（2026-10-20 チャット）。原本登録はルールどおり Codex が行う（`inbox/20261020/` の c1 を無加工で `art/pixel/palette-v1.png`・`art/pixel/chibi/mify-idle-v1.png`・`art/pixel/craft/craft-whisk-v1.png` へ、台帳とプロンプトも）。アイコン2点は描き直し待ち。
-
-- 2026-10-20 Claude追記（画像の受け渡し方法の変更）: オーナーの決定で、**画像の候補は専用ブランチ `art-inbox` の `inbox/<日付>/` に無加工で push する**ことにした（main にはマージしない）。ブランチは作成済み（`6514c3a`、2026-10-20 に `git ls-remote` で確認）。ドット絵は生成サイズのまま原本とし、ドット数への変換は Claude のスクリプトが行う。`check_pixel_art.py` は変換後の画像に使う。試作5点は Codex の手元で検査し、全点 FAIL（生成サイズ・ぼかしのため。描き手の問題ではない）。次は Codex が試作5点の元画像を `art-inbox` に push → Claude が変換スクリプトを作って検査・実寸確認。
-- 2026-10-20 Claude追記（同日）: オーナーの指示で、`art-inbox` を**ドット絵に限らず、設定資料・ブランディング・アニメ用を含むすべての画像の試作・候補の一時置き場**と明記した。caking-anime の PR や Google Drive など別の場所には置かない（`docs/art/asset-management.md`、`art-inbox` の `inbox/README.md`、`8db3690`）。
-
-- 2026-10-20 Claude追記: オーナーがローカル Codex の試作（パレット・cerise/sage アイコン・ミフィ待機・whisk）を見て「方針は良い」と判断（2026-10-20 チャット）。試作画像は未登録で、Claude からは見えていない（2026-10-20 に `git fetch` で `art/pixel/` が無いことを確認）。依頼書 §4 の検査を `scripts/check_pixel_art.py` として追加した。次は Codex が試作5点を検査・原本登録して push → Claude も同じ検査 → 残りの制作へ。
-
-- Updated: 2026-10-19 JST / 作業者: Codex（ChatGPT Work Mode）
-- 目的: ドット絵試作をローカルCodexへ引き継ぐ。オーナーが資料のcommit・pushを明示依頼。
-- 作業ブランチ: `codex/pixel-art-local-handoff-20261019`
-- 更新前の基点: `2dfde794ec20e869b6c16fae1b0f717a32b2a062`。2026-10-19 GitHubコネクタでmainとPR #42のマージを確認。
-- 詳細: [ローカル引き継ぎ](docs/art/pixel-art-handoff-20261019.md)。
-- 完了: 依頼書・設定・台帳・原本の所在と識別情報を確認。試作5点の仕様・失敗記録・再開手順を整理。
-- 未完: パレット、cerise・sageアイコン、ミフィ待機2コマ、whisk4コマはすべて未生成。画像生成呼び出しは参照画像不足で開始前に失敗。採用・原本登録・組込みなし。
-- ブロッカー: この環境の画像取得経路が失敗。原本不足ではない。ローカルcheckoutのmify-ref-v2とcustomers-a-v1を直接開く。ユーザーへの再添付依頼を繰り返さない。
-- 次: resume-project → 本引き継ぎ → 原本目視 → 画像生成機能確認 → 5候補制作・検査 → オーナー採否。
-- 方針維持: 描き起こしCodex、採否オーナー、仕上げ・ゲーム組込みClaude。候補はart/_inbox/、採用前はGit除外。客12名の名前と絵は同時切替。
-- 他課題: 2026-10-19にdashboard README/CONTEXT/個別/W42を読取。次点優先、W42はPR #42以前、個別レポートは古い。旧ブランチ削除判断（W42はIssue #36）、BGM方針・実機残・PR単位CIは今回未対応・未検証。
-- 検証: 文書の仕様照合。ゲームtest/lint/build・画像品質検査は未実行。前回の47件passを今回実行済みと扱わない。
+- Updated: 2026-10-21 JST / Codex。採用試作5点の原本登録。
+- Branch: codex/register-pixel-trials-20261020、基点 e573fdfea21374160ef3f26b93394dd85e39c22c。
+- Completed: palette/mify-idle/craft-whisk c1 と cerise/sage c2 を art/pixel/ に無加工コピー。台帳、各プロンプト、SHA256/Git blob記録を追加。
+- Validation: コピーSHA256一致5/5、PNG検証5/5。原本へのcheckerは実行しない。
+- External: 2026-10-20 GitHub MCPでPR #46 merged確認。候補元art-inbox d99b2d954cd04cd758c031332cea8ca572dc59a1。
+- Next: 本ブランチをpushしてmain宛てPR。続いて残り30素材（アイコン10・客待機12・製造8）をart-inboxへ制作配送する。採用判断は別途。
+- Scope: public/images・ゲームコード変更なし。dashboardの旧ブランチ整理、BGM、実機、CI課題は対象外。ブラウザ不使用。
 
 ## Dated work reports
 ### 2026-09-29 — Claude
@@ -940,3 +927,13 @@ This file is the shared source of truth for cross-device and cross-agent handoff
   - 引数なしで実行すると `art/pixel/` 以下（無加工の原本）を検査して、全部 FAIL になる → ファイルの指定を必須にした
   - 原本の色見本シート（1万色以上）を、そのままパレットとして読んでしまう → 変換スクリプトと同じ方法で、色見本の32色を読むようにした
   - 修正後、色見本シートをパレットに使って、変換後のミフィ・whisk が PASS し、合成テスト画像の判定も変わらないことを確認した
+
+
+### 2026-10-21 JST — Codex — 採用済みドット絵5原本を登録
+
+- 目的: オーナー承認の5点を無加工で正式登録しPRにする。
+- 完了: art/pixel/の5原本、台帳5行、プロンプト5件、SHA256/Git blob記録を追加。候補元とのバイト同一性・PNG検証5/5。
+- 影響: art/pixel/、docs/art/、WORKLOG。public/imagesやゲームコードは変更なし。
+- うまくいかなかったこと: 過去の原本checker FAILを登録条件にしていたが、改定済み依頼書に従い原本に適用しない。登録スクリプト初回はsage初回プロンプトの保存漏れで停止（画像コピー前）。会話中の実指示を復元し再実行して成功。
+- 判断: cerise/sage c2も2026-10-20のユーザー指示で採用済み。候補はart-inboxに保持、原本PRはmainから分離。PR #46 mergedを同日MCPで確認。
+- 次: 原本登録PRの後、残りの候補30点を制作・art-inboxへpush。採否・変換・ゲーム組込みは別工程。

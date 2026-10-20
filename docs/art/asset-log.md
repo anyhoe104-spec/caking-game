@@ -92,3 +92,16 @@
 | art/props/recipes-a-v1.png | 2026-10-16 | image_gen | [生成記録](prompts/recipes-a-v1.md) | 採用 |
 | art/characters/customers/customers-b-v1.png | 2026-10-16 | image_gen | [生成記録](prompts/customers-b-v1.md) | 採用 |
 | art/backgrounds/bg-ending-v1.png | 2026-10-16 | image_gen | [生成記録](prompts/bg-ending-v1.md) | 採用 |
+
+
+## 2026-10-20 — ドット絵試作5点の採用
+
+オーナーがパレット・ミフィ待機・whiskのc1、cerise・sageのc2を採用。生成出力を無加工で登録。変換・ゲームへの組込みは別工程。
+
+| ファイル | 日付 | 生成元 | プロンプト | 状態 | メモ |
+|---|---|---|---|---|---|
+| art/pixel/palette-v1.png | 2026-10-20 | image_gen | [生成記録](prompts/pixel-palette-v1.md) | 採用 | palette-c1.png、無加工 |
+| art/pixel/chibi/mify-idle-v1.png | 2026-10-20 | image_gen | [生成記録](prompts/pixel-mify-idle-v1.md) | 採用 | mify-idle-c1.png、無加工 |
+| art/pixel/craft/craft-whisk-v1.png | 2026-10-20 | image_gen | [生成記録](prompts/pixel-craft-whisk-v1.md) | 採用 | craft-whisk-c1.png、無加工 |
+| art/pixel/customers/cerise-icon-v1.png | 2026-10-20 | image_gen | [生成記録](prompts/pixel-cerise-icon-v1.md) | 採用 | cerise-icon-c2.png、無加工 |
+| art/pixel/customers/sage-icon-v1.png | 2026-10-20 | image_gen | [生成記録](prompts/pixel-sage-icon-v1.md) | 採用 | sage-icon-c2.png、無加工 |
