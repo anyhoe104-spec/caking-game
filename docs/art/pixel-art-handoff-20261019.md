@@ -37,6 +37,8 @@
 
 ## 今回作る5点
 
+> **2026-10-20 改定**：候補は `art/_inbox/` ではなく、`art-inbox` ブランチの `inbox/<日付>/` に無加工で push する。生成サイズのままでよく、ドット数への変換は Claude が行う（[asset-management.md](asset-management.md)「候補の置き場所」、[pixel-art-brief.md](pixel-art-brief.md) §1）。
+
 下のパスは採用後の正式名。採用前は `art/_inbox/` に日付・候補番号付きで置き、Gitに入れない。
 
 | 素材 | 論理サイズ | コマ数 | 採用後の正式名 |
