@@ -4,6 +4,8 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
+- 2026-10-21 Claude追記（追加30点と C案）: Codex の追加30点（客アイコン10・ちびキャラ12・製造8工程）が `art-inbox` の `inbox/20261021/` に届いた（`a923749`、2026-10-21 に `git fetch` で確認）。採用済み5点は PR #48 で原本登録済み。30点とも変換後に `check_pixel_art.py` に PASS。見た目も良好だが、オリーヴの眼鏡が48ドットでは見えにくい点と、シェフ・ブールの顔が小さい点が気になる。30点の採否はオーナー待ち。製造中のケーキはオーナーが **C案**（Codex がドット絵のケーキ8種と飾りパーツを描く）に決めたので、依頼書に §2-D を追加した。
+
 - Updated: 2026-10-21 JST / Codex。採用試作5点の原本登録。
 - Branch: codex/register-pixel-trials-20261020、基点 e573fdfea21374160ef3f26b93394dd85e39c22c。
 - Completed: palette/mify-idle/craft-whisk c1 と cerise/sage c2 を art/pixel/ に無加工コピー。台帳、各プロンプト、SHA256/Git blob記録を追加。
@@ -957,3 +959,21 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - うまくいかなかったこと: 過去の原本checker FAILを登録条件にしていたが、改定済み依頼書に従い原本に適用しない。登録スクリプト初回はsage初回プロンプトの保存漏れで停止（画像コピー前）。会話中の実指示を復元し再実行して成功。
 - 判断: cerise/sage c2も2026-10-20のユーザー指示で採用済み。候補はart-inboxに保持、原本PRはmainから分離。PR #46 mergedを同日MCPで確認。
 - 次: 原本登録PRの後、残りの候補30点を制作・art-inboxへpush。採否・変換・ゲーム組込みは別工程。
+
+### 2026-10-21 (2) — Claude — 追加30点の評価と、ケーキ・飾りパーツの依頼（C案）
+
+- 目的: Codex の追加30点を評価し、製造中のケーキをどう描くか決める。
+- 確認（2026-10-21、`git fetch`）: `art-inbox` の `inbox/20261021/` に確認対象30点と旧候補4点。README で c2 がある4点（beurre・melissa のアイコン、craft-oven・craft-layer）は c2 が対象。delivery-integrity.json に載っている26点は SHA-256 が一致。c2 の4点は記録の後に追加されたため、照合値の記録が無い
+- 評価: 30点とも `convert_pixel_art.py` で変換し、`check_pixel_art.py` に PASS（変換は約2分15秒）。アイコン12・ちびキャラ13・製造9工程の一覧を作って目視した。製造アニメは、工程によってキャラの大きさと作業台の位置が違う（Codex も報告済み）。組み込みのときにケーキを重ねる位置を工程ごとに決める
+- 製造中のケーキの3案を試した: 水彩のケーキのイラストをドット絵に変換すると、作業台の上でも絵柄はそろう。ただし装備した飾りが見えなくなる。オーナーは C案（Codex がケーキ8種と飾りパーツをドット絵で描く）に決めた
+- 完了した作業:
+  - 依頼書に §2-D を追加した
+    - D1: レシピごとに 32×32 を3コマ（本体・リボンの帯だけ・ショコラの帯だけ）。同じキャンバスに描くので、帯の位置がケーキと必ず合う
+    - D2: 上に乗せる飾り4種（16×12×4コマ）
+  - 変換と検査のスクリプトに `cake`・`tops` の種類を追加した。この2種は動きのアニメではないので、足元の行がそろっているかの検査はしない。`art/pixel/cakes/` の中は、ファイル名で `cake` と `tops` を見分ける
+- うまくいかなかったこと: なし。合成画像で、`cake`・`tops` が PASS し、ちびキャラの足元のずれは今までどおり FAIL になることを確認した。
+- 影響範囲: `docs/art/pixel-art-brief.md`、`scripts/convert_pixel_art.py`、`scripts/check_pixel_art.py`、`WORKLOG.md`。ゲームのコードは変更なし。
+- 次のアクション:
+  1. オーナーが追加30点の採否を決める（オリーヴの眼鏡・シェフ・ブールの顔の扱いも）
+  2. Codex が採用分を原本登録し、§2-D のケーキ8枚と飾り1枚を作って `art-inbox` に push する
+  3. そろったら Claude が組み込む（客の名前と絵の切り替え・店先のちびキャラ・製造アニメとケーキ）

@@ -32,15 +32,20 @@ KINDS = {
     "icon": (48, 48, 1, 16),
     "chibi": (48, 64, 2, 16),
     "craft": (128, 96, 4, 16),
+    "cake": (32, 32, 3, 16),   # body, ribbon band, chocolate band (same canvas, so they line up)
+    "tops": (16, 12, 4, 16),   # four top decorations
     "palette": (None, None, 1, 32),
 }
 FOLDERS = {"customers": "icon", "chibi": "chibi", "craft": "craft"}
+ANIMATED = {"chibi", "craft"}  # frames of one motion: the feet must stay on one row
 ICON_CENTRE_TOLERANCE = 4  # dots either side of the middle column
 
 
 def kind_of(path: Path) -> str | None:
     if path.name.startswith("palette"):
         return "palette"
+    if path.parent.name == "cakes":
+        return "tops" if path.name.startswith("cake-tops") else "cake"
     return FOLDERS.get(path.parent.name)
 
 
@@ -108,7 +113,7 @@ def check(path: Path, kind: str, palette: set[tuple[int, int, int]] | None) -> l
         problems.append("no opaque dots")
         return problems
 
-    if frames > 1:
+    if kind in ANIMATED:
         feet = []
         for f in range(frames):
             rows = np.flatnonzero((image[:, f * width:(f + 1) * width, 3] == 255).any(axis=1))
@@ -126,7 +131,7 @@ def check(path: Path, kind: str, palette: set[tuple[int, int, int]] | None) -> l
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("files", nargs="+", type=Path, help="converted images (not the originals in art/pixel/)")
-    parser.add_argument("--kind", choices=sorted(KINDS), help="icon / chibi / craft / palette (default: from the folder name)")
+    parser.add_argument("--kind", choices=sorted(KINDS), help="icon / chibi / craft / cake / tops / palette (default: from the folder name)")
     parser.add_argument("--palette", type=Path, help="default: art/pixel/palette-v1.png when it exists")
     args = parser.parse_args()
 

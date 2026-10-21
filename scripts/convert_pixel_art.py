@@ -19,6 +19,8 @@ makes the real thing from such an original, which stays unmodified in art/:
     python3 scripts/convert_pixel_art.py icon    RAW.png OUT.png --palette art/pixel/palette-v1.png
     python3 scripts/convert_pixel_art.py chibi   RAW.png OUT.png --palette ...   # 2 frames side by side
     python3 scripts/convert_pixel_art.py craft   RAW.png OUT.png --palette ...   # 4 frames side by side
+    python3 scripts/convert_pixel_art.py cake    RAW.png OUT.png --palette ...   # body, ribbon band, chocolate band
+    python3 scripts/convert_pixel_art.py tops    RAW.png OUT.png --palette ...   # 4 top decorations
 
 Check the result with scripts/check_pixel_art.py. Conversion cannot add detail the
 size cannot hold: art drawn at far more dots than the target (an icon drawn ~100
@@ -37,7 +39,8 @@ from scipy import ndimage
 
 ROOT = Path(__file__).resolve().parent.parent
 # kind: (frame width, frame height, frames)
-KINDS = {"icon": (48, 48, 1), "chibi": (48, 64, 2), "craft": (128, 96, 4)}
+KINDS = {"icon": (48, 48, 1), "chibi": (48, 64, 2), "craft": (128, 96, 4),
+         "cake": (32, 32, 3), "tops": (16, 12, 4)}  # cake: body, ribbon band, chocolate band
 COLOUR_LIMIT = 16
 PAPER = 243        # darkest channel at or above this, touching the border: background
 GAP_WHITE = 250    # enclosed regions this white and this large are gaps, not highlights
