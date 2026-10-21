@@ -4,16 +4,15 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- 2026-10-21 Claude追記（ケーキと飾り）: 追加30点は PR #50 で原本登録済み（`art-inbox` の候補と30点ともバイト一致、2026-10-21 確認）。ケーキ8枚・飾り1枚が `art-inbox` に届き（`f84bdaa`）、SHA-256 は記録と一致。ケーキは帯がケーキの形に沿って重なり、良好。飾りは 16×12 ではつぶれるため、**20×15 に変更**した（依頼書・変換・検査スクリプト）。透明PNGの原本は、アルファで背景を決めるように変換スクリプトを直した。ケーキ・飾りの採否はオーナー待ち。
-
-- Updated: 2026-10-21 JST / Codex。追加30点の採用原本登録。
-- Branch: codex/register-pixel-batch-20261021。最新mainから分離。
-- Completed: customers 10 / chibi 12 / craft 8を無加工登録。beurre-icon・melissa-icon・craft-oven・craft-layerはc2、残りc1。
-- Evidence: 台帳30行、個別プロンプト30件、pixel-batch-integrity-20261021.jsonl。PNG全デコード・コピーSHA256・Git blob照合30/30。
-- External: 2026-10-21 GitHub MCPでPR #48 merged確認。候補元art-inbox a92374914f3475679823d94979600d91890e63a8。
-- Next: 原本PRをオーナーが確認。Codexは依頼書§2-Dのケーキ8枚と飾り1枚をart-inboxへ制作配送。Claudeが変換・実寸確認・ゲーム統合する。
-- Limits: 工程間の縮尺・台の高さは変換時に調整。変換後checkerは今回実行せず。public/images・ゲームコードは変更なし。
-- Dashboard: W42の旧ブランチ削除判断は未対応。BGM・実機・CIは対象外。ブラウザ不使用。
+- Updated: 2026-10-21 22:59 JST / Codex。採用ケーキ8枚と飾り1枚の原本登録。
+- Branch: codex/register-pixel-cakes-20261021。最新mainから分離。
+- Completed: art/pixel/cakes/の9PNG、台帳9行、個別プロンプト9件、pixel-cakes-integrity-20261021.jsonl。
+- Selection: shortcake・millefeuille・cake-topsはc2、残り6点はc1。候補元art-inbox f84bdaa6b10be2a435428093461c61f9b7bf6467。
+- Validation: 9/9のPNG全デコード、候補照合記録・コピー元・原本のSHA256一致、Git blob記録。無加工、透明alpha保持。
+- External: 2026-10-21 22:59 JSTまでにGitHub MCPでPR #50 merged確認、Git fetch mainでClaudeの最新評価を確認。
+- Next: 原本登録PRをオーナーが確認・マージ判断。Claudeが客の名前と絵・店先・製造アニメとケーキを組み込む。
+- Limits: 今回は変換後checker・実寸確認を再実行していない。既存Claude評価は日付付き履歴として保持。public/images・ゲームコード変更なし。
+- Dashboard: 同会話で読取済みW42の旧ブランチ削除判断、BGM・実機・CI課題は対象外。ブラウザ不使用。
 
 ## Dated work reports
 ### 2026-09-29 — Claude
@@ -1001,3 +1000,12 @@ This file is the shared source of truth for cross-device and cross-agent handoff
   - 不透明な部分のアルファが 250〜254 のため、半透明が2〜3割あるように見えた。中身は実質不透明で、アルファ128未満を透明とみなせば問題ない
 - 影響範囲: `scripts/convert_pixel_art.py`、`scripts/check_pixel_art.py`、`docs/art/pixel-art-brief.md`、`WORKLOG.md`。
 - 次のアクション: オーナーがケーキ8枚と飾り1枚を採用 → Codex が原本登録（`art/pixel/cakes/<レシピ>-cake-v1.png`・`cake-tops-v1.png`）→ Claude が組み込み（客の名前と絵の切り替え・店先のちびキャラ・製造アニメとケーキ）。
+
+### 2026-10-21 22:59 JST — Codex — 採用ケーキ・飾り9原本の登録
+
+- 目的・完了: オーナー指定のケーキ8枚とcake-tops-c2をart/pixel/cakes/へ無加工登録。台帳・初回および修正プロンプト・参照・SHA256/Git blob記録を追加。
+- 検証: 9/9のPNG全デコード、候補配送時記録・コピー元・登録先のSHA256一致、RGBA保持、git diff --check。原本へのcheckerやゲームのテストは対象外。
+- 決定: shortcake・millefeuille・cake-topsはc2、ほかc1。採用前の版は登録しない。画像の加工・再生成なし。
+- 外部状態: 同日22:59 JSTまでにMCPでPR #50 merged確認、最新mainをfetch。Claudeの変換評価（9点PASS、飾り20×15、alpha優先の背景処理）を履歴のまま保持し、今回の実行結果とは区別する。
+- うまくいかなかったこと: 登録コピー・照合の失敗なし。候補生成時の帯形状・余白の修正履歴は各プロンプトに記録。
+- 残作業: 原本PRのマージ判断、Claudeによる変換・ゲーム統合。dashboardの旧ブランチ整理等は対象外。ブラウザ不使用。
