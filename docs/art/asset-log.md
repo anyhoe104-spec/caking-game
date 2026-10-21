@@ -142,3 +142,19 @@
 | art/pixel/craft/craft-fold-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-craft-fold-v1.md) | 採用 | craft-fold-c1、無加工 |
 | art/pixel/craft/craft-steam-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-craft-steam-v1.md) | 採用 | craft-steam-c1、無加工 |
 | art/pixel/craft/craft-cool-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-craft-cool-v1.md) | 採用 | craft-cool-c1、無加工 |
+
+## 2026-10-21 — ケーキ8枚と飾り1枚の採用
+
+オーナーがshortcake・millefeuille・cake-topsのc2、ほか6点のc1を採用。生成原本を無加工登録。
+
+| ファイル | 日付 | 生成元 | プロンプト | 状態 | メモ |
+|---|---|---|---|---|---|
+| art/pixel/cakes/shortcake-cake-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-shortcake-cake-v1.md) | 採用 | shortcake-cake-c2、無加工 |
+| art/pixel/cakes/pudding-cake-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-pudding-cake-v1.md) | 採用 | pudding-cake-c1、無加工 |
+| art/pixel/cakes/tart-cake-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-tart-cake-v1.md) | 採用 | tart-cake-c1、無加工 |
+| art/pixel/cakes/choco-cake-cake-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-choco-cake-cake-v1.md) | 採用 | choco-cake-cake-c1、無加工 |
+| art/pixel/cakes/millefeuille-cake-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-millefeuille-cake-v1.md) | 採用 | millefeuille-cake-c2、無加工 |
+| art/pixel/cakes/fruit-pie-cake-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-fruit-pie-cake-v1.md) | 採用 | fruit-pie-cake-c1、無加工 |
+| art/pixel/cakes/decoration-cake-cake-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-decoration-cake-cake-v1.md) | 採用 | decoration-cake-cake-c1、無加工 |
+| art/pixel/cakes/royal-cake-cake-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-royal-cake-cake-v1.md) | 採用 | royal-cake-cake-c1、無加工 |
+| art/pixel/cakes/cake-tops-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-cake-tops-v1.md) | 採用 | cake-tops-c2、無加工 |
