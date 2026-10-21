@@ -33,7 +33,7 @@ KINDS = {
     "chibi": (48, 64, 2, 16),
     "craft": (128, 96, 4, 16),
     "cake": (32, 32, 3, 16),   # body, ribbon band, chocolate band (same canvas, so they line up)
-    "tops": (16, 12, 4, 16),   # four top decorations
+    "tops": (20, 15, 4, 16),   # four top decorations (16x12 was too small to read, 2026-10-21)
     "palette": (None, None, 1, 32),
 }
 FOLDERS = {"customers": "icon", "chibi": "chibi", "craft": "craft"}

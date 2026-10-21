@@ -4,6 +4,8 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
+- 2026-10-21 Claude追記（ケーキと飾り）: 追加30点は PR #50 で原本登録済み（`art-inbox` の候補と30点ともバイト一致、2026-10-21 確認）。ケーキ8枚・飾り1枚が `art-inbox` に届き（`f84bdaa`）、SHA-256 は記録と一致。ケーキは帯がケーキの形に沿って重なり、良好。飾りは 16×12 ではつぶれるため、**20×15 に変更**した（依頼書・変換・検査スクリプト）。透明PNGの原本は、アルファで背景を決めるように変換スクリプトを直した。ケーキ・飾りの採否はオーナー待ち。
+
 - Updated: 2026-10-21 JST / Codex。追加30点の採用原本登録。
 - Branch: codex/register-pixel-batch-20261021。最新mainから分離。
 - Completed: customers 10 / chibi 12 / craft 8を無加工登録。beurre-icon・melissa-icon・craft-oven・craft-layerはc2、残りc1。
@@ -984,3 +986,18 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 訂正: 直前のClaude報告にはc2の照合値が無いとあるが、現在のart-inbox a923749のdelivery-integrity.jsonにはadditional_revisionsとして4件記録済み。今回は全30点を再照合。
 - うまくいかなかったこと: コピー・検証の失敗なし。候補の工程間の縮尺差は既知で、承認された原本には修正を加えない。
 - 残作業: §2-Dの9候補制作、オーナー採否、Claudeによる変換・ゲーム組み込み。dashboardの旧ブランチ整理は対象外。ブラウザ不使用。
+
+### 2026-10-21 (3) — Claude — ケーキと飾りパーツの評価
+
+- 確認（2026-10-21、`git fetch`）:
+  - PR #50 の原本30点は、`art-inbox` の確認対象と全点バイト一致
+  - ケーキ8枚（shortcake・millefeuille は c2）と飾り（c2）の9点は透明PNGで、SHA-256 は `cake-delivery-integrity.json` と一致
+- 評価:
+  - 変換後は9点とも PASS
+  - ケーキに帯を重ねると、どのケーキでも側面に沿う（同じキャンバスに描く方式が機能した）
+  - 飾りは 16×12 だと、ハーブ・真珠・王冠がつぶれて読めない。20×15 と 24×18 で比べて、ケーキの上に置いても大きすぎない **20×15** に決めた
+- **うまくいかなかったこと・気づいたこと**:
+  - 透明PNGの原本では、変換スクリプトの「白い背景を透明にする」処理だと、ショートケーキのほぼ白いクリームまで消えてしまう。原本にアルファがあるときは、アルファだけで背景を決めるように直した（白背景の原本の変換結果は変わらない。ミフィ待機で一致を確認）
+  - 不透明な部分のアルファが 250〜254 のため、半透明が2〜3割あるように見えた。中身は実質不透明で、アルファ128未満を透明とみなせば問題ない
+- 影響範囲: `scripts/convert_pixel_art.py`、`scripts/check_pixel_art.py`、`docs/art/pixel-art-brief.md`、`WORKLOG.md`。
+- 次のアクション: オーナーがケーキ8枚と飾り1枚を採用 → Codex が原本登録（`art/pixel/cakes/<レシピ>-cake-v1.png`・`cake-tops-v1.png`）→ Claude が組み込み（客の名前と絵の切り替え・店先のちびキャラ・製造アニメとケーキ）。
