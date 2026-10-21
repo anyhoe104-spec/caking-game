@@ -1,5 +1,5 @@
 import AtelierScenery from "./AtelierScenery.jsx";
-import MiniCharacter from "./MiniCharacter.jsx";
+import { Chibi } from "./Pixel.jsx";
 import CakeModel from "./CakeModel.jsx";
 import { BASE } from "../game/assets.js";
 import { DECORATIONS } from "../game/shop.js";
@@ -15,9 +15,9 @@ export default function ShopDiorama({ state, onRecipe, onOrder }) {
     <div className="shopPlaque"><span>ATELIER CAKING</span><strong>海風と、焼きたて。</strong></div>
     <span className={`shopOpen ${open ? "isOpen" : ""}`}>{open ? "OPEN" : "準備中"} · DAY {state.dayNumber}</span>
     <div className="shopDust" aria-hidden="true"><i/><i/><i/></div>
-    <button className="shopChef" onClick={onRecipe} aria-label="ミフィとケーキをつくる"><span className="miniSpeech">{open ? "焼きたて、どうぞ！" : "なにを作ろう？"}</span><MiniCharacter action={open ? "work" : "walk"}/></button>
+    <button className="shopChef" onClick={onRecipe} aria-label="ミフィとケーキをつくる"><span className="miniSpeech">{open ? "焼きたて、どうぞ！" : "なにを作ろう？"}</span><Chibi name="mify"/></button>
     <button className="shopCake" onClick={onRecipe} aria-label="工房で製造する"><CakeModel style={storefrontCakeStyle(state)} recipe={state.lastCraftedRecipe ?? undefined}/><span>工房へ ›</span></button>
-    {guests.map((guest,i)=><button key={guest.uid} className={`shopGuest shopGuest--${i}`} onClick={()=>onOrder(guest.order)} aria-label={`${guest.name}の注文 ${guest.order}をつくる`}><span className="miniSpeech">{guest.order}</span><MiniCharacter variant={i ? "rose" : "guest"} action="idle"/></button>)}
+    {guests.map((guest,i)=><button key={guest.uid} className={`shopGuest shopGuest--${i}`} onClick={()=>onOrder(guest.order)} aria-label={`${guest.name}の注文 ${guest.order}をつくる`}><span className="miniSpeech">{guest.order}</span>{guest.key ? <Chibi name={guest.key}/> : null}</button>)}
     {state.equippedDecoration === "harbor-lamp" && <div className="shopLantern" aria-hidden="true"><i>✦</i><i>✦</i></div>}
     {state.equippedDecoration === "rose-table" && <div className="shopFlowers" aria-hidden="true">❀ ❀ ❀ ❀</div>}
     {state.equippedDecoration === "royal-case" && <div className="shopRoyal" aria-hidden="true">ROYAL PATISSERIE</div>}

@@ -17,6 +17,7 @@ import { DECORATIONS, buyDecoration, equipDecoration, hireStaff, getStaffEffects
 import { getMiruMessage } from "./game/engagement.js";
 import { MATERIAL_LABELS, OPENING_LINES, RECIPES } from "./game/data.js";
 import { miruImg } from "./game/assets.js";
+import { preloadPixelArt } from "./game/pixelArt.js";
 import { audioBus as bus } from "./game/audio.js";
 import { BGM_KEYS, resolveScene } from "./game/audioAssets.js";
 import { isFullyMuted, normalizeAudio, setVolume, toggleMute } from "./game/audioSettings.js";
@@ -195,6 +196,13 @@ export default function App() {
   useEffect(() => {
     document.documentElement.classList.toggle("reduceMotion", reduceMotion);
   }, [reduceMotion]);
+
+  // Sprites for the shop front and the crafting steps; the images are kept alive by the ref.
+  const pixelArt = useRef(null);
+  useEffect(() => {
+    const timer = setTimeout(() => { pixelArt.current = preloadPixelArt(); }, 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   // ── Audio wiring ───────────────────────────────────────────
   // Audio is attempted immediately rather than waiting for a tap. An installed

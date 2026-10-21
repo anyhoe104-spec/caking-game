@@ -20,12 +20,16 @@ decision (docs/art/production-plan.md, item 1-5).
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageDraw
 from scipy import ndimage
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import convert_pixel_art as pixel  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 ART = ROOT / "art"
@@ -66,6 +70,12 @@ BACKGROUNDS = [
     ("backgrounds/bg-kitchen-v1.png", "bg-kitchen"),
     ("backgrounds/bg-ending-v1.png", "bg-ending"),
 ]
+# Pixel art: originals in art/pixel/ (generator output, unmodified) become exact-size
+# sprites under public/images/pixel/ through scripts/convert_pixel_art.py.
+PIXEL = ART / "pixel"
+PIXEL_OUT = OUT / "pixel"
+PIXEL_ANCHORS = ROOT / "src" / "game" / "pixelAnchors.json"
+CAKE_STEPS = ("layer", "decorate", "glaze", "cool")  # crafting steps that show the cake on the table
 CHARACTER_HEIGHT = 768  # matches the existing portraits, which the layout is tuned for
 BACKGROUND_WIDTH = 1536
 
@@ -247,6 +257,99 @@ def build(check: bool) -> list[tuple[Path, Image.Image]]:
         im = im.resize((BACKGROUND_WIDTH, round(im.height * BACKGROUND_WIDTH / im.width)), Image.Resampling.LANCZOS)
         outputs.append((OUT / "backgrounds" / f"{name}.png", im))
 
+    write(outputs, check)
+    return outputs
+
+
+SCENE_WIDTH = 170          # dots: the 128-dot crafting frame plus a side table for the cake
+SIDE_TABLE = (126, 166)    # its left and right edge, in dots
+
+
+def table_rows(sheet: Image.Image, frames: int = 4) -> dict[str, int]:
+    """The work table's top row and the floor row (lowest drawn row), in dots.
+
+    The table top is the first row in the lower half whose opaque run is nearly as wide
+    as the widest run there. The cake does not fit on the work table beside Mify (about
+    16 dots are free), so it stands on a side table at the same height (2026-10-21).
+    """
+    a = np.asarray(sheet)[..., 3] > 0
+    w = a.shape[1] // frames
+    any_frame = np.stack([a[:, f * w:(f + 1) * w] for f in range(frames)]).any(axis=0)
+    def widest(row):
+        best = cur = 0
+        for v in row:
+            cur = cur + 1 if v else 0
+            best = max(best, cur)
+        return best
+    h = any_frame.shape[0]
+    widths = [widest(any_frame[y]) for y in range(h)]
+    target = 0.85 * max(widths[h // 2:])
+    top = next(y for y in range(h // 2, h) if widths[y] >= target)
+    floor = int(np.flatnonzero(any_frame.any(axis=1)).max())
+    return {"top": int(top), "floor": floor}
+
+
+def side_table(rows: dict[str, int], palette: np.ndarray) -> Image.Image:
+    """A small wooden table in the work table's colours, drawn from palette colours only."""
+    def near(rgb):
+        return tuple(int(v) for v in palette[np.argmin(((palette.astype(int) - np.array(rgb)) ** 2).sum(axis=1))]) + (255,)
+    dark, mid, light = near((70, 45, 40)), near((150, 90, 60)), near((193, 139, 98))
+    x0, x1 = SIDE_TABLE
+    top, floor = rows["top"], rows["floor"]
+    im = Image.new("RGBA", (x1 - x0 + 1, floor - top + 1), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    w = x1 - x0
+    d.rectangle([0, 0, w, 4], fill=dark)
+    d.rectangle([1, 1, w - 1, 3], fill=mid)
+    d.line([1, 1, w - 1, 1], fill=light)
+    for lx in (3, w - 6):
+        d.rectangle([lx, 5, lx + 3, floor - top], fill=dark)
+        d.rectangle([lx + 1, 5, lx + 2, floor - top - 1], fill=mid)
+    d.rectangle([3, 15, w - 3, 17], fill=dark)
+    d.line([4, 16, w - 4, 16], fill=mid)
+    return im
+
+
+def top_spot(body: Image.Image) -> dict[str, int]:
+    """Where a top decoration sits on a cake body: centre x and the cake's top y, in dots."""
+    a = np.asarray(body)[..., 3] > 0
+    cols = np.flatnonzero(a.any(axis=0))
+    cx = int((cols.min() + cols.max()) // 2)
+    return {"x": cx, "top": int(np.flatnonzero(a[:, cx]).min())}
+
+
+def build_pixel(check: bool) -> list[tuple[Path, Image.Image]]:
+    palette = pixel.palette_from_sheet(PIXEL / "palette-v1.png")
+    outputs: list[tuple[Path, Image.Image]] = []
+    jobs = [("icon", p, PIXEL_OUT / "customers" / p.name.replace("-icon-v1", "")) for p in sorted((PIXEL / "customers").glob("*-icon-v1.png"))]
+    jobs += [("chibi", p, PIXEL_OUT / "chibi" / p.name.replace("-idle-v1", "")) for p in sorted((PIXEL / "chibi").glob("*-idle-v1.png"))]
+    jobs += [("craft", p, PIXEL_OUT / "craft" / p.name.replace("craft-", "").replace("-v1", "")) for p in sorted((PIXEL / "craft").glob("craft-*-v1.png"))]
+    jobs += [("cake", p, PIXEL_OUT / "cakes" / p.name.replace("-cake-v1", "")) for p in sorted((PIXEL / "cakes").glob("*-cake-v1.png"))]
+    jobs += [("tops", PIXEL / "cakes" / "cake-tops-v1.png", PIXEL_OUT / "cakes" / "tops.png")]
+    anchors: dict[str, dict] = {"sceneWidth": SCENE_WIDTH, "craft": {}, "cakes": {}}
+    for kind, src, dst in jobs:
+        im = pixel.convert(src, kind, palette)
+        outputs.append((dst, im))
+        if kind == "craft" and dst.stem in CAKE_STEPS:
+            rows = table_rows(im)
+            table = side_table(rows, palette)
+            outputs.append((PIXEL_OUT / "craft" / f"side-table-{dst.stem}.png", table))
+            # cake: centred on the side table, standing on its top board
+            anchors["craft"][dst.stem] = {"tableX": SIDE_TABLE[0], "tableY": rows["top"], "tableW": table.width, "tableH": table.height,
+                                          "cakeX": (SIDE_TABLE[0] + SIDE_TABLE[1]) // 2, "cakeBottom": rows["top"] + 2}
+        if kind == "cake":
+            anchors["cakes"][dst.stem] = top_spot(im.crop((0, 0, 32, 32)))
+    write(outputs, check)
+    text = json.dumps(anchors, indent=2, ensure_ascii=False) + "\n"
+    if check:
+        print(f"would write {PIXEL_ANCHORS.relative_to(ROOT)}")
+    else:
+        PIXEL_ANCHORS.write_text(text)
+        print(f"wrote {PIXEL_ANCHORS.relative_to(ROOT)}")
+    return outputs
+
+
+def write(outputs: list[tuple[Path, Image.Image]], check: bool) -> None:
     for path, im in outputs:
         rel = path.relative_to(ROOT)
         if check:
@@ -255,14 +358,14 @@ def build(check: bool) -> list[tuple[Path, Image.Image]]:
             path.parent.mkdir(parents=True, exist_ok=True)
             im.save(path, optimize=True)
             print(f"wrote {rel} {im.size[0]}x{im.size[1]} {im.mode} {path.stat().st_size // 1024}KB")
-    return outputs
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--check", action="store_true", help="report outputs without writing")
+    parser.add_argument("--pixel", action="store_true", help="only the pixel art (art/pixel/ -> public/images/pixel/)")
     args = parser.parse_args()
-    outputs = build(args.check)
+    outputs = build_pixel(args.check) if args.pixel else build(args.check) + build_pixel(args.check)
     print(f"{len(outputs)} images")
     return 0
 

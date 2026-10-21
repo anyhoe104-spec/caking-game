@@ -1,19 +1,33 @@
 import { RECIPES } from "./data.js";
 
+// Names follow docs/world/characters.md (2026-10-18): humans after foods, beastfolk
+// after spices and herbs, called by name alone. `key` names the pixel art files.
 export const CUSTOMERS = [
-  ["さくらさん", "customer-sakura", ["ショートケーキ", "イチゴタルト"], 2, 120],
-  ["ひろとくん", "customer-hiroto", ["チョコケーキ", "プリン"], 1, 90],
-  ["マダム・ローズ", "customer-madame-rose", ["王様のケーキ", "ミルフィーユ"], 3, 150],
-  ["おじいちゃん", "customer-grandpa", ["プリン"], 1, 180],
-  ["みちるさん", "customer-michiru", ["フルーツパイ", "イチゴタルト"], 2, 110],
-  ["カイくん", "customer-kai", ["チョコケーキ", "ショートケーキ"], 2, 100],
-  ["シェフ", "customer-chef", ["デコレーションケーキ", "王様のケーキ"], 3, 90],
-  ["ゆいちゃん", "customer-yui", ["プリン", "ショートケーキ"], 1, 140],
-  ["ふたご・アオ", "customer-twins-a", ["ミルフィーユ", "フルーツパイ"], 2, 120],
-  ["ふたご・モモ", "customer-twins-b", ["イチゴタルト", "チョコケーキ"], 2, 120],
-  ["ハナさん", "customer-hana", ["デコレーションケーキ", "ショートケーキ"], 3, 130],
-  ["旅人さん", "customer-traveler", ["王様のケーキ", "フルーツパイ"], 3, 100],
-].map(([name, avatar, preferredRecipes, hearts, timeLimit]) => ({ name, avatar, preferredRecipes, hearts, timeLimit }));
+  ["スリーズ", "cerise", ["ショートケーキ", "イチゴタルト"], 2, 120],
+  ["ノワ", "noix", ["チョコケーキ", "プリン"], 1, 90],
+  ["マダム・フィグ", "fig", ["王様のケーキ", "ミルフィーユ"], 3, 150],
+  ["セージ", "sage", ["プリン"], 1, 180],
+  ["オリーヴ", "olive", ["フルーツパイ", "イチゴタルト"], 2, 110],
+  ["トマ", "toma", ["チョコケーキ", "ショートケーキ"], 2, 100],
+  ["シェフ・ブール", "beurre", ["デコレーションケーキ", "王様のケーキ"], 3, 90],
+  ["ペッシュ", "peche", ["プリン", "ショートケーキ"], 1, 140],
+  ["ミント", "mint", ["ミルフィーユ", "フルーツパイ"], 2, 120],
+  ["メリッサ", "melissa", ["イチゴタルト", "チョコケーキ"], 2, 120],
+  ["アプリコ", "aprico", ["デコレーションケーキ", "ショートケーキ"], 3, 130],
+  ["カルダモン", "cardamom", ["王様のケーキ", "フルーツパイ"], 3, 100],
+].map(([name, key, preferredRecipes, hearts, timeLimit]) => ({ name, key, preferredRecipes, hearts, timeLimit }));
+
+export const customerIconPath = key => `images/pixel/customers/${key}.png`;
+
+// Saves from before the renaming keep the old portrait path on queued customers.
+const LEGACY_AVATARS = { sakura: "cerise", hiroto: "noix", "madame-rose": "fig", grandpa: "sage", michiru: "olive", kai: "toma",
+  chef: "beurre", yui: "peche", "twins-a": "mint", "twins-b": "melissa", hana: "aprico", traveler: "cardamom" };
+
+/** The customer a saved queue entry stands for, from its key or its pre-renaming portrait. */
+export function customerFor(entry) {
+  const key = entry?.key ?? LEGACY_AVATARS[/^images\/characters\/customer-([a-z-]+)\.png$/.exec(entry?.avatarPath ?? "")?.[1]];
+  return CUSTOMERS.find(customer => customer.key === key) ?? null;
+}
 
 const seededSort = (items, seed) => [...items].sort((a, b) => {
   const score = (value) => [...value].reduce((sum, char) => sum + char.charCodeAt(0), seed);
@@ -27,7 +41,7 @@ export function generateCustomerQueue(level, dayNumber = 1) {
   return seededSort(eligible, dayNumber + level).slice(0, count).map((customer, index) => {
     const orderRecipe = customer.preferredRecipes.find((recipe) => unlocked.includes(recipe)) || unlocked[0];
     const id = `day-${dayNumber}-${index}`;
-    return { ...customer, id, uid: id, avatarPath: `images/characters/${customer.avatar}.png`, orderRecipe, order: orderRecipe, tl: customer.timeLimit, timeRemaining: customer.timeLimit, status: "waiting", arrivedAt: index };
+    return { ...customer, id, uid: id, avatarPath: customerIconPath(customer.key), orderRecipe, order: orderRecipe, tl: customer.timeLimit, timeRemaining: customer.timeLimit, status: "waiting", arrivedAt: index };
   });
 }
 

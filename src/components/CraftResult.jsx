@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { audioBus } from "../game/audio.js";
 import { Stars } from "./common.jsx";
-import MiniCharacter from "./MiniCharacter.jsx";
-import CraftStage from "./CraftStage.jsx";
+import { PixelCraft } from "./Pixel.jsx";
 import { getCraftPresentation } from "../game/craftPresentation.js";
 import CakeModel from "./CakeModel.jsx";
 import { recipeImg } from "../game/assets.js";
@@ -43,7 +42,7 @@ function Production({ result, reduced, paused, onFinish, onReveal, cakeStyle }) 
         {done ? (cakeStyle?.top !== "berry" || cakeStyle?.band
           ? <CakeModel className="finishedRecipe" recipe={result.recipe} style={cakeStyle}/>
           : <img className="finishedRecipe" src={recipeImg(result.recipe)} alt=""/>)
-          : <><MiniCharacter action="work"/><CraftStage kind={presentation.steps[step].kind} recipe={result.recipe} cakeStyle={cakeStyle}/></>}
+          : <PixelCraft kind={presentation.steps[step].kind} recipe={result.recipe} cakeStyle={cakeStyle}/>}
 
       </div>
       <div className="craftTitle" role="status">{done ? copy.title : presentation.steps[step].title}</div>

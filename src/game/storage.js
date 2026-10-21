@@ -1,5 +1,6 @@
 import { normalizeReadStories } from "./story.js";
 import { normalizeCakeParts } from "./cakeParts.js";
+import { customerFor, customerIconPath } from "./customers.js";
 import { BASE_MATERIALS, RECIPES, OPENING_LINES } from "./data.js";
 import { DEFAULT_AUDIO, normalizeAudio } from "./audioSettings.js";
 
@@ -80,15 +81,19 @@ export function migrateSave(raw) {
     reward: { money: safeCount(m.reward?.money), points: safeCount(m.reward?.points),
       materials: Object.fromEntries(Object.keys(BASE_MATERIALS).map(key => [key, safeCount(m.reward?.materials?.[key])]).filter(([, count]) => count > 0)) },
   }));
-  state.customerQueue = rows(raw.customerQueue).filter(c => recipeNames.has(c.orderRecipe ?? c.order) && typeof c.id === "string").map(c => ({
-    id: text(c.id), uid: text(c.uid || c.id), name: text(c.name),
-    avatarPath: typeof c.avatarPath === "string" && /^images\/characters\/[a-z-]+\.png$/.test(c.avatarPath) ? c.avatarPath : null,
+  state.customerQueue = rows(raw.customerQueue).filter(c => recipeNames.has(c.orderRecipe ?? c.order) && typeof c.id === "string").map(c => {
+    // Name and portrait come from the roster, so a save from before the renaming shows the new cast.
+    const customer = customerFor(c);
+    return {
+    id: text(c.id), uid: text(c.uid || c.id), key: customer?.key ?? null, name: customer?.name ?? text(c.name),
+    avatarPath: customer ? customerIconPath(customer.key) : null,
     orderRecipe: c.orderRecipe ?? c.order, order: c.orderRecipe ?? c.order,
     hearts: safeCount(c.hearts, 1, 3), tl: safeCount(c.tl, 120, 180),
     timeRemaining: safeCount(c.timeRemaining, 0, 180),
     status: ["waiting", "fulfilled", "special", "expired"].includes(c.status) ? c.status : "expired",
     arrivedAt: safeCount(c.arrivedAt),
-  }));
+  };
+  });
   state.decorations = ids(raw.decorations);
   state.staff = ids(raw.staff);
   state.equippedDecoration = state.decorations.includes(raw.equippedDecoration) ? raw.equippedDecoration : null;
