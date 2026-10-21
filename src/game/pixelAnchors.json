@@ -1,0 +1,71 @@
+{
+  "sceneWidth": 170,
+  "craft": {
+    "cool": {
+      "tableX": 126,
+      "tableY": 64,
+      "tableW": 41,
+      "tableH": 32,
+      "cakeX": 146,
+      "cakeBottom": 66
+    },
+    "decorate": {
+      "tableX": 126,
+      "tableY": 58,
+      "tableW": 41,
+      "tableH": 38,
+      "cakeX": 146,
+      "cakeBottom": 60
+    },
+    "glaze": {
+      "tableX": 126,
+      "tableY": 59,
+      "tableW": 41,
+      "tableH": 37,
+      "cakeX": 146,
+      "cakeBottom": 61
+    },
+    "layer": {
+      "tableX": 126,
+      "tableY": 59,
+      "tableW": 41,
+      "tableH": 37,
+      "cakeX": 146,
+      "cakeBottom": 61
+    }
+  },
+  "cakes": {
+    "choco-cake": {
+      "x": 15,
+      "top": 7
+    },
+    "decoration-cake": {
+      "x": 15,
+      "top": 5
+    },
+    "fruit-pie": {
+      "x": 17,
+      "top": 11
+    },
+    "millefeuille": {
+      "x": 15,
+      "top": 8
+    },
+    "pudding": {
+      "x": 16,
+      "top": 7
+    },
+    "royal-cake": {
+      "x": 16,
+      "top": 11
+    },
+    "shortcake": {
+      "x": 15,
+      "top": 7
+    },
+    "tart": {
+      "x": 15,
+      "top": 9
+    }
+  }
+}

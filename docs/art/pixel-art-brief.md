@@ -120,7 +120,7 @@ C の製造アニメでは、作業台の上を空けてある。そこにゲー
 2. 試作が通ったら残りを作る。A・B・C の順でよい（2026-10-21 に A・B・C の追加30点が art-inbox に届いた）。**D（ケーキと飾りパーツ）は 2026-10-21 に追加**
 3. 各段階でオーナーの採用を受けてから原本登録する（`docs/art/asset-log.md` に1行ずつ、プロンプトは `docs/art/prompts/`）
 4. **客の名前と絵は同時に切り替える**（オーナー決定）。A と B の客12名がそろうまで、ゲームの名前は変えない
-5. 原本登録の後、Claude が `scripts/process_game_art.py` に仕上げ処理を足し、`public/images/` への出力とゲームの組み込みを1つのPRで行う
+5. 原本登録の後、Claude が `scripts/process_game_art.py` に仕上げ処理を足し、`public/images/` への出力とゲームの組み込みを1つのPRで行う（2026-10-21 実施：`python3 scripts/process_game_art.py --pixel` → `public/images/pixel/`）
 
 ## 4. 受け入れの確認項目（Claude がスクリプトで検査する）
 

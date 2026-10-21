@@ -196,3 +196,18 @@ html {scroll-padding-top:110px;scroll-padding-bottom:100px}
 @media(max-width:360px){.shopPlaque strong{font-size:15px}.shopPlaque{padding:7px 9px}.shopCake{left:9px;width:90px;bottom:37px}}
 img.finishedRecipe {mix-blend-mode:multiply}
 .productionScene {background-color:#fff8e9}
+
+/* Pixel art (public/images/pixel/, from art/pixel/ via scripts/process_game_art.py --pixel) */
+.pixelSprite {background-repeat:no-repeat;image-rendering:pixelated;}
+.pixelSprite--animated {animation-name:pixelFrames;animation-iteration-count:infinite;}
+@keyframes pixelFrames {from{background-position-x:0%}to{background-position-x:100%}}
+.pixelImage {image-rendering:pixelated;display:block;}
+.pixelChibi {aspect-ratio:48 / 64;width:100%;}
+.shopChef .pixelChibi {width:96px;margin:0 auto;}
+.shopGuest .pixelChibi {width:72px;margin:0 auto;}
+.resumeChibi {width:96px;margin:18px auto 0;}
+.pixelScene {position:absolute;left:0;right:0;bottom:0;width:100%;}
+.customerAvatar {image-rendering:pixelated;}
+.reduceMotion .pixelSprite--animated {animation:none!important;}
+@media(prefers-reduced-motion:reduce){.pixelSprite--animated{animation:none!important}}
+.pageHidden .pixelSprite--animated,.gamePaused .pixelSprite--animated {animation-play-state:paused!important;}

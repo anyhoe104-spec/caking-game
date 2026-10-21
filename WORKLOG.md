@@ -4,15 +4,29 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-10-21 22:59 JST / Codex。採用ケーキ8枚と飾り1枚の原本登録。
-- Branch: codex/register-pixel-cakes-20261021。最新mainから分離。
-- Completed: art/pixel/cakes/の9PNG、台帳9行、個別プロンプト9件、pixel-cakes-integrity-20261021.jsonl。
-- Selection: shortcake・millefeuille・cake-topsはc2、残り6点はc1。候補元art-inbox f84bdaa6b10be2a435428093461c61f9b7bf6467。
-- Validation: 9/9のPNG全デコード、候補照合記録・コピー元・原本のSHA256一致、Git blob記録。無加工、透明alpha保持。
-- External: 2026-10-21 22:59 JSTまでにGitHub MCPでPR #50 merged確認、Git fetch mainでClaudeの最新評価を確認。
-- Next: 原本登録PRをオーナーが確認・マージ判断。Claudeが客の名前と絵・店先・製造アニメとケーキを組み込む。
-- Limits: 今回は変換後checker・実寸確認を再実行していない。既存Claude評価は日付付き履歴として保持。public/images・ゲームコード変更なし。
-- Dashboard: 同会話で読取済みW42の旧ブランチ削除判断、BGM・実機・CI課題は対象外。ブラウザ不使用。
+- Updated: 2026-10-21 23:40 JST
+- 作業者: **Claude**
+- ブランチ: `claude/nifty-cori-cbmgi6`。基点 `8880e35`（PR #52 マージ後の `main`）
+- 目的: ドット絵の素材がそろったので、客の名前と絵の切り替え・店先のちびキャラ・製造アニメとケーキを1つのPRで組み込む。
+- 外部状態確認（**2026-10-21、`git fetch origin '+refs/heads/*:refs/remotes/origin/*'` で実測**）:
+  - ドット絵の原本44点は、PR #48・#50・#52 で `art/pixel/` に登録済み。`art-inbox` で確認した候補と全点バイト一致
+- 完了:
+  - `scripts/process_game_art.py --pixel` で `public/images/pixel/` に43点と脇机4点を生成し、置く位置を `src/game/pixelAnchors.json` に書き出す。生成物は全点 `check_pixel_art.py` に PASS
+  - 客12名を新しい名前に切り替え（`src/game/customers.js`、呼び方は名前だけ）。注文一覧はドット絵のアイコン
+  - 名前を変える前のセーブも、並んでいる客を新しい名前とアイコンで表示する（`migrateSave`）
+  - 店先と休憩の画面: ちびキャラ（`src/components/Pixel.jsx`）。製造: 9工程のドット絵アニメ。重ね・絞り・艶がけ・冷ましでは、脇机にドット絵のケーキと、装備した帯・飾りを置く
+  - 不要になった `MiniCharacter.jsx`・`CraftStage.jsx` と、旧い客の絵12点を削除
+- 進行中: なし。PRのレビュー・マージ待ち（マージで即時公開）。
+- ブロッカーとリスク:
+  - 🟡 製造の画面は、ドット絵を割り切れない倍率（約1.8倍）で拡大している。ドットの大きさがわずかにそろわないが、スマホの高解像度の画面ではほぼ目立たない
+  - 🟡 物語の中の「おじいちゃん」「ふたご」は一般名詞として残した（新しい名前とは矛盾しない）
+  - 🟡 できあがりの画面は水彩のまま（オーナーの判断どおり）
+  - 🟡 実機確認の残りと、PRごとに自動で走る CI が無い点は継続。BGM の方向性はオーナーの回答待ち
+- 次のアクション:
+  1. オーナーが本PRを確認・マージ
+  2. 実機で、店先・注文一覧・製造（特に脇机のケーキと飾り）・休憩の画面を確認
+  3. 旧ブランチの削除（オーナー作業、Issue #27 / #36）
+- 検証（2026-10-21、本ブランチ）: lint 0件、`npm test` **50件 pass**（47→50）、build 成功。`verify-offline`（80画像をオフラインでデコード）・`verify-atelier`・`verify-story`・`verify-save`・`verify-bgm`・`verify-playthrough`・`verify-av`・`verify-voices` すべて PASS。店先・注文一覧・休憩・製造（4レシピ×3工程）を撮影して確認した。
 
 ## Dated work reports
 ### 2026-09-29 — Claude
@@ -1009,3 +1023,23 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 外部状態: 同日22:59 JSTまでにMCPでPR #50 merged確認、最新mainをfetch。Claudeの変換評価（9点PASS、飾り20×15、alpha優先の背景処理）を履歴のまま保持し、今回の実行結果とは区別する。
 - うまくいかなかったこと: 登録コピー・照合の失敗なし。候補生成時の帯形状・余白の修正履歴は各プロンプトに記録。
 - 残作業: 原本PRのマージ判断、Claudeによる変換・ゲーム統合。dashboardの旧ブランチ整理等は対象外。ブラウザ不使用。
+
+### 2026-10-21 (4) — Claude — ドット絵の組み込み（客の名前の切り替えと同時）
+
+- 目的: オーナーの方針「名前と絵は同時に切り替える」に従い、そろったドット絵をまとめてゲームに入れる。
+- 完了した作業:
+  - 生成: `process_game_art.py` に `--pixel` を追加した。`art/pixel/` の原本から `convert_pixel_art.py` で本番サイズに変換する（約1分50秒）。出力はアイコン12・ちびキャラ13・製造9・ケーキ8・飾り1・脇机4の計47点、合計約300KB
+  - 置く位置は画像から測る: 作業台の上面の行と床の行。ケーキごとの上面の中央と高さ
+  - `customers.js`: 新しい名前と `key`。`customerFor()` で、名前を変える前のセーブにある旧い絵のパスを新しい客に対応させる
+  - `Pixel.jsx`: `PixelSprite`（CSS の steps でコマ送り）・`Chibi`・`PixelCraft`。位置は割合で指定するので、画面の幅に合わせて拡大される。動きを減らす設定・一時停止・画面非表示では止まる
+  - `pixelArt.js`: 起動から0.8秒後に、全スプライトを先に読み込む
+  - テスト: `test/customers.test.js`（3件）を追加。名前と画像、新しい日の客の並び、旧セーブの変換
+- **うまくいかなかったこと**:
+  - ケーキを作業台の空いている所に置くと、32ドットのケーキがミフィの腕に重なった。作業台の空きは約16ドットしかない。ケーキを小さくすると飾りが読めなくなる（C案の目的に反する）ので、同じ高さの脇机を足した。浮いた棚板を1回試したが不自然だったため、脚のある机にした。机は共通パレットの色で、スクリプトが描く
+  - 最初の撮影では、ショートケーキの2工程目で脇机しか写らなかった。工程が始まってから画像を読み込んでいて、1秒足らずの工程に間に合っていなかった。起動後に先読みするようにして解消した
+  - 先読みの関数をコンポーネントのファイルから export したところ、lint（react-refresh）が1件エラーを出した。`src/game/pixelArt.js` に移した
+  - ドキュメントに日付を「2026-10-22」と書いた。実際は 2026-10-21 23:37 JST だったので直した
+- 影響範囲: `scripts/process_game_art.py`、`src/game/{customers,storage,assets,pixelArt}.js`、`src/game/pixelAnchors.json`（生成物）、`src/components/{Pixel,ShopDiorama,ResumeDialog,CraftResult}.jsx`、`src/App.jsx`、`src/atelier.css`、`public/images/pixel/`（新規47点）、`public/images/characters/customer-*.png`（12点削除）、`src/components/{MiniCharacter,CraftStage}.jsx`（削除）、`test/customers.test.js`（新規）、`docs/world/{world,characters}.md`、`docs/art/{pixel-art-brief,production-status}.md`、`WORKLOG.md`。
+- 検証: 上記 `Current handoff` の「検証」を参照。
+- ダッシュボードの未解決事項: 旧ブランチの削除（オーナー作業）は未対応。
+- 次のアクション: 上記 `Current handoff` を参照。
