@@ -1,0 +1,23 @@
+[
+  {
+    "name": "shortcake-cake-c2",
+    "refs": [
+      "inbox/20261021/shortcake-cake-c1.png"
+    ],
+    "prompt": "Edit this 3-cell transparent spritesheet. KEEP first cell shortcake body EXACTLY unchanged, keep canvas3:1,3 equal square cells. CHANGE ONLY bands in cells2 and3: they are wrongly curved. Replace each with a THIN STRAIGHT diagonal parallelogram band, rising from LEFT to RIGHT at same angle as cake's lower sponge edge. In each cell's local coordinates band spans x4..29 and y23 at left to y18 at right, thickness3 logical pixels. PINK band in cell2, same shape CHOCOLATE band in cell3. NO crescent, no U-shape, no bowl. Bands only, other pixels transparent, no cake body in2 or3. Retain chunky32x32-per-cell pixel style, no plates, no text."
+  },
+  {
+    "name": "millefeuille-cake-c2",
+    "refs": [
+      "inbox/20261021/millefeuille-cake-c1.png"
+    ],
+    "prompt": "Edit this3-cell transparent pixel spritesheet. KEEP first cell rectangular millefeuille cake EXACTLY unchanged. Change ONLY pink band cell2 and brown band cell3 to match BOTH visible cake sides around FRONT CORNER. Band is a bent strip: short left face slopes DOWN toward right to front corner at local x10,y26, then long right face slopes UP toward right to x29,y18. Start left x3,y19. Thickness3 logical pixels. Both bands same outline and position in equal square cells. This is a shallow angular V with off-center low corner, NOT a single straight slash and NOT rounded. Overlay strips only, transparent elsewhere, no cake body. Same32x32 coarse pixel style and3:1 sheet."
+  },
+  {
+    "name": "cake-tops-c2",
+    "refs": [
+      "inbox/20261021/cake-tops-c1.png"
+    ],
+    "prompt": "Edit this transparent4-topper sheet. Preserve exact identities and order:3 strawberries, green leaves, pearl cluster, gold crown. Fix layout ONLY: FOUR equally wide panels across entire image, EVERY object must be strictly inside its own quarter with generous10 percent panel-width empty margin on BOTH sides. The strawberry cluster currently crosses quarter1 boundary: make ALL FOUR clusters about75 percent of current size and center each at x12.5%,37.5%,62.5%,87.5% of image. Align all bottom contact points to same baseline at75% of image height. No objects touch any quarter boundary. Keep transparent canvas, no lines/text/panels/cake. Keep very coarse chunky16x12 logical pixel topper style."
+  }
+]

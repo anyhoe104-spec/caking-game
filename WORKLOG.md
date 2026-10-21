@@ -4,15 +4,14 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-10-21 JST / Codex — 追加ドット絵30素材を制作。
-- Branch: art-inbox。開始時HEAD d99b2d954cd04cd758c031332cea8ca572dc59a1。
-- Completed: inbox/20261021/ にアイコン10人、客12人の待機2コマ、製造8工程の各4コマ。修正版4点を含む34PNG。
-- Approved originals: 試作5点を無加工登録したPR #48。head c1105f5661182e7c8b32030e19eafa10898bb1a1、2026-10-21 08:39 JSTまでにGitHub MCPでopen/mergeableを再確認。
-- Evidence: 候補README、production-prompts.json、追加修正プロンプト、delivery-integrity.json。生成元とのSHA256一致・PNG検証。原本には変換後用checkerを実行しない。
-- Limits: 今回の30素材は未採用。48格子・色数などの厳密な実装規格、変換後の実寸表示・コマ合わせは未検証。
-- Next: Claudeによる変換・実寸確認、オーナー採否。特に工程間の縮尺とケーキ重ね合わせ領域を確認する。PR #48のマージはオーナー側。
-- External: GitHub MCPでPR確認・作成、画像バイナリはGitで配送。ブラウザ不使用。
-- Other issues: 既存のcaking-game checkoutは変更しない。dashboard W42の旧ブランチ削除判断、BGM・実機・CI課題は対象外。10/18のopen PR 0件という記録は現在のPR #48より古い。
+- Updated: 2026-10-21 JST / Codex。採用30点登録と§2-D候補制作。
+- Branch: art-inbox。ケーキ制作前HEAD a92374914f3475679823d94979600d91890e63a8。
+- Approved: 追加30点はオーナー採用済み。原本登録PR #50、head 3b961839a9ef7ebb29fd8d9ff30ad1f0c7bb183a。2026-10-21 GitHub MCPでopen/mergeable確認。PR #48はmerged確認。
+- Completed: inbox/20261021/にケーキ8素材・飾り1素材。初回9＋修正3、計12PNG。CAKES-README.mdに確認対象、全プロンプトと照合記録を添付。
+- Validation: 12PNG全デコード、透明alpha、生成元SHA256一致。原本に縮小・減色・切り抜きなし。
+- Limits: 変換後の格子・色数・帯重ね合わせ位置とtopsのコマ比率・接地位置はClaudeが調整検証。ゲーム実寸未確認。
+- Next: オーナーが9候補を採否判断。採用後に原本登録、Claudeが変換・ゲーム組み込み。
+- Scope: public/images・ゲームコード変更なし。dashboard W42の旧ブランチ削除判断・BGM・実機・CI課題は対象外。GitHub MCPとGitを使用、ブラウザ不使用。
 
 ## Dated work reports
 ### 2026-09-29 — Claude
@@ -907,3 +906,13 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 残作業: Claudeの変換・実寸評価、オーナー採否、採用後の原本登録。今回はpublic/images・ゲーム実装へ反映していない。
 - 再開時の確認（2026-10-21 08:39 JSTまで）: 最後のcool-c1・oven-c2・layer-c2は前回の生成出力に存在したが候補フォルダへ未保存だった。実画像を確認して無加工回収、新規生成は0回。GitHub MCPでPR #48の未マージと最新素材管理ルール、dashboard README/CONTEXT/個別/W42を確認。art-inboxはPR不要という最新の個別ルールを適用する。旧ブランチ整理は未対応。
 - 再開時の障害: thread読取APIは1ターンでもサイズ上限で失敗したため、指定IDのローカル履歴で依頼を復元。PythonのWindowsAppsエイリアスは起動失敗し、同梱Pythonで検証成功。Gitのsandbox内接続は1回名前解決失敗、承認後のls-remoteで開始時HEADとremote一致を確認。ブラウザ不使用。
+
+### 2026-10-21 — Codex — 採用30点登録と§2-Dの9候補
+
+- 目的: 追加30点を指定名で原本登録し、続いてケーキ8枚と飾り1枚を制作配送。
+- 完了: 原本は別ブランチで30PNG・台帳・プロンプト・SHA/Git blob記録をPR #50へ。候補はbuilt-in image_genで9素材＋修正版3枚を透明PNGで生成し無加工保存。
+- 検証: 原本30/30と候補12/12のPNG全デコード・コピー元SHA256一致。候補の透明alphaと各コマの非空を確認。git diff --check。ゲームコード変更なしのためアプリテスト対象外。
+- 失敗と修正: shortcakeの帯が丸く不適合、millefeuilleの帯が片面だけ、topsがコマ境界に近い。各1回の修正生成で形・余白を改善しc2を確認対象にした。生成原本の厳密位置一致は保証しない。プロンプトJSON更新のapply_patchが同一パス複数操作で拒否され、通常のテキスト保存に変更して成功。
+- 外部確認: 2026-10-21 GitHub MCPで最新§2-D、PR #48 merged、PR #50 open/mergeable/head一致を確認。dashboardは同会話で読取済みW42を参照。旧ブランチ削除判断は未対応。ブラウザ不使用。
+- 判断: ケーキ候補は未採用。無加工保存ルールを守り、厳密な格子・パレット・帯の位置・topsの縦余白はClaudeの変換で扱う。原本checkerを実行しない。
+- 次: オーナー採否→採用分登録→Claudeの変換・実寸・ゲーム統合。候補art-inboxにはPRを作らずmainへマージしない。

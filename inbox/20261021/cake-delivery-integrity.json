@@ -1,0 +1,415 @@
+{
+  "expected": 9,
+  "delivered": 9,
+  "png_count": 12,
+  "files": [
+    {
+      "file": "shortcake-cake-c1.png",
+      "sha256": "b817a7c1a953c5199e9aec7ed30a70370f7301c67ef1bf9f15d9eb3fb5e74c03",
+      "size": [
+        2172,
+        724
+      ],
+      "png_decoded": true,
+      "unchanged": true,
+      "transparent_pixels": 1140017,
+      "partial_alpha_pixels": 429999,
+      "frames": 3,
+      "frame_alpha_bounds": [
+        [
+          49,
+          55,
+          724,
+          708
+        ],
+        [
+          9,
+          134,
+          724,
+          706
+        ],
+        [
+          3,
+          186,
+          710,
+          724
+        ]
+      ]
+    },
+    {
+      "file": "pudding-cake-c1.png",
+      "sha256": "06cfd45174d57e9340151c8f1f8cebb94364b4287559747ec2dc12515a7667f2",
+      "size": [
+        2172,
+        724
+      ],
+      "png_decoded": true,
+      "unchanged": true,
+      "transparent_pixels": 1172510,
+      "partial_alpha_pixels": 396874,
+      "frames": 3,
+      "frame_alpha_bounds": [
+        [
+          0,
+          9,
+          724,
+          724
+        ],
+        [
+          0,
+          35,
+          712,
+          724
+        ],
+        [
+          3,
+          23,
+          712,
+          724
+        ]
+      ]
+    },
+    {
+      "file": "tart-cake-c1.png",
+      "sha256": "582fe0535407a37f7372531328a2c402ca64e0bac6adc77c1ab1c39168fdd9fc",
+      "size": [
+        2172,
+        724
+      ],
+      "png_decoded": true,
+      "unchanged": true,
+      "transparent_pixels": 1152631,
+      "partial_alpha_pixels": 418231,
+      "frames": 3,
+      "frame_alpha_bounds": [
+        [
+          43,
+          55,
+          724,
+          708
+        ],
+        [
+          1,
+          132,
+          716,
+          724
+        ],
+        [
+          15,
+          134,
+          702,
+          702
+        ]
+      ]
+    },
+    {
+      "file": "choco-cake-cake-c1.png",
+      "sha256": "2235eea1d8af1da609cf31437f35a863ae6072e399a6fd4781d202fb4cb42dea",
+      "size": [
+        2172,
+        724
+      ],
+      "png_decoded": true,
+      "unchanged": true,
+      "transparent_pixels": 1179903,
+      "partial_alpha_pixels": 390581,
+      "frames": 3,
+      "frame_alpha_bounds": [
+        [
+          25,
+          26,
+          724,
+          724
+        ],
+        [
+          1,
+          112,
+          724,
+          707
+        ],
+        [
+          1,
+          87,
+          676,
+          724
+        ]
+      ]
+    },
+    {
+      "file": "millefeuille-cake-c1.png",
+      "sha256": "4d08ecc59bd50c230ff8deee3ba460daca8a2f72db8b66490896a3b390970146",
+      "size": [
+        2172,
+        724
+      ],
+      "png_decoded": true,
+      "unchanged": true,
+      "transparent_pixels": 1139000,
+      "partial_alpha_pixels": 431628,
+      "frames": 3,
+      "frame_alpha_bounds": [
+        [
+          29,
+          31,
+          724,
+          706
+        ],
+        [
+          3,
+          53,
+          724,
+          700
+        ],
+        [
+          0,
+          24,
+          696,
+          724
+        ]
+      ]
+    },
+    {
+      "file": "fruit-pie-cake-c1.png",
+      "sha256": "f8c90ee3d6798768922fa4dd5451363fe5905c365e36e65a5861176a765b6a0e",
+      "size": [
+        2172,
+        724
+      ],
+      "png_decoded": true,
+      "unchanged": true,
+      "transparent_pixels": 1144765,
+      "partial_alpha_pixels": 425224,
+      "frames": 3,
+      "frame_alpha_bounds": [
+        [
+          27,
+          22,
+          724,
+          706
+        ],
+        [
+          0,
+          85,
+          724,
+          708
+        ],
+        [
+          1,
+          180,
+          706,
+          724
+        ]
+      ]
+    },
+    {
+      "file": "decoration-cake-cake-c1.png",
+      "sha256": "42e701fdc8fc5b035e931831cf708577da2e2f16dae174e71e928b55c1788fc7",
+      "size": [
+        2172,
+        724
+      ],
+      "png_decoded": true,
+      "unchanged": true,
+      "transparent_pixels": 1062849,
+      "partial_alpha_pixels": 507796,
+      "frames": 3,
+      "frame_alpha_bounds": [
+        [
+          25,
+          13,
+          724,
+          684
+        ],
+        [
+          0,
+          21,
+          724,
+          710
+        ],
+        [
+          1,
+          73,
+          702,
+          724
+        ]
+      ]
+    },
+    {
+      "file": "royal-cake-cake-c1.png",
+      "sha256": "47658fd4dc1c88e486feac72948bfdbcf3a139d4432bf3609cb3b4b11bf211c8",
+      "size": [
+        2172,
+        724
+      ],
+      "png_decoded": true,
+      "unchanged": true,
+      "transparent_pixels": 1158310,
+      "partial_alpha_pixels": 411717,
+      "frames": 3,
+      "frame_alpha_bounds": [
+        [
+          51,
+          39,
+          710,
+          706
+        ],
+        [
+          3,
+          158,
+          718,
+          700
+        ],
+        [
+          38,
+          198,
+          702,
+          724
+        ]
+      ]
+    },
+    {
+      "file": "cake-tops-c1.png",
+      "sha256": "7772c2ff1fcf62e84c8cf768fc39705f57c47a4422a3e17ef2e82ccde57cfd66",
+      "size": [
+        1774,
+        887
+      ],
+      "png_decoded": true,
+      "unchanged": true,
+      "transparent_pixels": 1222444,
+      "partial_alpha_pixels": 348835,
+      "frames": 4,
+      "frame_alpha_bounds": [
+        [
+          23,
+          94,
+          444,
+          863
+        ],
+        [
+          0,
+          57,
+          443,
+          841
+        ],
+        [
+          0,
+          141,
+          443,
+          766
+        ],
+        [
+          0,
+          104,
+          424,
+          837
+        ]
+      ]
+    },
+    {
+      "file": "shortcake-cake-c2.png",
+      "sha256": "6ef9d24a1cba9848ef446345b93ec44c4c4a0f61b117123366c2554eb2086fd3",
+      "size": [
+        2172,
+        724
+      ],
+      "png_decoded": true,
+      "unchanged": true,
+      "transparent_pixels": 1214579,
+      "partial_alpha_pixels": 356147,
+      "frames": 3,
+      "frame_alpha_bounds": [
+        [
+          43,
+          63,
+          724,
+          704
+        ],
+        [
+          1,
+          93,
+          724,
+          702
+        ],
+        [
+          1,
+          87,
+          712,
+          706
+        ]
+      ]
+    },
+    {
+      "file": "millefeuille-cake-c2.png",
+      "sha256": "09302043b268997a8ba91e4848d4bf5ffc20206db623cc9950c794b72378457c",
+      "size": [
+        2172,
+        724
+      ],
+      "png_decoded": true,
+      "unchanged": true,
+      "transparent_pixels": 1163041,
+      "partial_alpha_pixels": 407309,
+      "frames": 3,
+      "frame_alpha_bounds": [
+        [
+          43,
+          23,
+          717,
+          677
+        ],
+        [
+          1,
+          174,
+          706,
+          672
+        ],
+        [
+          79,
+          101,
+          694,
+          701
+        ]
+      ]
+    },
+    {
+      "file": "cake-tops-c2.png",
+      "sha256": "22bfcb6ba5c6732b27927e59f341869a49bc1b5dd9e6eea9e3dc73c99dc544dd",
+      "size": [
+        1774,
+        887
+      ],
+      "png_decoded": true,
+      "unchanged": true,
+      "transparent_pixels": 1351453,
+      "partial_alpha_pixels": 220870,
+      "frames": 4,
+      "frame_alpha_bounds": [
+        [
+          57,
+          100,
+          415,
+          857
+        ],
+        [
+          25,
+          23,
+          405,
+          837
+        ],
+        [
+          1,
+          142,
+          440,
+          782
+        ],
+        [
+          1,
+          80,
+          430,
+          861
+        ]
+      ]
+    }
+  ]
+}
