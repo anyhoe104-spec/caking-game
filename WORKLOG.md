@@ -4,29 +4,23 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-10-21 23:40 JST
+- Updated: 2026-10-22 JST
 - 作業者: **Claude**
-- ブランチ: `claude/nifty-cori-cbmgi6`。基点 `8880e35`（PR #52 マージ後の `main`）
-- 目的: ドット絵の素材がそろったので、客の名前と絵の切り替え・店先のちびキャラ・製造アニメとケーキを1つのPRで組み込む。
-- 外部状態確認（**2026-10-21、`git fetch origin '+refs/heads/*:refs/remotes/origin/*'` で実測**）:
-  - ドット絵の原本44点は、PR #48・#50・#52 で `art/pixel/` に登録済み。`art-inbox` で確認した候補と全点バイト一致
-- 完了:
-  - `scripts/process_game_art.py --pixel` で `public/images/pixel/` に43点と脇机4点を生成し、置く位置を `src/game/pixelAnchors.json` に書き出す。生成物は全点 `check_pixel_art.py` に PASS
-  - 客12名を新しい名前に切り替え（`src/game/customers.js`、呼び方は名前だけ）。注文一覧はドット絵のアイコン
-  - 名前を変える前のセーブも、並んでいる客を新しい名前とアイコンで表示する（`migrateSave`）
-  - 店先と休憩の画面: ちびキャラ（`src/components/Pixel.jsx`）。製造: 9工程のドット絵アニメ。重ね・絞り・艶がけ・冷ましでは、脇机にドット絵のケーキと、装備した帯・飾りを置く
-  - 不要になった `MiniCharacter.jsx`・`CraftStage.jsx` と、旧い客の絵12点を削除
-- 進行中: なし。PRのレビュー・マージ待ち（マージで即時公開）。
+- ブランチ: `claude/nifty-cori-cbmgi6`。基点 `be9bb2d`（PR #53 マージ後の `main`）
+- 目的: オーナーの実機で、ミフィとミルの立ち絵が古いまま（PR #40 以前の絵）表示される問題を直す。
+- 外部状態確認（**2026-10-22、GitHub MCP の actions_list で実測**）: PR #53 は main にマージ済み。Deploy to GitHub Pages（run 49、`be9bb2d`）は success。公開サイト自体はこの環境から開けない（プロキシが 403）。
+- 原因: サービスワーカーが画像をキャッシュ優先で返し、画像の URL は版をまたいで変わらない。新しいワーカーは「ゲームの窓が全部閉じるまで待つ」設計なので、バックグラウンドに残るだけのアプリでは古いワーカーが古い画像を返し続ける。コードは新しい（バンドル名がハッシュ付き）のに、絵だけ古い状態になる。新規 URL のドット絵は届くため、ドット絵だけ新しく見えていた。
+- 完了: 起動時に待機中の新しいワーカーがあれば切り替えて1回だけ再読み込みする（`src/main.jsx`、`public/sw.js` の `message` で `skipWaiting`）。プレイ中の差し替えはしない。
+- 進行中: なし。PRのレビュー・マージ待ち。
 - ブロッカーとリスク:
-  - 🟡 製造の画面は、ドット絵を割り切れない倍率（約1.8倍）で拡大している。ドットの大きさがわずかにそろわないが、スマホの高解像度の画面ではほぼ目立たない
-  - 🟡 物語の中の「おじいちゃん」「ふたご」は一般名詞として残した（新しい名前とは矛盾しない）
-  - 🟡 できあがりの画面は水彩のまま（オーナーの判断どおり）
-  - 🟡 実機確認の残りと、PRごとに自動で走る CI が無い点は継続。BGM の方向性はオーナーの回答待ち
+  - 🟡 公開後の最初の起動では新しいワーカーがまだ入っていないため、反映は「2回目の起動」から。すでに古いキャッシュを持つオーナーの端末は、アプリとタブを完全に閉じれば今すぐ切り替わる
+  - 🟡 立ち絵の見せ方（ホームで小さく、ストーリーは全身で小さい、バストアップ未使用）は、実機で新しい絵が見えてからオーナーが判断する
+  - 🟡 実機確認の残り、PRごとの CI が無い点、BGM の方向性は継続
 - 次のアクション:
-  1. オーナーが本PRを確認・マージ
-  2. 実機で、店先・注文一覧・製造（特に脇机のケーキと飾り）・休憩の画面を確認
-  3. 旧ブランチの削除（オーナー作業、Issue #27 / #36）
-- 検証（2026-10-21、本ブランチ）: lint 0件、`npm test` **50件 pass**（47→50）、build 成功。`verify-offline`（80画像をオフラインでデコード）・`verify-atelier`・`verify-story`・`verify-save`・`verify-bgm`・`verify-playthrough`・`verify-av`・`verify-voices` すべて PASS。店先・注文一覧・休憩・製造（4レシピ×3工程）を撮影して確認した。
+  1. オーナーがアプリとブラウザのタブを完全に閉じて開き直し、新しい立ち絵を確認する
+  2. オーナーが本PRを確認・マージ
+  3. 立ち絵の見せ方（ストーリーのバストアップ化など）をオーナーが決めたら組み込む
+- 検証: 下の dated report を参照。
 
 ## Dated work reports
 ### 2026-09-29 — Claude
@@ -1041,5 +1035,19 @@ This file is the shared source of truth for cross-device and cross-agent handoff
   - ドキュメントに日付を「2026-10-22」と書いた。実際は 2026-10-21 23:37 JST だったので直した
 - 影響範囲: `scripts/process_game_art.py`、`src/game/{customers,storage,assets,pixelArt}.js`、`src/game/pixelAnchors.json`（生成物）、`src/components/{Pixel,ShopDiorama,ResumeDialog,CraftResult}.jsx`、`src/App.jsx`、`src/atelier.css`、`public/images/pixel/`（新規47点）、`public/images/characters/customer-*.png`（12点削除）、`src/components/{MiniCharacter,CraftStage}.jsx`（削除）、`test/customers.test.js`（新規）、`docs/world/{world,characters}.md`、`docs/art/{pixel-art-brief,production-status}.md`、`WORKLOG.md`。
 - 検証: 上記 `Current handoff` の「検証」を参照。
+- ダッシュボードの未解決事項: 旧ブランチの削除（オーナー作業）は未対応。
+- 次のアクション: 上記 `Current handoff` を参照。
+
+### 2026-10-22 — Claude — 古い画像がキャッシュに残る問題
+
+- 目的: オーナーの実機（Android）で、ミフィとミルの立ち絵・背景が PR #40 以前の絵のまま。リロードとゲームの再スタートでは変わらなかった。
+- 調査: main の画像は新しい水彩画（PR #40 で差し替え済み）。デプロイは成功（run 49）。実機の画面はコードが新しく（新しいナビ・ドット絵）、画像だけが古い。これは `public/sw.js` のキャッシュ優先と、新しいワーカーが窓を閉じるまで有効にならない設計の組み合わせで説明できる。
+- 再現: vite preview と Playwright の永続プロファイルで、1版目を読み込み → 同じ URL の画像を差し替えて BUILD_ID を変更 → 2回リロード。修正前は2回目のリロード後も古い画像（475,230 bytes）のまま。修正後は2回目の起動で新しい画像（323,829 bytes）になる。
+- 完了: `src/main.jsx` で登録後に `reg.waiting` があれば `skipWaiting` を送り、`controllerchange` で1回だけ再読み込み。`public/sw.js` に `message` ハンドラを追加。
+- **うまくいかなかったこと**:
+  - 最初、オーナーへの返答で「絵は PR #40 で新しくなっている。見せ方が小さいだけ」と答えた。手元の main を表示しただけで、実機に届いているかを確かめていなかった。実機のスクリーンショットで古い絵だと分かった
+  - 最初の再現テストは、ページを閉じてから新しいページで開いていた。他に窓がないので修正前でも切り替わってしまい、比較にならなかった。同じページで2回リロードする形にして差が出た
+- 影響範囲: `src/main.jsx`、`public/sw.js`、`WORKLOG.md`。
+- 検証（2026-10-22、本ブランチ）: 上記の再現テスト（修正前 FAIL・修正後 PASS）。lint 0件、`npm test` 50件 pass、build 成功、`verify-offline`・`verify-save`・`verify-playthrough` PASS。
 - ダッシュボードの未解決事項: 旧ブランチの削除（オーナー作業）は未対応。
 - 次のアクション: 上記 `Current handoff` を参照。
