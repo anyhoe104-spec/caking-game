@@ -7,7 +7,7 @@ trial batch was 1254x1254 and 1774x887, with over 11,000 colours). This script
 makes the real thing from such an original, which stays unmodified in art/:
 
 1. paper connected to the border, and large enclosed gaps of pure white (between
-   the legs), become transparent
+   the legs), become transparent; a transparent original keeps its own alpha
 2. every pixel snaps to the nearest palette colour as the eye sees it (Lab, with
    lightness weighted double so pale faces stay pale)
 3. each target dot takes the palette colour covering most of its area, which keeps
@@ -40,7 +40,7 @@ from scipy import ndimage
 ROOT = Path(__file__).resolve().parent.parent
 # kind: (frame width, frame height, frames)
 KINDS = {"icon": (48, 48, 1), "chibi": (48, 64, 2), "craft": (128, 96, 4),
-         "cake": (32, 32, 3), "tops": (16, 12, 4)}  # cake: body, ribbon band, chocolate band
+         "cake": (32, 32, 3), "tops": (20, 15, 4)}  # cake: body, ribbon band, chocolate band
 COLOUR_LIMIT = 16
 PAPER = 243        # darkest channel at or above this, touching the border: background
 GAP_WHITE = 250    # enclosed regions this white and this large are gaps, not highlights
@@ -154,8 +154,14 @@ def render(lab: np.ndarray, pal: np.ndarray) -> Image.Image:
 
 def convert(raw: Path, kind: str, pal: np.ndarray) -> Image.Image:
     width, height, frames = KINDS[kind]
-    a = np.asarray(Image.open(raw).convert("RGB"))
-    clear = background(a)
+    rgba = np.asarray(Image.open(raw).convert("RGBA"))
+    a = rgba[..., :3]
+    if (rgba[..., 3] < 128).any():
+        # A transparent original: trust its alpha. Detecting the background by white
+        # would also erase near-white cream on a cake (2026-10-21, shortcake).
+        clear = rgba[..., 3] < 128
+    else:
+        clear = background(a)
     k = len(pal)
     lab = np.where(clear, k, snap(a, pal))
     W = a.shape[1]
