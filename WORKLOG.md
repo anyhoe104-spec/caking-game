@@ -4,16 +4,14 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- 2026-10-21 Claude追記（追加30点と C案）: Codex の追加30点（客アイコン10・ちびキャラ12・製造8工程）が `art-inbox` の `inbox/20261021/` に届いた（`a923749`、2026-10-21 に `git fetch` で確認）。採用済み5点は PR #48 で原本登録済み。30点とも変換後に `check_pixel_art.py` に PASS。見た目も良好だが、オリーヴの眼鏡が48ドットでは見えにくい点と、シェフ・ブールの顔が小さい点が気になる。30点の採否はオーナー待ち。製造中のケーキはオーナーが **C案**（Codex がドット絵のケーキ8種と飾りパーツを描く）に決めたので、依頼書に §2-D を追加した。
-
-- Updated: 2026-10-21 JST / Codex。採用試作5点の原本登録。
-- Branch: codex/register-pixel-trials-20261020、基点 e573fdfea21374160ef3f26b93394dd85e39c22c。
-- Completed: palette/mify-idle/craft-whisk c1 と cerise/sage c2 を art/pixel/ に無加工コピー。台帳、各プロンプト、SHA256/Git blob記録を追加。
-- Validation: コピーSHA256一致5/5、PNG検証5/5。原本へのcheckerは実行しない。
-- External: 2026-10-20 GitHub MCPでPR #46 merged確認。候補元art-inbox d99b2d954cd04cd758c031332cea8ca572dc59a1。
-- Next: 本ブランチをpushしてmain宛てPR。続いて残り30素材（アイコン10・客待機12・製造8）をart-inboxへ制作配送する。採用判断は別途。
-- Scope: public/images・ゲームコード変更なし。dashboardの旧ブランチ整理、BGM、実機、CI課題は対象外。ブラウザ不使用。
-- main同期: PR #47のLab色寄せ改善を取り込み。Claudeのc2変換PASS評価を保持し、採否は今回のオーナー承認で更新。
+- Updated: 2026-10-21 JST / Codex。追加30点の採用原本登録。
+- Branch: codex/register-pixel-batch-20261021。最新mainから分離。
+- Completed: customers 10 / chibi 12 / craft 8を無加工登録。beurre-icon・melissa-icon・craft-oven・craft-layerはc2、残りc1。
+- Evidence: 台帳30行、個別プロンプト30件、pixel-batch-integrity-20261021.jsonl。PNG全デコード・コピーSHA256・Git blob照合30/30。
+- External: 2026-10-21 GitHub MCPでPR #48 merged確認。候補元art-inbox a92374914f3475679823d94979600d91890e63a8。
+- Next: 原本PRをオーナーが確認。Codexは依頼書§2-Dのケーキ8枚と飾り1枚をart-inboxへ制作配送。Claudeが変換・実寸確認・ゲーム統合する。
+- Limits: 工程間の縮尺・台の高さは変換時に調整。変換後checkerは今回実行せず。public/images・ゲームコードは変更なし。
+- Dashboard: W42の旧ブランチ削除判断は未対応。BGM・実機・CIは対象外。ブラウザ不使用。
 
 ## Dated work reports
 ### 2026-09-29 — Claude
@@ -977,3 +975,12 @@ This file is the shared source of truth for cross-device and cross-agent handoff
   1. オーナーが追加30点の採否を決める（オリーヴの眼鏡・シェフ・ブールの顔の扱いも）
   2. Codex が採用分を原本登録し、§2-D のケーキ8枚と飾り1枚を作って `art-inbox` に push する
   3. そろったら Claude が組み込む（客の名前と絵の切り替え・店先のちびキャラ・製造アニメとケーキ）
+
+### 2026-10-21 — Codex — 追加30点の採用原本登録
+
+- 目的・完了: オーナー承認済みの客アイコン10、客待機12、製造8を指定名でart/pixel/に無加工コピー。台帳・プロンプト・照合記録を追加。
+- 検証: 30/30のPNG全デコード、候補元SHA256と登録先一致、Git blob記録。git diff --check。ゲーム変更なしのためアプリテスト対象外。
+- 判断: 前回確認対象のc2 4点を採用、旧版4枚は原本登録しない。PR #48 mergedを同日GitHub MCPで確認。
+- 訂正: 直前のClaude報告にはc2の照合値が無いとあるが、現在のart-inbox a923749のdelivery-integrity.jsonにはadditional_revisionsとして4件記録済み。今回は全30点を再照合。
+- うまくいかなかったこと: コピー・検証の失敗なし。候補の工程間の縮尺差は既知で、承認された原本には修正を加えない。
+- 残作業: §2-Dの9候補制作、オーナー採否、Claudeによる変換・ゲーム組み込み。dashboardの旧ブランチ整理は対象外。ブラウザ不使用。

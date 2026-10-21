@@ -105,3 +105,40 @@
 | art/pixel/craft/craft-whisk-v1.png | 2026-10-20 | image_gen | [生成記録](prompts/pixel-craft-whisk-v1.md) | 採用 | craft-whisk-c1.png、無加工 |
 | art/pixel/customers/cerise-icon-v1.png | 2026-10-20 | image_gen | [生成記録](prompts/pixel-cerise-icon-v1.md) | 採用 | cerise-icon-c2.png、無加工 |
 | art/pixel/customers/sage-icon-v1.png | 2026-10-20 | image_gen | [生成記録](prompts/pixel-sage-icon-v1.md) | 採用 | sage-icon-c2.png、無加工 |
+
+## 2026-10-21 — 追加ドット絵30点の採用
+
+オーナーのチャット承認。無加工の生成原本を登録。変換・ゲーム組み込みは別工程。
+
+| ファイル | 日付 | 生成元 | プロンプト | 状態 | メモ |
+|---|---|---|---|---|---|
+| art/pixel/customers/noix-icon-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-noix-icon-v1.md) | 採用 | noix-icon-c1、無加工 |
+| art/pixel/customers/fig-icon-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-fig-icon-v1.md) | 採用 | fig-icon-c1、無加工 |
+| art/pixel/customers/olive-icon-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-olive-icon-v1.md) | 採用 | olive-icon-c1、無加工 |
+| art/pixel/customers/toma-icon-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-toma-icon-v1.md) | 採用 | toma-icon-c1、無加工 |
+| art/pixel/customers/beurre-icon-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-beurre-icon-v1.md) | 採用 | beurre-icon-c2、無加工 |
+| art/pixel/customers/peche-icon-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-peche-icon-v1.md) | 採用 | peche-icon-c1、無加工 |
+| art/pixel/customers/mint-icon-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-mint-icon-v1.md) | 採用 | mint-icon-c1、無加工 |
+| art/pixel/customers/melissa-icon-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-melissa-icon-v1.md) | 採用 | melissa-icon-c2、無加工 |
+| art/pixel/customers/aprico-icon-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-aprico-icon-v1.md) | 採用 | aprico-icon-c1、無加工 |
+| art/pixel/customers/cardamom-icon-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-cardamom-icon-v1.md) | 採用 | cardamom-icon-c1、無加工 |
+| art/pixel/chibi/cerise-idle-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-cerise-idle-v1.md) | 採用 | cerise-idle-c1、無加工 |
+| art/pixel/chibi/noix-idle-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-noix-idle-v1.md) | 採用 | noix-idle-c1、無加工 |
+| art/pixel/chibi/fig-idle-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-fig-idle-v1.md) | 採用 | fig-idle-c1、無加工 |
+| art/pixel/chibi/sage-idle-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-sage-idle-v1.md) | 採用 | sage-idle-c1、無加工 |
+| art/pixel/chibi/olive-idle-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-olive-idle-v1.md) | 採用 | olive-idle-c1、無加工 |
+| art/pixel/chibi/toma-idle-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-toma-idle-v1.md) | 採用 | toma-idle-c1、無加工 |
+| art/pixel/chibi/beurre-idle-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-beurre-idle-v1.md) | 採用 | beurre-idle-c1、無加工 |
+| art/pixel/chibi/peche-idle-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-peche-idle-v1.md) | 採用 | peche-idle-c1、無加工 |
+| art/pixel/chibi/mint-idle-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-mint-idle-v1.md) | 採用 | mint-idle-c1、無加工 |
+| art/pixel/chibi/melissa-idle-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-melissa-idle-v1.md) | 採用 | melissa-idle-c1、無加工 |
+| art/pixel/chibi/aprico-idle-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-aprico-idle-v1.md) | 採用 | aprico-idle-c1、無加工 |
+| art/pixel/chibi/cardamom-idle-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-cardamom-idle-v1.md) | 採用 | cardamom-idle-c1、無加工 |
+| art/pixel/craft/craft-oven-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-craft-oven-v1.md) | 採用 | craft-oven-c2、無加工 |
+| art/pixel/craft/craft-layer-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-craft-layer-v1.md) | 採用 | craft-layer-c2、無加工 |
+| art/pixel/craft/craft-decorate-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-craft-decorate-v1.md) | 採用 | craft-decorate-c1、無加工 |
+| art/pixel/craft/craft-glaze-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-craft-glaze-v1.md) | 採用 | craft-glaze-c1、無加工 |
+| art/pixel/craft/craft-roll-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-craft-roll-v1.md) | 採用 | craft-roll-c1、無加工 |
+| art/pixel/craft/craft-fold-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-craft-fold-v1.md) | 採用 | craft-fold-c1、無加工 |
+| art/pixel/craft/craft-steam-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-craft-steam-v1.md) | 採用 | craft-steam-c1、無加工 |
+| art/pixel/craft/craft-cool-v1.png | 2026-10-21 | image_gen | [生成記録](prompts/pixel-craft-cool-v1.md) | 採用 | craft-cool-c1、無加工 |
