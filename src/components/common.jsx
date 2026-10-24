@@ -1,12 +1,13 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { MIFY_FALLBACK, MIFY_IMG } from "../game/assets.js";
+import { MIFY_BUST, MIFY_FALLBACK, MIFY_IMG, bustImg } from "../game/assets.js";
 
-export function CharImg({ mood = "normal", className = "" }) {
+/** Mify full length, or with `bust` her chest-up portrait for the same mood. */
+export function CharImg({ mood = "normal", className = "", bust = false }) {
   const [failed, setFailed] = useState(false);
   if (failed) return <span className={`charFallback ${className}`}>{MIFY_FALLBACK[mood] ?? "🐱"}</span>;
   return (
     <img
-      src={MIFY_IMG[mood]}
+      src={bust ? bustImg("mify", MIFY_BUST[mood]) : MIFY_IMG[mood]}
       alt="ミフィ"
       className={`charImg ${className}`}
       data-mood={mood}

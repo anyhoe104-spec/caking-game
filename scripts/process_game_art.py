@@ -65,10 +65,26 @@ STAFF_PORTRAITS = [
     ("characters/cinnamon/cinnamon-ref-v1.png", "staff-cinnamon"),
 ]
 PORTRAIT_SIZE = 256
+# Story bust-ups (chest up), shown when a chapter takes place indoors. Mify's sheet is
+# already chest-up; Miru's is full length, so her busts are cut from the top of each
+# figure. Names follow the generation prompts' cell order; None skips a cell (Miru's
+# first row is mouth shapes for animation, not expressions).
+BUST_SHEETS = [
+    ("characters/mify/mify-expressions-b-v1.png", (4, 2), "mify",
+     ["moved", "savoring", "gentle", "troubled", "beaming", "bashful", "energetic", "neutral"], None),
+    ("characters/miru/miru-expressions-v1.png", (4, 2), "miru",
+     [None, None, None, None, "smug", "prim", "serene", "neutral"], 0.52),
+]
+BUST_SIZE = (360, 480)
+GAP_PAPER = 248     # enclosed regions this white and this large are gaps (see grid_items)
+GAP_MIN_AREA = 400
 BACKGROUNDS = [
     ("backgrounds/bg-shop-v1.png", "bg-shop"),
     ("backgrounds/bg-kitchen-v1.png", "bg-kitchen"),
     ("backgrounds/bg-ending-v1.png", "bg-ending"),
+    ("backgrounds/bg-shop-before-v1.png", "bg-shop-before"),
+    ("backgrounds/bg-shop-after-v1.png", "bg-shop-after"),
+    ("backgrounds/bg-harbor-window-v1.png", "bg-harbor-window"),
 ]
 # Pixel art: originals in art/pixel/ (generator output, unmodified) become exact-size
 # sprites under public/images/pixel/ through scripts/convert_pixel_art.py.
@@ -219,6 +235,62 @@ def bust(figure: Image.Image, size: int, share: float = 0.34) -> Image.Image:
     return square.resize((size, size), Image.Resampling.LANCZOS)
 
 
+def grid_items(sheet: Path, grid: tuple[int, int], names: list[str | None]) -> dict[str, Image.Image]:
+    """Items laid out in equal cells, cut out one cell at a time.
+
+    For sheets whose neighbours touch across rows (puffed sleeves above the next
+    row's ears), which the shape search in locate_items cannot separate.
+    """
+    rgb = np.asarray(Image.open(sheet).convert("RGB"))
+    columns, rows = grid
+    h, w = rgb.shape[0] // rows, rgb.shape[1] // columns
+    items = {}
+    for i, name in enumerate(names):
+        if not name:
+            continue
+        cell = rgb[(i // columns) * h:(i // columns + 1) * h, (i % columns) * w:(i % columns + 1) * w]
+        joined = ndimage.binary_dilation(cell.min(axis=2) < INK, iterations=4)
+        labels, n = ndimage.label(joined)
+        sizes = ndimage.sum(np.ones(labels.shape), labels, index=np.arange(1, n + 1))
+        # The figure and its own details; slivers of a neighbour reaching over the edge go.
+        own = ndimage.binary_fill_holes(np.isin(labels, np.flatnonzero(sizes >= 0.02 * sizes.max()) + 1))
+        # Paper enclosed between hair, ear and ribbon is background seen through a gap,
+        # not a white part of the figure: large enclosed regions of it become clear.
+        gaps, m = ndimage.label(cell.min(axis=2) >= GAP_PAPER)
+        if m:
+            areas = ndimage.sum(np.ones(gaps.shape), gaps, index=np.arange(1, m + 1))
+            edge = np.unique(np.concatenate([gaps[0], gaps[-1], gaps[:, 0], gaps[:, -1]]))
+            big = [k + 1 for k in np.flatnonzero(areas >= GAP_MIN_AREA) if k + 1 not in edge]
+            own &= ~np.isin(gaps, big)
+        ys, xs = np.nonzero(own)
+        item = cut_out(cell, own).crop((xs.min(), ys.min(), xs.max() + 1, ys.max() + 1))
+        items[name] = item
+    return items
+
+
+def bust_frame(figure: Image.Image, size: tuple[int, int], share: float | None) -> Image.Image:
+    """Fit a chest-up figure into `size`, centred and standing on the bottom edge.
+
+    With `share`, the figure is full length and only its top `share` of height is
+    used, centred on the head.
+    """
+    if share:
+        alpha = np.asarray(figure)[..., 3] > 0
+        height = round(figure.height * share)
+        head = alpha[: round(figure.height * 0.15)]
+        cx = int(np.nonzero(head)[1].mean()) if head.any() else figure.width // 2
+        width = round(height * size[0] / size[1])
+        part = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+        piece = figure.crop((cx - width // 2, 0, cx - width // 2 + width, height))
+        part.paste(piece, (0, 0), piece)
+        figure = part
+    scale = min(size[0] / figure.width, size[1] / figure.height)
+    scaled = figure.resize((round(figure.width * scale), round(figure.height * scale)), Image.Resampling.LANCZOS)
+    canvas = Image.new("RGBA", size, (0, 0, 0, 0))
+    canvas.paste(scaled, ((size[0] - scaled.width) // 2, size[1] - scaled.height), scaled)
+    return canvas
+
+
 def fit_square(item: Image.Image, size: int, margin: float = 0.04) -> Image.Image:
     inner = round(size * (1 - 2 * margin))
     scale = inner / max(item.size)
@@ -251,6 +323,10 @@ def build(check: bool) -> list[tuple[Path, Image.Image]]:
     for sheet, name in STAFF_PORTRAITS:
         front = crop_items(ART / sheet, (3, 1), [name, "side", "back"])[name]
         outputs.append((OUT / "characters" / f"{name}.png", bust(front, PORTRAIT_SIZE)))
+
+    for sheet, grid, who, names, share in BUST_SHEETS:
+        for mood, im in grid_items(ART / sheet, grid, names).items():
+            outputs.append((OUT / "characters" / "bust" / f"{who}-{mood}.png", bust_frame(im, BUST_SIZE, share)))
 
     for sheet, name in BACKGROUNDS:
         im = Image.open(ART / sheet).convert("RGB")

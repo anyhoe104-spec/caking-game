@@ -10,7 +10,7 @@ STORY_CHAPTERS.push(
   { id: "pudding-letter", level: 2, title: "プリンと小さな手紙", speaker: "ミフィ", lines: ["おじいちゃんが、空の箱に手紙を添えて返してくれた。", "『妻と半分ずつ食べました』。プリンを分けると、うれしいも二つになるんだね。", "次は二つ買ってくれるかな、って？ ミル、今日はそんな計算はお休み！"] },
   { id: "rainy-window", level: 4, title: "雨の日の窓辺", speaker: "ミル", lines: ["雨粒の向こうで、通りの色がにじんでいます。今日はお客様も少なめ。", "ミフィはチョコケーキの切り口を、いつもよりゆっくり整えています。", "窓を拭いて、灯りをともして。来てくれた一人に、あたたかい時間を渡しましょう。"] },
   { id: "picnic-basket", level: 6, title: "ピクニックの約束", speaker: "ミフィ", lines: ["焼きあがったパイを見て、ふたごが顔を見合わせた。海まで持っていくんだって。", "崩れないように包むのも、おいしさの続き。箱の中で動かないかな？", "ミル、いつか私たちも海辺でおやつにしようね。今日は窓から見える青空で乾杯！"] },
-  { id: "festival-ribbon", level: 8, title: "お祭り前夜のリボン", speaker: "ミル", lines: ["港のお祭りが近づいて、町の人たちが少しずつ飾りを持ってきてくれました。", "ローズさんはリボンを、子どもたちは貝殻を。この工房らしい色が集まります。", "大きなケーキには、まだ練習が必要です。ひとつずつ、今できることを重ねましょう。"] },
+  { id: "festival-ribbon", level: 8, title: "お祭り前夜のリボン", speaker: "ミル", lines: ["港のお祭りが近づいて、町の人たちが少しずつ飾りを持ってきてくれました。", "マダム・フィグはリボンを、子どもたちは貝殻を。この工房らしい色が集まります。", "大きなケーキには、まだ練習が必要です。ひとつずつ、今できることを重ねましょう。"] },
 );
 STORY_CHAPTERS.sort((a, b) => a.level - b.level);
 
@@ -25,16 +25,45 @@ const RESPONSES = {
   "harbor-party": ["大きなケーキの向こうに、最初の小さな一皿が見える気がする。", "明日も開けよう、このお店。『いつもの』を待っている人がいるから。"],
 };
 
+// Where each chapter takes place. Indoors the pair talk in bust-ups; outdoors they
+// stand full length in the scene (owner's direction, 2026-10-24).
+const SCENES = {
+  "first-light": { background: "bg-shop-before", label: "港町のケーキ工房", indoors: true },
+  "pudding-letter": { background: "bg-shop", label: "港町のケーキ工房", indoors: true },
+  "first-regular": { background: "bg-shop", label: "港町のケーキ工房", indoors: true },
+  "rainy-window": { background: "bg-shop", label: "雨の日の工房", indoors: true },
+  "layers": { background: "bg-kitchen", label: "工房の厨房", indoors: true },
+  "picnic-basket": { background: "bg-harbor-window", label: "工房の窓辺", indoors: true },
+  "festival-ribbon": { background: "bg-shop-after", label: "お祭り前夜の工房", indoors: true },
+  "harbor-party": { background: "bg-ending", label: "港のお祭り", indoors: false },
+};
+export const chapterScene = chapter => SCENES[chapter.id] ?? { background: "bg-shop", label: "港町のケーキ工房", indoors: true };
+
+// The speaker's expression on each of the five lines, named after the bust-up sheets:
+// Mify moved / savoring / gentle / troubled / beaming / bashful / energetic / neutral,
+// Miru smug / prim / serene / neutral.
+const MOODS = {
+  "first-light": ["moved", "serene", "savoring", "energetic", "smug"],
+  "pudding-letter": ["moved", "serene", "beaming", "energetic", "neutral"],
+  "first-regular": ["neutral", "bashful", "serene", "prim", "gentle"],
+  "rainy-window": ["neutral", "savoring", "serene", "neutral", "gentle"],
+  "layers": ["neutral", "smug", "moved", "gentle", "serene"],
+  "picnic-basket": ["beaming", "prim", "troubled", "energetic", "smug"],
+  "festival-ribbon": ["neutral", "moved", "serene", "prim", "energetic"],
+  "harbor-party": ["neutral", "moved", "serene", "neutral", "energetic"],
+};
+
 export function chapterDialogue(chapter) {
   const other = chapter.speaker === "ミフィ" ? "ミル" : "ミフィ";
   const replies = RESPONSES[chapter.id] ?? [];
+  const moods = MOODS[chapter.id] ?? [];
   return [
     { speaker: chapter.speaker, text: chapter.lines[0] },
     { speaker: other, text: replies[0] ?? chapter.lines[1] },
     { speaker: chapter.speaker, text: chapter.lines[1] },
     { speaker: chapter.speaker, text: chapter.lines[2] },
     { speaker: other, text: replies[1] ?? chapter.lines[2] },
-  ];
+  ].map((line, i) => ({ ...line, mood: moods[i] ?? "neutral" }));
 }
 export function normalizeReadStories(value) {
   return Array.isArray(value) ? [...new Set(value.filter(id => STORY_CHAPTERS.some(chapter => chapter.id === id)))] : [];

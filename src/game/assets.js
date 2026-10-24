@@ -13,6 +13,10 @@ export const MIFY_IMG = {
 export const MIFY_FALLBACK = { normal: "🐱", happy: "😸", sad: "🙀", excited: "😻", working: "🐱" };
 
 export const miruImg = (mood = "normal") => `${BASE}images/characters/miru-${mood}.png`;
+/** Chest-up portrait from the expression sheets: who is "mify" or "miru". */
+export const bustImg = (who, mood = "neutral") => `${BASE}images/characters/bust/${who}-${mood}.png`;
+/** The bust-up expression closest to each full-length Mify pose. */
+export const MIFY_BUST = { normal: "neutral", happy: "beaming", sad: "troubled", excited: "energetic", working: "gentle" };
 
 export const customerImg = (avatarPath) => `${BASE}${avatarPath}`;
 
