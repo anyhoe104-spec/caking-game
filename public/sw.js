@@ -47,6 +47,11 @@ self.addEventListener("install", (event) => {
     )
   );
   // Activate after existing game windows close; never replace a running session.
+  // The page asks for it at launch instead (src/main.jsx), before play starts.
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data === "skipWaiting") self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
