@@ -52,7 +52,9 @@
 
 .productionOverlay .productionCard { animation:none; opacity:1; }
 
-.mifyPanel .mifyChar {object-fit:cover;object-position:top;border-radius:12px;width:64px;height:78px;}
+.mifyPanel .mifyChar {object-fit:cover;object-position:top;border-radius:12px;width:72px;height:80px;background:#fff3ea;}
+/* Miru's banner: her face from the bust-up, large enough to read (it was a 26px full figure). */
+.hintStrip .hintAvatar {width:44px;height:44px;object-fit:cover;object-position:50% 8%;border-radius:50%;background:#f7eefa;border:1px solid #d9c6e6;}
 
 /* Recipe-specific production props */
 .craftTip {font-size:11px;line-height:1.6;color:var(--muted);margin:0;min-height:2.8em;}
@@ -139,6 +141,17 @@ html {scroll-padding-top:110px;scroll-padding-bottom:100px}
 .storyPortrait span { font-size:11px; padding:4px 14px; background:#fffaef; border:1px solid #cfb799; border-radius:20px; }
 .storyPortrait.isSpeaking { opacity:1; filter:none; }
 .storyPortrait.isSpeaking img { animation:storyBreath 3s ease-in-out infinite; transform-origin:bottom; }
+/* Indoors: chest-up portraits standing on the bottom edge, name chips over them. */
+.storyTheater--bust .storyPortrait { height:100%; position:relative; justify-content:flex-end; }
+.storyTheater--bust .storyPortrait img { height:calc(100% - 22px); object-position:bottom; filter:none; }
+.storyTheater--bust .storyPortrait span { position:absolute; bottom:8px; }
+/* Dimmed rather than see-through: a translucent bust lets the room show through her. */
+.storyTheater--bust .storyPortrait { opacity:1; filter:brightness(.72) saturate(.6); }
+.storyTheater--bust .storyPortrait.isSpeaking { filter:none; }
+/* Miru's bust is cut from a full figure, so her wings end at a straight edge: soften it. */
+.storyTheater--bust .storyPortrait--miru img { -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent); mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent); }
+.storyTheater--bust .storyPortrait.isSpeaking img { animation-name:storyBustBreath; }
+@keyframes storyBustBreath { 0%,100% { transform:scale(1); } 50% { transform:scale(1.015); } }
 .storyDialogue { min-height:155px; padding:16px 4px 8px; color:var(--brown); }
 .storyDialogue strong { color:#995568; font-size:13px; }
 .storyDialogue p { font-size:15px; line-height:1.9; margin:10px 0; animation:storyLine .25s ease-out; }

@@ -85,7 +85,7 @@ export default function HomeView({
       <ShopDiorama state={state} onRecipe={onOpenRecipe} onOrder={onPickOrder}/>
       {/* Character panel — always visible, never scrolled past. */}
       <div className="mifyPanel">
-        <CharImg mood={mifyMood} className="mifyChar" />
+        <CharImg mood={mifyMood} className="mifyChar" bust />
         <div className="mifyBubble">
           <div className="mifyName">
             ミフィ

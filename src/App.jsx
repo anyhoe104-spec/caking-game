@@ -16,7 +16,7 @@ import { rollCraftResult, capByLevel } from "./game/logic.js";
 import { DECORATIONS, buyDecoration, equipDecoration, hireStaff, getStaffEffects } from "./game/shop.js";
 import { getMiruMessage } from "./game/engagement.js";
 import { MATERIAL_LABELS, OPENING_LINES, RECIPES } from "./game/data.js";
-import { miruImg } from "./game/assets.js";
+import { bustImg } from "./game/assets.js";
 import { preloadPixelArt } from "./game/pixelArt.js";
 import { audioBus as bus } from "./game/audio.js";
 import { BGM_KEYS, resolveScene } from "./game/audioAssets.js";
@@ -520,7 +520,7 @@ export default function App() {
   // ── Scenes ─────────────────────────────────────────────────
   const mifyMsg = getMifyMsg(state, lastResult, lastRecipe);
   const miruMsg = getMiruMessage(state);
-  const miruMood = state.lastEvent?.type === "great" ? "happy" : state.lastEvent?.type === "fail" ? "thinking" : "normal";
+  const miruMood = state.lastEvent?.type === "great" ? "serene" : state.lastEvent?.type === "fail" ? "prim" : "neutral";
 
   if (state.gamePhase === "opening") {
     const finish = () => {
@@ -578,7 +578,7 @@ export default function App() {
           <button onClick={openSettings}>設定を開く</button>
           {saveStatus !== "unavailable" && <button onClick={() => setSaveNotice(null)}>確認しました</button>}
         </div>}
-        <HintStrip icon={miruImg(miruMood)} name="ミル" message={miruMsg} />
+        <HintStrip icon={bustImg("miru", miruMood)} name="ミル" message={miruMsg} />
 
         <main className="mainContent viewSwap" key={activeTab ?? "home"}>
           {activeTab === null && (
