@@ -13,7 +13,7 @@
     "native:sync": "npm run build:root && cap sync",
     "native:android": "cap open android",
     "native:ios": "cap open ios",
-    "assets:icons": "node scripts/generate-app-icons.cjs"
+    "assets:icons": "python3 scripts/process_branding.py"
   },
   "dependencies": {
     "@capacitor/android": "8.5.1",

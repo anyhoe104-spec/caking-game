@@ -15,6 +15,7 @@ const ROOT = path.resolve(__dirname, '..');
     browser = await chromium.launch({ executablePath: process.env.PLAYWRIGHT_EXECUTABLE,
       args: process.env.PLAYWRIGHT_EXECUTABLE ? ['--no-sandbox', '--no-zygote', '--single-process', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] : [] });
     const context = await browser.newContext();
+    await context.addInitScript(()=>sessionStorage.setItem('caking-title-seen','1'));
     const page = await context.newPage();
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
@@ -39,7 +40,7 @@ const ROOT = path.resolve(__dirname, '..');
     assert.deepEqual(migrateSave(JSON.parse(await page.evaluate(() => localStorage.getItem('caking-save-v4')))), migrateSave(JSON.parse(saved)));
     await page.getByRole('button', { name: '工房を再開する' }).click();
     const images = fs.readdirSync(path.join(ROOT, 'public/images'), { recursive: true }).filter(f => /\.png$/.test(f)).map(f => `images/${f}`);
-    images.push('icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'favicon.svg');
+    images.push('icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'icons/icon-maskable-512.png', 'favicon.svg');
     const results = await page.evaluate(async ({ images, base }) => Promise.all(images.map(async file => {
       const img = new Image(); img.src = `${base}${file}`;
       try { await img.decode(); return img.naturalWidth > 0; } catch { return false; }

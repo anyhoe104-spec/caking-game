@@ -11,6 +11,7 @@ const ROOT = path.resolve(__dirname, '..');
     args:['--no-sandbox','--no-zygote','--single-process','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
   try {
     const page = await browser.newPage(); const errors=[];
+    await page.addInitScript(()=>sessionStorage.setItem('caking-title-seen','1'));
     page.on('pageerror', e => errors.push(e.message));
     await page.goto('http://127.0.0.1:5184/caking-game/');
     await page.getByText('スキップ',{exact:true}).click();
