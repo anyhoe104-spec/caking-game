@@ -5,7 +5,7 @@ fs.mkdirSync(QA,{recursive:true});
 (async()=>{
  const {createServer}=await import(pathToFileURL(path.join(ROOT,'node_modules/vite/dist/node/index.js')).href);const server=await createServer({root:ROOT,server:{host:'127.0.0.1',port:5182}});await server.listen();
  const b=await chromium.launch({executablePath:process.env.PLAYWRIGHT_EXECUTABLE,args:process.env.PLAYWRIGHT_EXECUTABLE ? ['--no-sandbox','--no-zygote','--single-process','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader'] : [],headless:true});
- const p=await b.newPage({viewport:{width:390,height:844}});const errors=[];p.on('pageerror',e=>errors.push(e.message));
+ const p=await b.newPage({viewport:{width:390,height:844}});await p.addInitScript(()=>sessionStorage.setItem('caking-title-seen','1'));const errors=[];p.on('pageerror',e=>errors.push(e.message));
  const save=()=>p.evaluate(()=>JSON.parse(localStorage.getItem('caking-save-v4')));
  const patch=async data=>{await p.evaluate(data=>{let s=JSON.parse(localStorage.getItem('caking-save-v4'));localStorage.setItem('caking-save-v4',JSON.stringify({...s,...data}))},data);await p.reload();if(await p.getByText("工房を再開する",{exact:true}).count()) await p.getByText("工房を再開する",{exact:true}).click();};
  try {

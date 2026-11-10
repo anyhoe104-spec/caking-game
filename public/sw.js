@@ -30,6 +30,7 @@ const PRECACHE = [
   BASE + "icons/icon-192.png",
   BASE + "icons/apple-touch-icon.png",
   BASE + "icons/icon-512.png",
+  BASE + "icons/icon-maskable-512.png",
   ...(Array.isArray(BUILD_ASSETS) ? BUILD_ASSETS.map((file) => BASE + file) : []),
 ];
 

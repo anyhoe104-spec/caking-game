@@ -32,7 +32,8 @@ import UpgradeView from "./components/UpgradeView.jsx";
 import DailyReport from "./components/DailyReport.jsx";
 import CraftResult from "./components/CraftResult.jsx";
 import SettingsModal from "./components/SettingsModal.jsx";
-import { EndingScene, OpeningScene } from "./components/Scenes.jsx";
+import { EndingScene, OpeningScene, TitleScreen } from "./components/Scenes.jsx";
+import { markTitleSeen, titleSeen } from "./game/titleSession.js";
 
 const REGEN_MS = 5000;
 const REGEN_SECONDS = REGEN_MS / 1000;
@@ -73,6 +74,7 @@ export default function App() {
   const [saveNotice, setSaveNotice] = useState(initialSave.status === "recovered" || initialSave.status === "damaged" ? initialSave.status : null);
   const [paused, setPaused] = useState(() => state.gamePhase === "playing" && state.dayPhase === "open");
   const pausedRef = useRef(paused);
+  const [showTitle, setShowTitle] = useState(() => !titleSeen());
   const [activeTab, setActiveTab] = useState(null);
   const [homeTabPick, setHomeTabPick] = useState(null); // { phase, tab } — cleared when the phase turns over
   const [toast, setToast] = useState(null);
@@ -521,6 +523,15 @@ export default function App() {
   const mifyMsg = getMifyMsg(state, lastResult, lastRecipe);
   const miruMsg = getMiruMessage(state);
   const miruMood = state.lastEvent?.type === "great" ? "serene" : state.lastEvent?.type === "fail" ? "prim" : "neutral";
+
+  if (showTitle) {
+    return (
+      <TitleScreen
+        returning={state.gamePhase !== "opening" || state.openingIndex > 0}
+        onStart={() => { sfx("tap"); markTitleSeen(); setShowTitle(false); }}
+      />
+    );
+  }
 
   if (state.gamePhase === "opening") {
     const finish = () => {

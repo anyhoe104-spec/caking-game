@@ -8,7 +8,7 @@ const st=p=>p.evaluate(()=>window.__ctxs.map(c=>c.state));
  const {createServer}=await import(pathToFileURL(path.join(ROOT,'node_modules/vite/dist/node/index.js')).href);
  const server=await createServer({root:ROOT,server:{host:'127.0.0.1',port:5181},logLevel:'silent'});await server.listen();
  const url='http://127.0.0.1:5181/caking-game/';
- const run=async(policy,fn)=>{const b=await chromium.launch({executablePath:process.env.PLAYWRIGHT_EXECUTABLE,headless:true,args:['--no-sandbox',`--autoplay-policy=${policy}`]});const p=await b.newPage({viewport:{width:390,height:844}});const errs=[];p.on('pageerror',e=>errs.push(e.message));await p.addInitScript(track);try{await fn(p);assert.deepEqual(errs,[]);}finally{await b.close();}};
+ const run=async(policy,fn)=>{const b=await chromium.launch({executablePath:process.env.PLAYWRIGHT_EXECUTABLE,headless:true,args:['--no-sandbox',`--autoplay-policy=${policy}`]});const p=await b.newPage({viewport:{width:390,height:844}});const errs=[];p.on('pageerror',e=>errs.push(e.message));await p.addInitScript(track);await p.addInitScript(()=>sessionStorage.setItem('caking-title-seen','1'));try{await fn(p);assert.deepEqual(errs,[]);}finally{await b.close();}};
  try{
   // 1. Autoplay allowed (installed PWA): audio runs with no tap.
   await run('no-user-gesture-required',async p=>{await p.goto(url);await p.waitForTimeout(2500);const s=await st(p);console.log('allowed, no tap:',s);assert.ok(s.includes('running'));});

@@ -1,6 +1,23 @@
-import { BASE } from "../game/assets.js";
+import { BASE, MIFY_IMG, miruImg } from "../game/assets.js";
 import { CharImg } from "./common.jsx";
 import { ENDING_LINES, OPENING_LINES } from "../game/data.js";
+
+/** Shown once per launch: the logo over the harbour, Mify and Miru, and a start button. */
+export function TitleScreen({ returning, onStart }) {
+  return (
+    <div className="titleScreen" style={{"--scene-art": `url(${BASE}images/backgrounds/bg-harbor-window.png)`}}>
+      <h1 className="titleLogo"><img src={`${BASE}images/branding/logo.png`} alt="CAKING!" /></h1>
+      <p className="titleCatch">港町の小さなケーキ店を、あなたの手で。</p>
+      <div className="titleCast" aria-hidden="true">
+        <img src={MIFY_IMG.excited} alt="" className="titleMify" />
+        <img src={miruImg("happy")} alt="" className="titleMiru" />
+      </div>
+      <button className="primaryBtn pressable titleStart" onClick={onStart}>
+        {returning ? "つづきから" : "はじめる"}
+      </button>
+    </div>
+  );
+}
 
 export function OpeningScene({ index, onAdvance, onSkip }) {
   const last = index >= OPENING_LINES.length - 1;

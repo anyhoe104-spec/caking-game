@@ -4,25 +4,26 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 
 ## Current handoff
 
-- Updated: 2026-10-24 JST
+- Updated: 2026-11-08 JST
 - 作業者: **Claude**
-- ブランチ: `claude/nifty-cori-cbmgi6`。基点 `b1b7841`（PR #54 マージ後の `main`）
-- 目的: オーナーの指示「店舗内の場面はバストアップ、外は立ち絵」「ミルの店舗画面の表示が小さすぎるので、大きくしてバストアップにする（またはピクセルのちびキャラ）」を反映する。
-- 外部状態確認（**2026-10-24、`git fetch origin main` で実測**）: PR #54 はマージ済み（`b1b7841`）。
+- ブランチ: `claude/nifty-cori-cbmgi6`。基点 `3c8273b`（PR #55 マージ後の `main`）
+- 目的: オーナーの方針「試遊してもらうためにアプリ化をクリアする方向で進める」。その1段目として、アイコン・起動画面・タイトル画面を採用済みの絵で作る（改善提案の4）。
+- 外部状態確認（**2026-11-08、`git fetch origin` と GitHub API で実測**）: PR #55 はマージ済み（`3c8273b`）。open PR 0件。ダッシュボードの CAKING 行（10/24 更新）の未解決は「`art-inbox` に PR が無い」「旧ブランチ6本（Issue #36）」で、どちらも今回は対象外のまま残る。
 - 完了:
-  - バストアップ12点を生成（`scripts/process_game_art.py`、`public/images/characters/bust/`）。ミフィは表情シート b の8種、ミルは表情シートの2行目4種（得意げ・すまし・目を閉じる・基準）を胸から上で切り出し。背景3枚（`bg-shop-before`・`bg-shop-after`・`bg-harbor-window`）も追加
-  - ストーリー: 章ごとに場面（背景・店内か外か）とセリフごとの表情を持たせた（`src/game/story.js`）。店内7章はバストアップ、外の「港町の祝福」だけ立ち絵。話していない側は前の表情のまま暗くする
-  - ミルの帯: 26pxの全身 → 44pxの丸い顔アイコン。ホームのミフィの枠もバストアップに
-  - 物語に残っていた旧い客の名前「ローズさん」を「マダム・フィグ」に直した
+  - アイコン: ミフィの表情シート（笑顔）を桃色の地に置いた。PWA（192/512・maskable 512・apple-touch）、Android 全密度（通常・丸・アダプティブ前景、背景色 `#f9d2dc`）、iOS 1024
+  - 起動画面: クリーム色の地に採用済みのタイトルロゴ（Android 縦横11枚・iOS 3枚）
+  - タイトル画面: 起動ごとに1回（`sessionStorage`）。港の背景・ロゴ・ミフィとミル・「はじめる／つづきから」。リロードでは出ない
+  - 生成は `scripts/process_branding.py` に集約（`npm run assets:icons`）。旧 `generate-app-icons.cjs` とコード描画の SVG アイコンは削除
 - 進行中: なし。PRのレビュー・マージ待ち。
 - ブロッカーとリスク:
-  - 🟡 ミルのバストは全身画から切り出したので、羽の端をぼかして直線の切り口を隠している。正式な胸から上の絵が要るなら Codex に依頼する
-  - 🟡 ミルを店先にピクセルのちびキャラで置く案は、新しいドット絵が必要（未着手。オーナーの判断待ち）
-  - 🟡 ミルの表情シートの1行目（口の形 あ・い・う・閉じ）は未使用。セリフ中の口パクに使える
-  - 🟡 背景は1枚約2.3MBのPNG。3枚増えた分、初回のストーリーの読み込みが重くなる
-- 次のアクション:
-  1. オーナーが本PRを確認・マージし、実機でストーリーとホームを見る
-  2. ミルを店先のちびキャラにするかどうか、オーナーが決める（するなら Codex にドット絵を依頼）
+  - 🟡 アイコンの元絵は表情シートの1コマ（顔の幅 約250px）。1024px のストア用アイコンでは少しやわらかい。正式にはアイコン専用の絵を Codex に頼むのがよい
+  - 🟡 このコンテナでは Chromium の single-process 起動がクラッシュする（Vulkan 初期化失敗）。`PLAYWRIGHT_EXECUTABLE` を付けずに verify を実行した
+  - 🟡 Android SDK・JDK 21・Xcode はこの環境に無い。ネイティブのビルド成功は未確認
+- 次のアクション（アプリ化の順）:
+  1. オーナーが本PRを確認・マージ（アイコン案は別案2つもある）
+  2. GitHub Actions で Android のデバッグ APK を作るワークフローを足す（試遊者が端末に直接入れられる）
+  3. Google Play の内部テスト: Play Console の開発者登録（オーナー作業・有料）、署名鍵の作成と GitHub Secrets への登録、AAB のビルド
+  4. iOS: Mac か macOS ランナーと Apple Developer Program（オーナー判断）。TestFlight
 - 検証: 下の dated report を参照。
 
 ## Dated work reports
@@ -1072,4 +1073,27 @@ This file is the shared source of truth for cross-device and cross-agent handoff
 - 影響範囲: `scripts/process_game_art.py`、`public/images/characters/bust/`（新規12点）、`public/images/backgrounds/`（新規3点）、`src/game/{story,assets}.js`、`src/components/{StoryReader,HomeView,common}.jsx`、`src/App.jsx`、`src/atelier.css`、`test/story.test.js`、`WORKLOG.md`。
 - 検証（2026-10-24、本ブランチ）: lint 0件、`npm test` 51件 pass（50→51）、build 成功。`verify-story`・`verify-offline`（95画像）・`verify-atelier`・`verify-save` PASS。ストーリー4章（店内3・外1）とホームを撮影して確認した。
 - ダッシュボードの未解決事項: 旧ブランチの削除（オーナー作業）は未対応。
+- 次のアクション: 上記 `Current handoff` を参照。
+
+
+### 2026-11-08 — Claude — アプリ化の準備：アイコン・起動画面・タイトル画面
+
+- 目的: 上記 `Current handoff` の目的を参照。
+- 完了した作業:
+  - `process_branding.py` に、アイコン（`icon()`。縦長の絵を幅と高さの両方で収め、胸の切り口を下端にそろえる）、丸アイコン、起動画面（`splash()`）、ゲーム内ロゴ `public/images/branding/logo.png` を追加。表情シートの切り出しは `process_game_art.grid_items()` を共用
+  - `manifest.json`: `any maskable` を `any` と `maskable`（専用画像）に分けた。maskable は外周が切られるので、絵を小さくした別画像にした
+  - `TitleScreen`（`Scenes.jsx`）と `titleSession.js`。`App.jsx` で最初に出す
+  - verify 7本はタイトルを済ませた状態から始める（`addInitScript` で `sessionStorage` を立てる）。`verify-atelier` はタイトルのロゴ読み込みと「はじめる」を確かめる
+  - `docs/native-build.md` のアイコンの節を更新
+- **うまくいかなかったこと**:
+  - アイコンを幅だけで大きさを決めたら、縦長の絵の頭（耳）が上で切れた。高さでも制限するようにした
+  - その修正で share をそろえたら、アダプティブ前景が小さくなりすぎた。前景は別の値（0.72）にして、丸く切られても耳が入る大きさにした。試行3回
+  - タイトル画面は、幅390pxでミフィが左端で切れた。立ち絵2枚の幅に上限（各50%）を付けた
+  - スクリプトを再実行すると `art/branding/logo-v1-cutout.png` のバイトが変わる（Pillow の版の違い）。原本扱いの加工済みファイルなので、毎回 git で元に戻した
+  - 「はじめる」ボタンの脈打つ動きを `transform: scale` で作ったら、Playwright がボタンを「動いていて押せない」と判定して `verify-atelier` が30秒でタイムアウトした。光の明滅（`box-shadow`）に変えた
+  - `verify-offline` が maskable アイコンをオフラインで読めず FAIL。`sw.js` の PRECACHE はアイコンを名前で列挙しているので追加した。その後も一度 FAIL したのは、`dist/` を作り直す前に実行したため
+  - verify は最初、`PLAYWRIGHT_EXECUTABLE` を付けて実行して10分以上止まった。main でも同じだったので変更のせいではなく、このコンテナで Chromium の single-process 起動がクラッシュしていた。付けずに実行した
+- 影響範囲: `scripts/process_branding.py`、`scripts/generate-app-icons.cjs`（削除）、`public/icons/`（SVG 2点削除、maskable 追加）、`public/manifest.json`、`public/sw.js`、`public/images/branding/logo.png`（新規）、`android/app/src/main/res/`（mipmap・splash・背景色）、`ios/App/App/Assets.xcassets/`、`src/components/Scenes.jsx`、`src/game/titleSession.js`（新規）、`src/App.jsx`、`src/atelier.css`、`scripts/verify-*.cjs`（7本）、`package.json`、`docs/native-build.md`、`WORKLOG.md`。
+- 検証（2026-11-08、本ブランチ）: lint 0件、`npm test` 51件 pass、build 成功。タイトル画面を3つの幅（390・360・820）で撮影し、横スクロールなし・エラーなし。verify 8本（atelier・story・save・offline 97画像・bgm・av・voices・playthrough）すべて PASS（`PLAYWRIGHT_EXECUTABLE` なしで実行）。
+- ダッシュボードの未解決事項: `art-inbox`（PR無し、受け渡し専用で意図的）と旧ブランチ6本（オーナー作業）は未対応のまま。
 - 次のアクション: 上記 `Current handoff` を参照。

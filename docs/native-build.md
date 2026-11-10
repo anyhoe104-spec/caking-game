@@ -37,14 +37,14 @@ npm run native:ios
 
 ## アイコン・起動画面
 
-原本は `public/icons/icon-512.svg`。フォントに依存しないコードネイティブのケーキ図形。
+アイコンはミフィの表情シート（`art/characters/mify/mify-expressions-b-v1.png` の笑顔のコマ）、起動画面はタイトルロゴ（`art/branding/logo-v1.png`）から `scripts/process_branding.py` で作る（2026-11-08 から。それ以前はコードで描いたケーキ図形の SVG）。
 
 ```sh
 npm run assets:icons
 npm run native:sync
 ```
 
-192/512pxのPWAアイコン、180pxのapple-touch-icon、Android各密度、iOSアイコン、両OS起動画面を再生成できる。
+192/512px と maskable 512px の PWA アイコン、180px の apple-touch-icon、Android 各密度（通常・丸・アダプティブ前景と背景色）、iOS アイコン、両OSの起動画面を再生成できる。Pillow・numpy・scipy が要る（`python3 -m pip install pillow numpy scipy`）。
 
 ## 実機で残る確認
 

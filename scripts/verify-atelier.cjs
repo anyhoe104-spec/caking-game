@@ -9,7 +9,10 @@ fs.mkdirSync(QA,{recursive:true});
  const save=()=>p.evaluate(()=>JSON.parse(localStorage.getItem('caking-save-v4')));
  const patch=async data=>{await p.evaluate(data=>{let s=JSON.parse(localStorage.getItem('caking-save-v4'));localStorage.setItem('caking-save-v4',JSON.stringify({...s,...data}))},data);await p.reload();if(await p.getByText("工房を再開する",{exact:true}).count()) await p.getByText("工房を再開する",{exact:true}).click();};
  try {
- await p.goto('http://127.0.0.1:5173/caking-game/');await p.getByText('スキップ',{exact:true}).click();
+ await p.goto('http://127.0.0.1:5173/caking-game/');
+ // Title screen once per launch: logo loaded, "はじめる" for a new player, not shown again on reload.
+ assert.ok(await p.locator('.titleLogo img').evaluate(img=>img.complete&&img.naturalWidth>0));
+ await p.getByRole('button',{name:'はじめる',exact:true}).click();await p.getByText('スキップ',{exact:true}).click();
  await p.getByRole('button',{name:'営業スタート！'}).click();assert.equal((await save()).dayPhase,'open');assert.equal(await p.locator('.shopGuest').count(),2);
  // Manual pause and reload must preserve business time, inventory and earnings.
  await p.getByRole('button',{name:'一時停止',exact:true}).click();

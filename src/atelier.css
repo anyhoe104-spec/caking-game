@@ -224,3 +224,16 @@ img.finishedRecipe {mix-blend-mode:multiply}
 .reduceMotion .pixelSprite--animated {animation:none!important;}
 @media(prefers-reduced-motion:reduce){.pixelSprite--animated{animation:none!important}}
 .pageHidden .pixelSprite--animated,.gamePaused .pixelSprite--animated {animation-play-state:paused!important;}
+
+/* Title screen, once per launch. The harbour shows through a soft wash; the logo leads. */
+.titleScreen { min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:space-between; gap:12px; padding:calc(28px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom)); background:linear-gradient(#fff8ec22,#fff8ec00 40%,#44312355),var(--scene-art) center/cover; overflow:hidden; }
+.titleLogo { margin:0; width:min(88vw,420px); }
+.titleLogo img { display:block; width:100%; filter:drop-shadow(0 6px 10px #5a3a2a40); }
+.titleCatch { margin:0; padding:6px 14px; border-radius:20px; background:#fff8ecdd; color:#6b4a35; font-size:13px; letter-spacing:.04em; }
+.titleCast { flex:1; width:100%; max-width:460px; display:flex; align-items:flex-end; justify-content:center; min-height:0; }
+.titleCast img { height:min(46vh,380px); width:auto; max-width:50%; object-fit:contain; object-position:bottom; filter:drop-shadow(0 8px 10px #35231755); }
+.titleMiru { margin-left:-6%; transform:translateY(-6%); }
+.titleStart { min-width:220px; min-height:52px; font-size:16px; animation:titlePulse 2.4s ease-in-out infinite; }
+@keyframes titlePulse { 0%,100% { box-shadow:0 4px 14px #b0607040; } 50% { box-shadow:0 4px 26px 6px #ffd6e2cc; } }
+.reduceMotion .titleStart { animation:none; }
+@media (prefers-reduced-motion:reduce) { .titleStart { animation:none; } }
